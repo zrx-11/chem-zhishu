@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>简明无机化学：元素的性质地图</title>
+<link rel="stylesheet" href="https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.css">
+<link rel="stylesheet" href="https://registry.npmmirror.com/picocss/2.0.6/dist/css/pico.min.css">
+<link rel="stylesheet" href="https://registry.npmmirror.com/vis-network/9.1.9/dist/dist/vis-network.min.css">
+<style>
+:root{
+  --bg:#f7f7f8; --panel:#ffffff; --text:#1f2328; --muted:#6b7280;
+  --accent:#2563eb; --accent-soft:#dbeafe; --border:#e5e7eb;
+  --ok:#16a34a; --bad:#dc2626; --code-bg:#f3f4f6;
+  --depth-bg:#fef9c3; --depth-border:#ca8a04;
+}
+[data-theme="dark"]{
+  --bg:#111318; --panel:#1a1d24; --text:#e5e7eb; --muted:#9ca3af;
+  --accent:#60a5fa; --accent-soft:#1e3a5f; --border:#2d333d;
+  --ok:#4ade80; --bad:#f87171; --code-bg:#20242c;
+  --depth-bg:#2a2410; --depth-border:#a16207;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:290px;flex:none;background:var(--panel);border-right:1px solid var(--border);
+  padding:14px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar h1{font-size:17px;margin:2px 0 2px}
+.sidebar .sub{font-size:12px;color:var(--muted);margin-bottom:10px}
+#q{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);margin-bottom:10px}
+.nav-sec{font-size:12px;color:var(--muted);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.4px}
+.nav-item{display:block;padding:5px 10px;border-radius:6px;color:var(--text);font-size:14px}
+.nav-item:hover{background:var(--accent-soft);text-decoration:none}
+.nav-item.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav-item .done{float:right;color:var(--ok);font-size:12px}
+#nav-toggle{display:none}
+.main{flex:1;min-width:0;padding:28px 40px 80px;max-width:920px;margin:0 auto}
+.page h1{font-size:26px;border-bottom:2px solid var(--border);padding-bottom:8px;margin-top:0}
+.page h2{font-size:20px;margin-top:26px}
+.page h3{font-size:17px;margin-top:22px}
+.page table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+.page th,.page td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.page th{background:var(--code-bg)}
+.page code{background:var(--code-bg);padding:2px 5px;border-radius:4px;font-size:.9em}
+.page pre{background:var(--code-bg);padding:12px;border-radius:8px;overflow-x:auto;font-size:13px}
+.page pre code{background:none;padding:0}
+.page blockquote{border-left:4px solid var(--accent);margin:12px 0;padding:6px 14px;background:var(--accent-soft);border-radius:0 6px 6px 0}
+.page blockquote blockquote{border-color:var(--muted)}
+.page img{max-width:100%}
+.mermaid{background:var(--code-bg);padding:14px;border-radius:8px;overflow-x:auto;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;white-space:pre;color:var(--muted)}
+.mermaid-hint{font-size:12px;color:var(--muted);margin:4px 0 14px}
+svg{max-width:100%;height:auto}
+/* 出处脚注 */
+.source-badge{font-size:12px;color:var(--muted);background:var(--code-bg);padding:4px 10px;border-radius:6px;margin:0 0 12px;display:inline-block}
+/* 前置知识条 */
+.prereq-bar{font-size:13px;color:var(--muted);border-left:3px solid var(--accent);padding:4px 10px;margin:0 0 12px;background:var(--accent-soft)}
+.prereq-hard a{color:var(--bad);font-weight:600}
+.prereq-soft a{color:var(--muted)}
+.prereq-rec a{color:var(--accent)}
+.prereq-tag{display:inline-block;font-size:10px;padding:0 4px;border-radius:3px;margin-right:2px;vertical-align:middle}
+.prereq-hard .prereq-tag{background:var(--bad);color:#fff}
+.prereq-soft .prereq-tag{background:var(--muted);color:#fff}
+.prereq-rec .prereq-tag{background:var(--accent);color:#fff}
+/* 误解卡片 */
+.misconception-card{margin-top:10px;padding:10px 14px;border-left:4px solid var(--bad);background:#fef2f2;border-radius:0 8px 8px 0;font-size:13px}
+.misconception-card b{color:var(--bad)}
+[data-theme="dark"] .misconception-card{background:#2a1215}
+/* 掌握度条 */
+.mastery-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin:4px 0}
+.mastery-bar>div{height:100%;background:var(--ok);transition:width .3s}
+.mastery-label{font-size:11px;color:var(--muted)}
+/* 深度推导片段 */
+.depth-fragment{margin:18px 0;border:1px solid var(--depth-border);border-radius:10px;background:var(--depth-bg);overflow:hidden}
+.depth-fragment>summary{padding:10px 14px;cursor:pointer;font-weight:600;font-size:14px;list-style:none}
+.depth-fragment>summary:hover{filter:brightness(.95)}
+.depth-body{padding:14px 18px;border-top:1px dashed var(--depth-border);background:var(--panel)}
+.depth-missing{color:var(--bad);font-size:13px;padding:8px;background:var(--code-bg);border-radius:6px}
+/* KaTeX */
+.katex-inline{font-size:1.05em}
+.katex-block{overflow-x:auto;padding:8px 0;text-align:center}
+.katex-block .katex{font-size:1.1em}
+/* 测验 */
+.quiz-item{border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin:14px 0;background:var(--panel)}
+.quiz-q{margin:0 0 8px;font-weight:500}
+.quiz-opts label{display:block;padding:4px 0;cursor:pointer}
+.quiz-blank{width:60%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)}
+.quiz-check{margin-top:10px;padding:6px 16px;border:none;border-radius:6px;background:var(--accent);color:#fff;cursor:pointer}
+.quiz-feedback{margin-left:12px;font-size:13px}
+.fb-ok{color:var(--ok)}.fb-bad{color:var(--bad)}
+.quiz-explain{margin-top:8px;font-size:13px;color:var(--muted);border-top:1px dashed var(--border);padding-top:6px}
+.quiz-remedy{margin-top:8px;padding:8px 12px;background:var(--accent-soft);border-radius:6px;font-size:13px}
+/* 抽认卡 */
+.flashcard{perspective:1200px;margin:24px auto;max-width:520px;cursor:pointer;user-select:none}
+.fc-inner{position:relative;width:100%;height:240px;transform-style:preserve-3d;transition:transform .5s}
+.flashcard.flip .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;
+  padding:22px;border-radius:14px;border:1px solid var(--border);background:var(--panel);font-size:16px;text-align:center}
+.fc-back{transform:rotateY(180deg);background:var(--accent-soft);color:var(--text)}
+.card-controls{display:flex;gap:14px;align-items:center;margin:12px 0;flex-wrap:wrap}
+.card-actions{display:flex;gap:12px;justify-content:center}
+.card-actions button{padding:8px 22px;border:none;border-radius:8px;cursor:pointer;font-size:14px}
+#card-known-btn{background:var(--ok);color:#fff}
+#card-again-btn{background:var(--bad);color:#fff}
+.card-counts{color:var(--muted);font-size:13px}
+.path-step{margin:8px 0;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--panel)}
+.path-step.passed{border-color:var(--ok)}
+#glossary-filter{width:100%;max-width:380px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);margin-bottom:10px}
+#glossary-list li{padding:6px 0;border-bottom:1px dashed var(--border)}
+.glossary-ref{color:var(--muted);font-size:12px}
+.search-hit{margin:10px 0}
+.topbar{position:sticky;top:0;background:var(--bg);padding:8px 0;display:flex;justify-content:flex-end;z-index:10}
+#theme-btn{border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:8px;padding:5px 12px;cursor:pointer;white-space:nowrap}
+#progress-bar{height:5px;background:var(--border);border-radius:3px;margin:8px 0;overflow:hidden}
+#progress-bar>div{height:100%;width:0;background:var(--accent);transition:width .3s}
+.empty{color:var(--muted);padding:20px 0}
+/* 诊断 */
+.diag-controls{margin:14px 0;padding:14px;background:var(--panel);border-radius:10px;border:1px solid var(--border)}
+#diag-start{padding:8px 20px;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-size:14px}
+#diag-progress{margin-left:12px;color:var(--muted);font-size:13px}
+#diag-stage .quiz-item{margin:10px 0}
+#diag-result{margin-top:16px;padding:14px;background:var(--panel);border-radius:10px;border:1px solid var(--border)}
+.diag-remedy-item{padding:10px;margin:8px 0;background:var(--accent-soft);border-radius:8px;font-size:14px}
+@media print{.sidebar,.topbar,.quiz-actions,.card-actions,.card-controls,.diag-controls{display:none!important}.main{max-width:none;padding:0}}
+@media (max-width:760px){.sidebar{width:100%;height:auto;position:static;padding:10px 14px}
+  #nav{display:none;max-height:46vh;overflow-y:auto;overscroll-behavior:contain}.sidebar.open #nav{display:block}
+  .nav-item{padding:9px 10px}
+  #q,#glossary-filter{font-size:16px}
+  .quiz-opts label{padding:8px 0;min-height:30px}
+  .quiz-check{padding:10px 18px;min-height:40px}
+  #diag-start{min-height:40px}
+  .card-actions button{min-height:40px}
+  #nav-toggle{display:block;width:100%;padding:8px 10px;margin:4px 0;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px;text-align:left;cursor:pointer}
+  .layout{flex-direction:column}.main{padding:20px 18px 64px;max-width:none;width:100%}
+  .page{overflow-wrap:anywhere}.page table{display:block;overflow-x:auto;max-width:100%}
+  .page h1,.page h2,.page h3{line-height:1.35}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>简明无机化学：元素的性质地图</h1>
+    <div class="sub">按周期表分区，把非金属、主族金属、过渡金属串成一张性质网</div>
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div class="sub" id="progress-label">进度 0%</div>
+    <input id="q" type="search" placeholder="搜索章节 / 概念 / 术语 / 全文…">
+    <nav id="nav"></nav>
+  </aside>
+  <main class="main">
+    <div class="topbar"><button id="theme-btn">🌙 深色</button></div>
+    <div id="view" class="page"></div>
+  </main>
+</div>
+<script>
+const DATA = {"manifest": {"slug": "inorganic-chem", "title": "简明无机化学：元素的性质地图", "subtitle": "按周期表分区，把非金属、主族金属、过渡金属串成一张性质网", "book": {"title": "简明无机化学（第2版）", "author": "宋天佑", "source": ["简明无机化学 第2版.pdf"]}, "audience": "已读完入门篇、正在学大学的元素化学", "goal": "掌握常见元素单质、氧化物、含氧酸、配合物的性质与反应", "learningPath": [{"step": "01", "title": "先拿地图", "chapterIds": ["ch01"], "checkpoint": "能说出五个分区和四条周期性主线"}, {"step": "02", "title": "非金属", "chapterIds": ["ch02"], "checkpoint": "能写卤素、硫、氮、硅的关键反应"}, {"step": "03", "title": "主族金属", "chapterIds": ["ch03"], "checkpoint": "能写钠、镁、铝的反应并解释两性"}, {"step": "04", "title": "过渡金属与配合物", "chapterIds": ["ch04"], "checkpoint": "能写 Fe2+/Fe3+ 转化、Cu2+ 配合、命名配合物"}], "chapters": [{"id": "ch01", "title": "第 1 章：元素周期律与无机化学地图", "file": "chapters/ch01-元素周期律与无机地图.md", "difficulty": 2, "source": "《简明无机化学》化学原理部分", "prerequisites": []}, {"id": "ch02", "title": "第 2 章：非金属元素", "file": "chapters/ch02-非金属元素.md", "difficulty": 3, "source": "《简明无机化学》元素化学·非金属", "prerequisites": ["ch01"]}, {"id": "ch03", "title": "第 3 章：主族金属", "file": "chapters/ch03-主族金属.md", "difficulty": 2, "source": "《简明无机化学》元素化学·主族金属", "prerequisites": ["ch01"]}, {"id": "ch04", "title": "第 4 章：过渡金属与配位化合物", "file": "chapters/ch04-过渡金属与配位.md", "difficulty": 3, "source": "《简明无机化学》元素化学·过渡金属 + 配位化学基础", "prerequisites": ["ch01", "ch03"]}], "concepts": [{"id": "c01", "title": "配合物与配位键", "file": "concepts/c01-配合物.md", "chapterIds": ["ch04"], "difficulty": "进阶", "source": "《简明无机化学》配位化学基础", "prerequisites": ["ch01"]}], "glossary": [{"term": "两性氧化物", "def": "既能与酸反应又能与碱反应生成盐和水的氧化物", "chapterId": "ch01"}, {"term": "惰性电子对效应", "def": "同族向下 ns2 电子对越来越难参与成键的现象", "chapterId": "ch03"}, {"term": "配位键", "def": "配体提供孤对电子、中心离子提供空轨道形成的共价键", "chapterId": "ch04"}, {"term": "配位数", "def": "中心离子周围配位原子的数目", "chapterId": "ch04"}, {"term": "稳定常数", "def": "配合物生成反应的平衡常数，越大越稳定", "chapterId": "ch04"}, {"term": "铝热反应", "def": "铝与金属氧化物在高温下反应，放出大量热并还原出金属", "chapterId": "ch03"}], "patterns": {"file": "patterns.md"}, "cheatsheet": {"file": "cheatsheet.md"}, "quizzes": [{"id": "q01", "chapterId": "ch01", "type": "single", "question": "下列元素属于 p 区的是？", "options": ["Na", "Fe", "S", "Ag"], "answer": 2, "explain": "S 的价电子构型 3s2 3p4，属 p 区。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q02", "chapterId": "ch01", "type": "single", "question": "F、Cl、Br 非金属性由强到弱是？", "options": ["F>Cl>Br", "Br>Cl>F", "Cl>F>Br", "F>Br>Cl"], "answer": 0, "explain": "同主族从上到下非金属性减弱。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q03", "chapterId": "ch02", "type": "single", "question": "下列氢化物最稳定的是？", "options": ["HF", "HCl", "HBr", "HI"], "answer": 0, "explain": "F 的非金属性最强，H—F 键最稳定。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q04", "chapterId": "ch02", "type": "single", "question": "氯气与氢氧化钠反应生成？", "options": ["NaCl 和 NaClO", "NaCl 和 NaClO3", "NaClO 和 O2", "NaCl 和 HClO4"], "answer": 0, "explain": "Cl2+2NaOH→NaCl+NaClO+H2O。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q05", "chapterId": "ch03", "type": "single", "question": "钠与水反应的现象不包括？", "options": ["浮在水面", "熔成小球", "沉入水底", "四处游动"], "answer": 2, "explain": "钠密度比水小，浮在水面而不是沉底。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q06", "chapterId": "ch03", "type": "single", "question": "Al 与 NaOH 溶液反应生成？", "options": ["Al(OH)3 和 H2", "NaAlO2 和 H2", "Al2O3 和 H2O", "AlCl3 和 H2"], "answer": 1, "explain": "2Al+2NaOH+2H2O→2NaAlO2+3H2↑。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q07", "chapterId": "ch04", "type": "single", "question": "检验 Fe3+ 常用的试剂是？", "options": ["NaOH", "KSCN", "BaCl2", "AgNO3"], "answer": 1, "explain": "Fe3+ 与 SCN- 生成血红色配合物。", "relatedConceptId": "c01", "optionMisconceptions": []}, {"id": "q08", "chapterId": "ch04", "type": "single", "question": "Cu2+ 与过量氨水反应的现象是？", "options": ["生成白色沉淀", "生成蓝色沉淀后溶解变深蓝", "生成红褐色沉淀", "无现象"], "answer": 1, "explain": "先生成 Cu(OH)2 蓝色沉淀，继续加氨水生成深蓝色 [Cu(NH3)4]2+。", "relatedConceptId": "c01", "optionMisconceptions": []}], "flashcards": [{"id": "f01", "chapterId": "ch01", "front": "元素周期律与无机化学地图：一句话核心是什么？", "back": "无机化学不是背反应，而是用构型决定性质、性质决定用途这条线，把几百种物质串起来。", "tags": ["ch01"]}, {"id": "f02", "chapterId": "ch01", "front": "元素周期律与无机化学地图最容易错在哪？", "back": "Al2O3 是两性氧化物，不是碱性氧化物。", "tags": ["ch01", "易错"]}, {"id": "f03", "chapterId": "ch02", "front": "非金属元素：一句话核心是什么？", "back": "非金属性越靠右上越强；同族向下，氢化物越不稳定、含氧酸越弱。", "tags": ["ch02"]}, {"id": "f04", "chapterId": "ch02", "front": "非金属元素最容易错在哪？", "back": "氯水不是 HCl 和 HClO 的简单混合物，是多组分平衡体系。", "tags": ["ch02", "易错"]}, {"id": "f05", "chapterId": "ch03", "front": "主族金属：一句话核心是什么？", "back": "主族金属越往下越活泼；铝是两性金属，既能与酸反应也能与强碱反应。", "tags": ["ch03"]}, {"id": "f06", "chapterId": "ch03", "front": "主族金属最容易错在哪？", "back": "Na2O2 是过氧化物，不是碱性氧化物。", "tags": ["ch03", "易错"]}, {"id": "f07", "chapterId": "ch04", "front": "过渡金属与配位化合物：一句话核心是什么？", "back": "过渡金属的特点是多价态、有色、易形成配合物，这三条决定它们的化学行为。", "tags": ["ch04"]}, {"id": "f08", "chapterId": "ch04", "front": "过渡金属与配位化合物最容易错在哪？", "back": "Zn2+ 无色，不是所有过渡金属离子都有颜色。", "tags": ["ch04", "易错"]}], "companion": "学习伴侣.html"}, "pages": {"ch01": {"html": "<div class=\"source-badge\">📖 出处：《简明无机化学》化学原理部分<\/div><h1>第 1 章：元素周期律与无机化学地图<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★☆ | <strong>预估学时<\/strong>：1 小时 | <strong>前置<\/strong>：普化第 10 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n按周期表分区说出元素的大致性质；\n<\/li><li>\n用&quot;价电子构型&quot;判断元素属于主族、过渡金属还是 f 区；\n<\/li><li>\n建立无机化学的学习地图（结构—性质—制备—用途）。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>无机化学不是背反应，而是用&quot;构型决定性质、性质决定用途&quot;这条线，把几百种物质串起来。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：周期表的五个区（难度：基础）<\/h3>\n<ul><li>\n<strong>s 区<\/strong>：第 ⅠA、ⅡA 族，价电子构型 ns¹⁻²，活泼金属。\n<\/li><li>\n<strong>p 区<\/strong>：第 ⅢA–ⅦA 族及 0 族，价电子 ns²np¹⁻⁶，非金属与半金属集中在这里。\n<\/li><li>\n<strong>d 区<\/strong>：第 ⅢB–ⅧB 族（过渡金属），价电子 (n−1)d¹⁻¹⁰ns¹⁻²。\n<\/li><li>\n<strong>ds 区<\/strong>：第 ⅠB、ⅡB 族，价电子 (n−1)d¹⁰ns¹⁻²，Cu、Ag、Au、Zn、Cd、Hg。\n<\/li><li>\n<strong>f 区<\/strong>：镧系、锕系，价电子 (n−2)f¹⁻¹⁴。\n<\/ul>\n<p>记分区的好处是：同一区元素性质相似，反应类型也相似。<\/p>\n<h3>概念 2：周期性规律的四条主线（难度：进阶）<\/h3>\n<ol><li>\n<strong>原子半径<\/strong>：同周期右移减小，同主族下移增大。\n<\/li><li>\n<strong>电离能<\/strong>：同周期右移增大，同主族下移减小。注意 ⅡA 与 ⅢA、ⅤA 与 ⅥA 之间有反常（半充满、全充满更稳定）。\n<\/li><li>\n<strong>电负性<\/strong>：同周期右移增大，同主族下移减小。F 最大。\n<\/li><li>\n<strong>金属性/非金属性<\/strong>：同周期右移非金属性增强，同主族下移金属性增强。\n<\/ol>\n<h3>概念 3：无机物的四条性质线（难度：进阶）<\/h3>\n<p>学习一种元素，按四条线整理：<\/p>\n<ul><li>\n<strong>单质<\/strong>：颜色、状态、与酸/碱/水的反应。\n<\/li><li>\n<strong>氧化物<\/strong>：酸性/碱性/两性，与水反应生成什么酸或碱。\n<\/li><li>\n<strong>氢化物<\/strong>：稳定性、酸碱性、还原性。\n<\/li><li>\n<strong>含氧酸及其盐<\/strong>：酸性强弱、氧化性、热稳定性、溶解性。\n<\/ul>\n<p>比如学硫：单质黄色固体，燃烧生成 SO₂；SO₂ 是酸性氧化物，溶于水生成 H₂SO₃；SO₃ 溶于水生成 H₂SO₄；H₂SO₄ 是强酸，浓硫酸有强氧化性和吸水性。<\/p>\n<h3>概念 4：无机反应的四种类型（难度：基础）<\/h3>\n<ul><li>\n单质 + 单质 → 化合物（化合）\n<\/li><li>\n化合物 → 单质 + 化合物（分解、置换）\n<\/li><li>\n氧化物 + 水 → 酸/碱\n<\/li><li>\n酸 + 碱 → 盐 + 水；盐 + 盐 → 新盐 + 新盐\n<\/ul>\n<p>绝大多数无机反应可以归入这四类，剩下的是氧化还原和配位反应。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[元素] --&gt; B[价电子构型]\n  B --&gt; C[s区 活泼金属]\n  B --&gt; D[p区 非金属]\n  B --&gt; E[d区 过渡金属]\n  B --&gt; F[ds区 贵金属/锌镉汞]\n  C --&gt; G[氧化物 氢氧化物 盐]\n  D --&gt; H[氢化物 含氧酸 盐]\n  E --&gt; H\n  E --&gt; I[配合物 多价态]\n  F --&gt; I<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：构型决定分区，分区决定主要化合物类型。这张图是后面三章的地图。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：周期表像一座城市的分区地图。s 区是&quot;金属工业区&quot;，p 区是&quot;非金属生活区&quot;，d 区是&quot;多价态商业区&quot;。这个类比在&quot;分区边界元素性质模糊&quot;处失效，比如硼、硅既有金属性又有非金属性。<\/p>\n<p>实例：比较 Na、Mg、Al 的金属性。同周期从左到右，核电荷增大、半径减小，失电子变难，金属性减弱：Na &gt; Mg &gt; Al。对应最高价氢氧化物碱性：NaOH &gt; Mg(OH)₂ &gt; Al(OH)₃（Al(OH)₃ 两性）。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;d 区元素都是+2 价&quot;——过渡金属有多种价态，如 Fe 有 +2、+3，Mn 有 +2 到 +7。\n<\/li><li>\n别以为&quot;同周期电离能一定单调增大&quot;——ⅡA 到 ⅢA、ⅤA 到 ⅥA 有回落。\n<\/li><li>\n别以为&quot;金属氧化物都是碱性氧化物&quot;——Al₂O₃、ZnO 是两性氧化物。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n下列元素属于 p 区的是（ ）。A. Na B. Fe C. S D. Ag\n<p>（答案：C；解析：S 的价电子构型 3s²3p⁴，属 p 区。）<\/p>\n<\/ol>\n<ol><li>\n比较 F、Cl、Br 的非金属性强弱。\n<p>（答案：F &gt; Cl &gt; Br；解析：同主族从上到下非金属性减弱。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;Al₂O₃ 既能与酸反应又能与碱反应，所以它是碱性氧化物。&quot;\n<p>（答案：不对。它是两性氧化物。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n五个区按价电子构型分。\n<\/li><li>\n四条周期性主线：半径、电离能、电负性、金属性。\n<\/li><li>\n学元素按单质、氧化物、氢化物、含氧酸四条线走。\n<\/ul>", "kind": "chapter", "title": "第 1 章：元素周期律与无机化学地图"}, "ch02": {"html": "<div class=\"source-badge\">📖 出处：《简明无机化学》元素化学·非金属<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch01\">第 1 章：元素周期律与无机化学地图<\/a><\/span><\/div><h1>第 2 章：非金属元素<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★★ | <strong>预估学时<\/strong>：2 小时 | <strong>前置<\/strong>：第 1 章、普化第 8 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n写出卤素、氧、硫、氮、磷、碳、硅的主要反应；\n<\/li><li>\n比较非金属性强弱和氢化物稳定性；\n<\/li><li>\n解释含氧酸酸性强弱的变化规律；\n<\/li><li>\n记住几个工业制备反应。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>非金属元素的性质随位置变化：越靠右上，非金属性越强；同族向下，氢化物越不稳定、含氧酸越弱。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：卤素（难度：进阶）<\/h3>\n<p>卤素 ⅦA：F₂、Cl₂、Br₂、I₂。颜色由浅黄绿到紫黑，氧化性 F₂ &gt; Cl₂ &gt; Br₂ &gt; I₂。<\/p>\n<p>关键反应：<\/p>\n<ul><li>\nCl₂ + 2NaOH → NaCl + NaClO + H₂O（制漂白液）\n<\/li><li>\nCl₂ + 2KI → 2KCl + I₂（置换，证明氧化性 Cl₂ &gt; I₂）\n<\/li><li>\nCl₂ + H₂O ⇌ HCl + HClO（氯水成分，HClO 有漂白性）\n<\/li><li>\n2Cl₂ + 2Ca(OH)₂ → Ca(ClO)₂ + CaCl₂ + 2H₂O（制漂白粉）\n<\/ul>\n<p>氢化物稳定性：HF &gt; HCl &gt; HBr &gt; HI。氢卤酸酸性：HF 弱酸，HCl、HBr、HI 强酸，且酸性 HF &lt; HCl &lt; HBr &lt; HI。<\/p>\n<h3>概念 2：氧与硫（难度：进阶）<\/h3>\n<p>氧：O₂、O₃（同素异形体）。O₃ 有强氧化性，可消毒。 硫：黄色固体，燃烧发蓝紫色火焰：S + O₂ → SO₂。<\/p>\n<p>硫的化合物：<\/p>\n<ul><li>\nSO₂ 是酸性氧化物，溶于水生成 H₂SO₃（弱酸，中强还原性）。\n<\/li><li>\nSO₃ 溶于水生成 H₂SO₄。\n<\/li><li>\n2SO₂ + O₂ ⇌(催化剂, △) 2SO₃（工业制硫酸的核心步骤）。\n<\/li><li>\n浓硫酸有吸水性、脱水性、强氧化性。Cu + 2H₂SO₄(浓) → CuSO₄ + SO₂↑ + 2H₂O。\n<\/ul>\n<h3>概念 3：氮与磷（难度：进阶）<\/h3>\n<p>氮气 N₂ 极稳定，因为 N≡N 键能很大（941 kJ/mol）。固氮三条路：高能固氮（闪电）、生物固氮（根瘤菌）、工业合成氨。<\/p>\n<ul><li>\nN₂ + 3H₂ ⇌(高温高压催化剂) 2NH₃\n<\/li><li>\nNH₃ 是碱性气体，与水形成 NH₃·H₂O，能使湿润红色石蕊试纸变蓝。\n<\/li><li>\nNH₃ + HCl → NH₄Cl（白烟）\n<\/li><li>\n4NH₃ + 5O₂ →(Pt, △) 4NO + 6H₂O（催化氧化，工业制硝酸第一步）\n<\/li><li>\n2NO + O₂ → 2NO₂（红棕色）\n<\/li><li>\n3NO₂ + H₂O → 2HNO₃ + NO（工业制硝酸）\n<\/ul>\n<p>磷：白磷（P₄，剧毒，易自燃）、红磷（稳定）。P₄ + 5O₂ →(点燃) P₂O₅，P₂O₅ 吸水性强，是干燥剂。<\/p>\n<h3>概念 4：碳与硅（难度：进阶）<\/h3>\n<p>碳：金刚石（共价晶体，硬）、石墨（层状，导电）、C₆₀。CO 有还原性和毒性，CO₂ 是酸性氧化物。<\/p>\n<ul><li>\nC + O₂ →(点燃) CO₂\n<\/li><li>\nCO₂ + C →(高温) 2CO（工业制 CO）\n<\/li><li>\nCO + CuO →(△) Cu + CO₂（炼铜）\n<\/ul>\n<p>硅：SiO₂ 是共价晶体，与 NaOH 反应：SiO₂ + 2NaOH → Na₂SiO₃ + H₂O（所以不能用玻璃瓶长期装 NaOH）。工业制粗硅：SiO₂ + 2C →(高温) Si + 2CO↑。<\/p>\n<h3>概念 5：含氧酸酸性规律（难度：高难）<\/h3>\n<p>同一元素不同价态：价态越高，酸性越强。H₂SO₃ &lt; H₂SO₄，HNO₂ &lt; HNO₃。 同一主族从上到下：酸性减弱。HNO₃ &gt; H₃PO₄，H₂SO₄ &gt; H₂SeO₄ 的反例要单独记（实际 H₂SO₄ 与 H₂SeO₄ 接近，H₂SO₄ 略强）。<\/p>\n<p>Pauling 规则：含氧酸 <span class=\"katex-inline\">H_nXO_m<\/span> 的酸性随 m 增大而增强。m = 1 弱酸，m = 2 中强，m = 3 强酸。HClO（m=1）弱，HClO₂（m=2）中强，HClO₃、HClO₄（m=3、4）强。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart LR\n  A[非金属元素] --&gt; B[卤素 F Cl Br I]\n  A --&gt; C[氧族 O S]\n  A --&gt; D[氮族 N P]\n  A --&gt; E[碳族 C Si]\n  B --&gt; F[氧化性 卤素单质]\n  C --&gt; G[SO2 SO3 H2SO4]\n  D --&gt; H[NH3 HNO3]\n  E --&gt; I[CO2 SiO2]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：按族分块记，每块抓住&quot;单质—氧化物—含氧酸&quot;这条链。跨族比较看非金属性和价态。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：非金属元素像一支球队，位置越靠右上（F、O），进攻性（氧化性）越强；越往下（I、Se），越&quot;温和&quot;。这个类比在&quot;氮气特别稳定&quot;处失效，因为 N≡N 键能异常大，不按族规律走。<\/p>\n<p>实例：为什么浓硫酸能干燥 SO₂ 却不能干燥 NH₃？浓硫酸有酸性，NH₃ 是碱性气体，两者反应生成 (NH₄)₂SO₄；SO₂ 是酸性氧化物，不与浓硫酸反应，所以可以干燥。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;氯水就是 HCl 和 HClO 的混合物&quot;——氯水是 Cl₂、H₂O、HCl、HClO 多组分平衡体系。\n<\/li><li>\n别以为&quot;浓硫酸只体现酸性&quot;——浓硫酸还有强氧化性、吸水性、脱水性。\n<\/li><li>\n别以为&quot;SiO₂ 和 CO₂ 都是酸性氧化物，性质相同&quot;——SiO₂ 是共价晶体，不溶于水，CO₂ 是分子晶体，溶于水。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n下列氢化物最稳定的是（ ）。A. HF B. HCl C. HBr D. HI\n<p>（答案：A；解析：F 的非金属性最强，H—F 键最稳定。）<\/p>\n<\/ol>\n<ol><li>\n写出氯气与氢氧化钠反应的化学方程式。\n<p>（答案：Cl₂ + 2NaOH → NaCl + NaClO + H₂O。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;酸性 HClO₄ &gt; HClO₃ &gt; HClO₂ &gt; HClO。&quot;\n<p>（答案：对。含氧酸中氧原子数越多，酸性越强。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n卤素：氧化性 F₂ &gt; Cl₂ &gt; Br₂ &gt; I₂，氢化物稳定性反之。\n<\/li><li>\n硫：SO₂ 还原性、SO₃ 制硫酸、浓硫酸三性。\n<\/li><li>\n氮：合成氨、氨的催化氧化、硝酸制备。\n<\/li><li>\n含氧酸酸性随中心元素价态升高而增强。\n<\/ul>", "kind": "chapter", "title": "第 2 章：非金属元素"}, "ch03": {"html": "<div class=\"source-badge\">📖 出处：《简明无机化学》元素化学·主族金属<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch01\">第 1 章：元素周期律与无机化学地图<\/a><\/span><\/div><h1>第 3 章：主族金属<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★☆ | <strong>预估学时<\/strong>：1.2 小时 | <strong>前置<\/strong>：第 1 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n写出钠、镁、铝与水或酸反应的现象和方程式；\n<\/li><li>\n比较碱金属、碱土金属的活泼性；\n<\/li><li>\n说明铝的两性；\n<\/li><li>\n解释 Na₂O₂ 的特殊性质。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>主族金属越往下越活泼；铝是&quot;两性金属&quot;，既能与酸反应，也能与强碱反应。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：碱金属（难度：基础）<\/h3>\n<p>第 ⅠA 族：Li、Na、K、Rb、Cs。最外层 1 个电子，极易失电子，活泼性从上到下增强。<\/p>\n<ul><li>\n2Na + 2H₂O → 2NaOH + H₂↑（浮、熔、游、响、红）\n<\/li><li>\n2Na + O₂ →(点燃) Na₂O₂（过氧化钠，淡黄色）\n<\/li><li>\n2Na₂O₂ + 2H₂O → 4NaOH + O₂↑\n<\/li><li>\n2Na₂O₂ + 2CO₂ → 2Na₂CO₃ + O₂\n<\/ul>\n<p>Na₂O₂ 中 O 为 −1 价，既有氧化性又有还原性，常作供氧剂（潜水艇、呼吸面具）。Na₂O 是白色固体，碱性氧化物；Na₂O₂ 是过氧化物，不是碱性氧化物。<\/p>\n<h3>概念 2：碱土金属（难度：基础）<\/h3>\n<p>第 ⅡA 族：Be、Mg、Ca、Sr、Ba。最外层 2 个电子，活泼性次于碱金属，从上到下增强。<\/p>\n<ul><li>\nMg + 2H₂O →(△) Mg(OH)₂ + H₂↑（热水才反应）\n<\/li><li>\nMg + 2HCl → MgCl₂ + H₂↑\n<\/li><li>\n2Mg + O₂ →(点燃) 2MgO（耀眼白光）\n<\/li><li>\nCa + 2H₂O → Ca(OH)₂ + H₂↑\n<\/ul>\n<p>MgO 是碱性氧化物，熔点高，作耐火材料。Ca(OH)₂ 微溶，澄清水溶液叫石灰水，通 CO₂ 变浑浊：Ca(OH)₂ + CO₂ → CaCO₃↓ + H₂O。<\/p>\n<h3>概念 3：铝的两性（难度：进阶）<\/h3>\n<p>Al 是第 ⅢA 族，表面易形成致密氧化膜，耐腐蚀。<\/p>\n<ul><li>\n2Al + 6HCl → 2AlCl₃ + 3H₂↑\n<\/li><li>\n2Al + 2NaOH + 2H₂O → 2NaAlO₂ + 3H₂↑（偏铝酸钠）\n<\/li><li>\nAl₂O₃ + 6HCl → 2AlCl₃ + 3H₂O\n<\/li><li>\nAl₂O₃ + 2NaOH → 2NaAlO₂ + H₂O\n<\/li><li>\nAl(OH)₃ + 3HCl → AlCl₃ + 3H₂O\n<\/li><li>\nAl(OH)₃ + NaOH → NaAlO₂ + 2H₂O\n<\/ul>\n<p>铝热反应：2Al + Fe₂O₃ →(高温) Al₂O₃ + 2Fe，用于焊接钢轨、冶炼难熔金属。<\/p>\n<h3>概念 4：锡与铅（难度：进阶）<\/h3>\n<p>Sn、Pb 是第 ⅣA 族金属。Sn 有 +2、+4 价，Pb 以 +2 价稳定（惰性电子对效应：6s² 不易失去）。<\/p>\n<ul><li>\nSn + 2HCl → SnCl₂ + H₂↑\n<\/li><li>\nPb + 2HCl → PbCl₂↓ + H₂↑（PbCl₂ 难溶，反应很快停止）\n<\/ul>\n<p>惰性电子对效应：同族向下，ns² 电子对越来越难参与成键，所以 Tl、Pb、Bi 的低价态更稳定。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart LR\n  A[主族金属] --&gt; B[IA 碱金属]\n  A --&gt; C[IIA 碱土金属]\n  A --&gt; D[IIIA 铝]\n  B --&gt; E[与水反应 越来越剧烈]\n  C --&gt; F[与热水/酸反应]\n  D --&gt; G[两性 酸和碱都反应]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：活泼性从上到下增强，铝特殊在两性。记反应时先看金属位置，再看条件。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：碱金属像&quot;急着交作业的学生&quot;，最外层 1 个电子随时准备交出去；碱土金属有 2 个，稍犹豫；铝交了 3 个之后，剩下的核心很稳定，所以既能让酸拿走，也能让碱&quot;溶解&quot;它。这个类比在&quot;铝表面氧化膜保护&quot;这一点上要补一句：铝其实很活泼，只是被膜保护了。<\/p>\n<p>实例：为什么不能用铝锅煮碱性食物？Al₂O₃ 和 Al 都能与 NaOH 反应，保护膜被破坏，铝会继续溶解，既损坏锅又使食物含铝。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;Na₂O₂ 是碱性氧化物&quot;——它是过氧化物，与水反应生成 NaOH 和 O₂，不是简单的碱性氧化物。\n<\/li><li>\n别以为&quot;铝不活泼&quot;——铝的活泼性接近镁，只是表面氧化膜让它耐腐蚀。\n<\/li><li>\n别以为&quot;镁不与冷水反应，所以镁不活泼&quot;——镁与热水、酸反应都很剧烈。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n钠与水反应的现象不包括（ ）。A. 浮在水面 B. 熔成小球 C. 沉入水底 D. 四处游动\n<p>（答案：C；解析：钠密度比水小，浮在水面。）<\/p>\n<\/ol>\n<ol><li>\n写出 Al 与 NaOH 溶液反应的化学方程式。\n<p>（答案：2Al + 2NaOH + 2H₂O → 2NaAlO₂ + 3H₂↑。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;Na₂O 和 Na₂O₂ 都是碱性氧化物。&quot;\n<p>（答案：不对。Na₂O 是碱性氧化物，Na₂O₂ 是过氧化物。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n碱金属最活泼，与水反应&quot;浮熔游响红&quot;。\n<\/li><li>\nNa₂O₂ 中 O 为 −1，可作供氧剂。\n<\/li><li>\n铝两性：与酸、强碱都反应；铝热反应放大量热。\n<\/ul>", "kind": "chapter", "title": "第 3 章：主族金属"}, "ch04": {"html": "<div class=\"source-badge\">📖 出处：《简明无机化学》元素化学·过渡金属 + 配位化学基础<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch01\">第 1 章：元素周期律与无机化学地图<\/a><\/span> · <span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch03\">第 3 章：主族金属<\/a><\/span><\/div><h1>第 4 章：过渡金属与配位化合物<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★★ | <strong>预估学时<\/strong>：1.5 小时 | <strong>前置<\/strong>：第 1 章、普化第 12 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n说出铬、锰、铁、铜、银、锌的主要价态和颜色；\n<\/li><li>\n写出 Fe²⁺/Fe³⁺ 的相互转化；\n<\/li><li>\n解释 Cu²⁺ 与氨水形成配合物的现象；\n<\/li><li>\n记住常见离子的检验方法。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>过渡金属的特点是&quot;多价态 + 有色 + 易形成配合物&quot;，这三条决定了它们的化学行为。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：铬与锰（难度：进阶）<\/h3>\n<p>铬：常见 +3、+6。Cr³⁺ 绿色，Cr₂O₇²⁻ 橙色，CrO₄²⁻ 黄色。<\/p>\n<ul><li>\nCr₂O₇²⁻ + 14H⁺ + 6e⁻ → 2Cr³⁺ + 7H₂O（酸性条件，强氧化性）\n<\/li><li>\n2CrO₄²⁻ + 2H⁺ ⇌ Cr₂O₇²⁻ + H₂O（加酸变橙，加碱变黄）\n<\/ul>\n<p>锰：常见 +2、+4、+7。Mn²⁺ 浅粉色，MnO₂ 黑色，MnO₄⁻ 紫色。<\/p>\n<ul><li>\n2MnO₄⁻ + 5H₂O₂ + 6H⁺ → 2Mn²⁺ + 5O₂↑ + 8H₂O（高锰酸钾滴定双氧水）\n<\/li><li>\nMnO₂ + 4HCl(浓) → MnCl₂ + Cl₂↑ + 2H₂O（实验室制氯气）\n<\/ul>\n<h3>概念 2：铁（难度：进阶）<\/h3>\n<p>铁：+2、+3。Fe²⁺ 浅绿色，Fe³⁺ 黄色。<\/p>\n<ul><li>\n2Fe³⁺ + Fe → 3Fe²⁺（三价铁被铁还原）\n<\/li><li>\n2Fe²⁺ + Cl₂ → 2Fe³⁺ + 2Cl⁻（二价铁被氯气氧化）\n<\/li><li>\nFe³⁺ + 3SCN⁻ → Fe(SCN)₃（血红色，检验 Fe³⁺）\n<\/li><li>\nFe²⁺ + 2OH⁻ → Fe(OH)₂↓（白色，迅速变灰绿，最终红褐）\n<\/li><li>\nFe³⁺ + 3OH⁻ → Fe(OH)₃↓（红褐色）\n<\/ul>\n<p>检验 Fe³⁺ 用 KSCN，现象血红色；检验 Fe²⁺ 先加 KSCN 不变色，再加氯水变红。<\/p>\n<h3>概念 3：铜与银（难度：进阶）<\/h3>\n<p>铜：+1、+2。Cu²⁺ 蓝色，Cu(OH)₂ 蓝色沉淀，CuSO₄·5H₂O 蓝色晶体。<\/p>\n<ul><li>\nCu + 2H₂SO₄(浓) → CuSO₄ + SO₂↑ + 2H₂O\n<\/li><li>\n2Cu + O₂ + CO₂ + H₂O → Cu₂(OH)₂CO₃（铜绿）\n<\/li><li>\nCu²⁺ + 4NH₃ → [Cu(NH₃)₄]²⁺（深蓝色，检验 Cu²⁺）\n<\/ul>\n<p>银：+1。AgCl 白色、AgBr 淡黄、AgI 黄色，溶解度依次减小，可用来检验卤素离子。<\/p>\n<ul><li>\nAg⁺ + Cl⁻ → AgCl↓\n<\/li><li>\nAgCl + 2NH₃ → [Ag(NH₃)₂]⁺ + Cl⁻（银氨溶液）\n<\/ul>\n<h3>概念 4：锌与配合物（难度：进阶）<\/h3>\n<p>锌：+2。Zn²⁺ 无色，ZnO、Zn(OH)₂ 两性。<\/p>\n<ul><li>\nZn + 2HCl → ZnCl₂ + H₂↑\n<\/li><li>\nZn(OH)₂ + 2NaOH → Na₂[Zn(OH)₄]（四羟基合锌酸钠）\n<\/ul>\n<p>配合物的应用：检验离子（Cu²⁺、Fe³⁺）、湿法冶金（氰化法提金）、配位滴定（EDTA 滴定 Ca²⁺、Mg²⁺、Ni²⁺）、生物体内（血红素是 Fe 配合物、叶绿素是 Mg 配合物）。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart LR\n  A[过渡金属] --&gt; B[多价态]\n  A --&gt; C[有色离子]\n  A --&gt; D[易形成配合物]\n  B --&gt; E[氧化还原反应]\n  C --&gt; F[比色/检验]\n  D --&gt; G[配位滴定/冶金]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：三条特点对应三类应用。看到过渡金属，先想它有哪些价态，再想颜色和配合物。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：过渡金属像&quot;会变装的人&quot;，同一元素换不同价态就换一套颜色和性质。这个类比在&quot;颜色由 d 电子跃迁产生&quot;这一点上要补一句：颜色不是染料，是电子吸收可见光后跃迁造成的。<\/p>\n<p>实例：为什么 Fe(OH)₂ 沉淀颜色会变？Fe(OH)₂ 白色，被空气氧化：4Fe(OH)₂ + O₂ + 2H₂O → 4Fe(OH)₃，颜色由白→灰绿→红褐。所以实验中要滴加苯隔绝空气，才能看到白色。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;所有过渡金属离子都有颜色&quot;——Zn²⁺、Sc³⁺、Ti⁴⁺ 无色，因为 d 轨道全空或全满。\n<\/li><li>\n别以为&quot;Fe³⁺ 与 KSCN 反应生成沉淀&quot;——生成的是血红色配合物，不是沉淀。\n<\/li><li>\n别以为&quot;铜只能被浓硫酸氧化&quot;——铜也能被稀硝酸氧化：3Cu + 8HNO₃(稀) → 3Cu(NO₃)₂ + 2NO↑ + 4H₂O。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n检验 Fe³⁺ 常用的试剂是（ ）。A. NaOH B. KSCN C. BaCl₂ D. AgNO₃\n<p>（答案：B；解析：Fe³⁺ 与 SCN⁻ 生成血红色配合物。）<\/p>\n<\/ol>\n<ol><li>\nCu²⁺ 与过量氨水反应的现象是（ ）。\n<p>（答案：先产生蓝色沉淀，继续加氨水沉淀溶解，溶液变深蓝色；解析：生成 [Cu(NH₃)₄]²⁺。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;Fe²⁺ 与 KSCN 直接反应显血红色。&quot;\n<p>（答案：不对。Fe²⁺ 与 KSCN 不显红色，需先氧化为 Fe³⁺。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n铬：Cr³⁺ 绿、Cr₂O₇²⁻ 橙；锰：MnO₄⁻ 紫。\n<\/li><li>\n铁：Fe²⁺ 浅绿、Fe³⁺ 黄，KSCN 检验 Fe³⁺。\n<\/li><li>\n铜：Cu²⁺ 蓝，遇过量氨水生成深蓝色配合物。\n<\/ul>", "kind": "chapter", "title": "第 4 章：过渡金属与配位化合物"}, "c01": {"html": "<div class=\"source-badge\">📖 出处：《简明无机化学》配位化学基础<\/div><h1>配合物与配位键<\/h1>\n<ul><li>\n<strong>难度<\/strong>：进阶 | <strong>涉及章节<\/strong>：普化第 12 章、无机第 4 章\n<\/ul>\n<h2>一句话定义<\/h2>\n<p>配合物是由中心离子（或原子）与配体通过配位键结合成的配离子，再与外界离子组成的化合物。<\/p>\n<h2>为什么重要<\/h2>\n<p>它解释了为什么 AgCl 能溶于氨水、为什么 Cu²⁺ 遇过量氨水变深蓝、为什么血红蛋白能运氧。配合物也是配位滴定、湿法冶金、催化剂的基础。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[配合物] --&gt; B[内界 配离子]\n  A --&gt; C[外界 离子]\n  B --&gt; D[中心离子]\n  B --&gt; E[配体]\n  E --&gt; F[配位原子]\n  D --&gt; G[配位数]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<h2>详解<\/h2>\n<p>以 [Cu(NH₃)₄]SO₄ 为例：中心离子 Cu²⁺，配体 NH₃，配位数 4，内界 [Cu(NH₃)₄]²⁺，外界 SO₄²⁻。<\/p>\n<p>配位键的形成：配体提供孤对电子，中心离子提供空轨道。NH₃ 的 N 有一对孤对，Cu²⁺ 有空的 d 轨道，二者形成配位键。<\/p>\n<p>命名顺序：阴离子在前、阳离子在后；配体数用一、二、三；配体名后加&quot;合&quot;；中心离子用罗马数字标氧化数。K₃[Fe(CN)₆] 叫六氰合铁(Ⅲ)酸钾。<\/p>\n<p>稳定常数 K稳 衡量配合物稳定性，K稳 越大越稳定。配合物在溶液中存在解离平衡，加酸、加沉淀剂可能破坏配合物。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;配位数等于配体个数&quot;——多齿配体一个分子可占多个配位位点。\n<\/li><li>\n别以为&quot;配合物一定溶于水&quot;——有些难溶，如某些金属配合物沉淀。\n<\/li><li>\n别以为&quot;配位键是特殊的共价键&quot;——它本质是共价键的一种，电子对由一方提供。\n<\/ul>\n<h2>在书中出现的脉络<\/h2>\n<table><thead><tr><th>章节<\/th><th>语境<\/th><th>关键结论<\/th><\/tr><\/thead><tbody><tr><td>普化第 12 章<\/td><td>配合物组成<\/td><td>内界、外界、配位数<\/td><\/tr><tr><td>无机第 4 章<\/td><td>Cu²⁺、Ag⁺<\/td><td>深蓝色、银氨溶液<\/td><\/tr><tr><td>无机第 4 章<\/td><td>生物配合物<\/td><td>血红素、叶绿素<\/td><\/tr><\/tbody><\/table>\n<h2>相关概念<\/h2>\n<ul><li>\n前置：共价键、过渡金属\n<\/li><li>\n后续：配位滴定、晶体场\n<\/ul>", "kind": "concept", "title": "配合物与配位键"}, "__path__": {"html": "<h1>学习路径<\/h1><p>按推荐顺序学习；每步通过检查点（自测题）后再继续。<\/p><ol class='path-list'><li class='path-step' id='path-01'><strong>步骤 01：先拿地图<\/strong><br>阅读：<a href=\"#/chapter/ch01\">第 1 章：元素周期律与无机化学地图<\/a><br>检查点：能说出五个分区和四条周期性主线<\/li><li class='path-step' id='path-02'><strong>步骤 02：非金属<\/strong><br>阅读：<a href=\"#/chapter/ch02\">第 2 章：非金属元素<\/a><br>检查点：能写卤素、硫、氮、硅的关键反应<\/li><li class='path-step' id='path-03'><strong>步骤 03：主族金属<\/strong><br>阅读：<a href=\"#/chapter/ch03\">第 3 章：主族金属<\/a><br>检查点：能写钠、镁、铝的反应并解释两性<\/li><li class='path-step' id='path-04'><strong>步骤 04：过渡金属与配合物<\/strong><br>阅读：<a href=\"#/chapter/ch04\">第 4 章：过渡金属与配位化合物<\/a><br>检查点：能写 Fe2+/Fe3+ 转化、Cu2+ 配合、命名配合物<\/li><\/ol><p>进度：<span id='path-progress-label'>0/0<\/span><\/p>", "kind": "path", "title": "学习路径"}, "__graph__": {"html": "<h1>🕸 知识图谱<\/h1><p>节点是概念，边是先修关系。拖拽节点、滚轮缩放，点击节点跳转到对应概念页。<\/p><div id=\"graph-container\" style=\"height:520px;border:1px solid var(--border);border-radius:10px;background:var(--panel)\"><\/div><p class=\"sub\">红线 = 必学前置 · 灰线 = 建议先看 · 蓝线 = 拓展阅读<\/p>", "kind": "graph", "title": "知识图谱"}, "__quiz_all__": {"html": "<p>（无综合题）<\/p>", "kind": "quiz", "title": "综合测验"}, "__quiz_ch01__": {"html": "<h1>测验：第 1 章：元素周期律与无机化学地图<\/h1><div class='quiz-item' data-qid='q01' data-type='single' data-concept='' data-chapter='ch01'><p class='quiz-q'><b>Q1.<\/b> 下列元素属于 p 区的是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q01' value='0'> Na<\/label><label class='quiz-opt'><input type='radio' name='q01' value='1'> Fe<\/label><label class='quiz-opt'><input type='radio' name='q01' value='2'> S<\/label><label class='quiz-opt'><input type='radio' name='q01' value='3'> Ag<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q02' data-type='single' data-concept='' data-chapter='ch01'><p class='quiz-q'><b>Q2.<\/b> F、Cl、Br 非金属性由强到弱是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q02' value='0'> F&gt;Cl&gt;Br<\/label><label class='quiz-opt'><input type='radio' name='q02' value='1'> Br&gt;Cl&gt;F<\/label><label class='quiz-opt'><input type='radio' name='q02' value='2'> Cl&gt;F&gt;Br<\/label><label class='quiz-opt'><input type='radio' name='q02' value='3'> F&gt;Br&gt;Cl<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "kind": "quiz", "title": "测验"}, "__quiz_ch02__": {"html": "<h1>测验：第 2 章：非金属元素<\/h1><div class='quiz-item' data-qid='q03' data-type='single' data-concept='' data-chapter='ch02'><p class='quiz-q'><b>Q1.<\/b> 下列氢化物最稳定的是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q03' value='0'> HF<\/label><label class='quiz-opt'><input type='radio' name='q03' value='1'> HCl<\/label><label class='quiz-opt'><input type='radio' name='q03' value='2'> HBr<\/label><label class='quiz-opt'><input type='radio' name='q03' value='3'> HI<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q04' data-type='single' data-concept='' data-chapter='ch02'><p class='quiz-q'><b>Q2.<\/b> 氯气与氢氧化钠反应生成？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q04' value='0'> NaCl 和 NaClO<\/label><label class='quiz-opt'><input type='radio' name='q04' value='1'> NaCl 和 NaClO3<\/label><label class='quiz-opt'><input type='radio' name='q04' value='2'> NaClO 和 O2<\/label><label class='quiz-opt'><input type='radio' name='q04' value='3'> NaCl 和 HClO4<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "kind": "quiz", "title": "测验"}, "__quiz_ch03__": {"html": "<h1>测验：第 3 章：主族金属<\/h1><div class='quiz-item' data-qid='q05' data-type='single' data-concept='' data-chapter='ch03'><p class='quiz-q'><b>Q1.<\/b> 钠与水反应的现象不包括？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q05' value='0'> 浮在水面<\/label><label class='quiz-opt'><input type='radio' name='q05' value='1'> 熔成小球<\/label><label class='quiz-opt'><input type='radio' name='q05' value='2'> 沉入水底<\/label><label class='quiz-opt'><input type='radio' name='q05' value='3'> 四处游动<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q06' data-type='single' data-concept='' data-chapter='ch03'><p class='quiz-q'><b>Q2.<\/b> Al 与 NaOH 溶液反应生成？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q06' value='0'> Al(OH)3 和 H2<\/label><label class='quiz-opt'><input type='radio' name='q06' value='1'> NaAlO2 和 H2<\/label><label class='quiz-opt'><input type='radio' name='q06' value='2'> Al2O3 和 H2O<\/label><label class='quiz-opt'><input type='radio' name='q06' value='3'> AlCl3 和 H2<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "kind": "quiz", "title": "测验"}, "__quiz_ch04__": {"html": "<h1>测验：第 4 章：过渡金属与配位化合物<\/h1><div class='quiz-item' data-qid='q07' data-type='single' data-concept='c01' data-chapter='ch04'><p class='quiz-q'><b>Q1.<\/b> 检验 Fe3+ 常用的试剂是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q07' value='0'> NaOH<\/label><label class='quiz-opt'><input type='radio' name='q07' value='1'> KSCN<\/label><label class='quiz-opt'><input type='radio' name='q07' value='2'> BaCl2<\/label><label class='quiz-opt'><input type='radio' name='q07' value='3'> AgNO3<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q08' data-type='single' data-concept='c01' data-chapter='ch04'><p class='quiz-q'><b>Q2.<\/b> Cu2+ 与过量氨水反应的现象是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q08' value='0'> 生成白色沉淀<\/label><label class='quiz-opt'><input type='radio' name='q08' value='1'> 生成蓝色沉淀后溶解变深蓝<\/label><label class='quiz-opt'><input type='radio' name='q08' value='2'> 生成红褐色沉淀<\/label><label class='quiz-opt'><input type='radio' name='q08' value='3'> 无现象<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "kind": "quiz", "title": "测验"}, "__cards__": {"html": "<h1>抽认卡<\/h1><p>点击卡片翻面；判断「认识 / 不熟」以记录复习状态。<\/p><div class='card-controls'><label>按章节筛选：<select id='card-filter'><option value=''>全部<\/option><\/select><\/label><span class='card-counts'>认识 <b id='card-known'>0<\/b> · 不熟 <b id='card-again'>0<\/b> · 剩余 <b id='card-left'>0<\/b><\/span><\/div><div id='card-stage'><div class='flashcard' id='flashcard'><div class='fc-inner'><div class='fc-front'><\/div><div class='fc-back'><\/div><\/div><\/div><\/div><div class='card-actions'><button id='card-again-btn'>不熟<\/button><button id='card-known-btn'>认识<\/button><\/div>", "kind": "cards", "title": "抽认卡"}, "__glossary__": {"html": "<h1>术语表<\/h1><input id='glossary-filter' type='search' placeholder='筛选术语…'><ul id='glossary-list'><li data-term='两性氧化物'>两性氧化物 — 既能与酸反应又能与碱反应生成盐和水的氧化物 <span class=glossary-ref>（第 1 章：元素周期律与无机化学地图）<\/span><\/li><li data-term='惰性电子对效应'>惰性电子对效应 — 同族向下 ns2 电子对越来越难参与成键的现象 <span class=glossary-ref>（第 3 章：主族金属）<\/span><\/li><li data-term='配位键'>配位键 — 配体提供孤对电子、中心离子提供空轨道形成的共价键 <span class=glossary-ref>（第 4 章：过渡金属与配位化合物）<\/span><\/li><li data-term='配位数'>配位数 — 中心离子周围配位原子的数目 <span class=glossary-ref>（第 4 章：过渡金属与配位化合物）<\/span><\/li><li data-term='稳定常数'>稳定常数 — 配合物生成反应的平衡常数，越大越稳定 <span class=glossary-ref>（第 4 章：过渡金属与配位化合物）<\/span><\/li><li data-term='铝热反应'>铝热反应 — 铝与金属氧化物在高温下反应，放出大量热并还原出金属 <span class=glossary-ref>（第 3 章：主族金属）<\/span><\/li><\/ul>", "kind": "glossary", "title": "术语表"}, "__diagnosis__": {"html": "<h1>🩺 诊断测试<\/h1><p>系统会从全书中抽题。答错的题会自动沿知识依赖链回溯，告诉你真正需要补的前置知识点。<\/p><div class='diag-controls'><button id='diag-start'>开始诊断（随机抽 5 题）<\/button><span id='diag-progress'><\/span><\/div><div id='diag-stage'><\/div><div id='diag-result'><\/div>", "kind": "diagnosis", "title": "诊断测试"}, "__patterns__": {"html": "<h1>模式与框架库<\/h1>\n<h2>框架：元素学习四条线<\/h2>\n<p>单质（颜色、状态、与酸碱水的反应）→ 氧化物（酸碱性、与水反应）→ 氢化物（稳定性、还原性）→ 含氧酸及盐（酸性、氧化性、溶解性）。<\/p>\n<h2>决策规则<\/h2>\n<ul><li>\n比较非金属性：看氢化物稳定性、最高价含氧酸酸性。\n<\/li><li>\n比较金属性：看单质与水/酸反应剧烈程度、最高价氢氧化物碱性。\n<\/li><li>\n判断两性：氧化物或氢氧化物既能与强酸反应又能与强碱反应，如 Al2O3、Al(OH)3、ZnO。\n<\/li><li>\n配合物命名：配体数 + 配体名 + 合 + 中心离子（氧化数）。\n<\/ul>\n<h2>反模式<\/h2>\n<ul><li>\n把 Na2O2 当碱性氧化物。它是过氧化物，O 为 -1。\n<\/li><li>\n认为过渡金属离子都有颜色。Zn2+、Sc3+ 无色。\n<\/li><li>\n认为铝不活泼。铝表面有致密氧化膜，内部很活泼。\n<\/ul>", "kind": "模式库", "title": "模式库"}, "__cheatsheet__": {"html": "<h1>速查表<\/h1>\n<h2>常见反应<\/h2>\n<table><thead><tr><th>反应<\/th><th>方程式<\/th><\/tr><\/thead><tbody><tr><td>氯气与碱<\/td><td>Cl2 + 2NaOH → NaCl + NaClO + H2O<\/td><\/tr><tr><td>钠与水<\/td><td>2Na + 2H2O → 2NaOH + H2↑<\/td><\/tr><tr><td>过氧化钠<\/td><td>2Na2O2 + 2H2O → 4NaOH + O2↑<\/td><\/tr><tr><td>铝与碱<\/td><td>2Al + 2NaOH + 2H2O → 2NaAlO2 + 3H2↑<\/td><\/tr><tr><td>铝热<\/td><td>2Al + Fe2O3 → Al2O3 + 2Fe<\/td><\/tr><tr><td>合成氨<\/td><td>N2 + 3H2 ⇌ 2NH3<\/td><\/tr><tr><td>氨催化氧化<\/td><td>4NH3 + 5O2 → 4NO + 6H2O<\/td><\/tr><\/tbody><\/table>\n<h2>离子颜色<\/h2>\n<table><thead><tr><th>离子<\/th><th>颜色<\/th><\/tr><\/thead><tbody><tr><td>Fe2+<\/td><td>浅绿<\/td><\/tr><tr><td>Fe3+<\/td><td>黄<\/td><\/tr><tr><td>Cu2+<\/td><td>蓝<\/td><\/tr><tr><td>Mn2+<\/td><td>浅粉<\/td><\/tr><tr><td>MnO4-<\/td><td>紫<\/td><\/tr><tr><td>Cr2O7^2-<\/td><td>橙<\/td><\/tr><tr><td>CrO4^2-<\/td><td>黄<\/td><\/tr><\/tbody><\/table>", "kind": "速查表", "title": "速查表"}}, "base_dir": "/home/user/Doubao/chats/38453368250906626/化学知枢/03-简明无机化学", "nav": [{"label": "学习路径", "href": "#/path"}, {"label": "🕸 知识图谱", "href": "#/graph"}, {"label": "🩺 诊断测试", "href": "#/diagnosis"}, {"label": "章节", "children": [{"label": "第 1 章：元素周期律与无机化学地图", "href": "#/chapter/ch01"}, {"label": "第 2 章：非金属元素", "href": "#/chapter/ch02"}, {"label": "第 3 章：主族金属", "href": "#/chapter/ch03"}, {"label": "第 4 章：过渡金属与配位化合物", "href": "#/chapter/ch04"}]}, {"label": "概念", "children": [{"label": "配合物与配位键", "href": "#/concept/c01"}]}, {"label": "测验", "children": [{"label": "综合测验", "href": "#/quiz/all"}, {"label": "测验：第 1 章：元素周期律与无机化学地图", "href": "#/quiz/ch01"}, {"label": "测验：第 2 章：非金属元素", "href": "#/quiz/ch02"}, {"label": "测验：第 3 章：主族金属", "href": "#/quiz/ch03"}, {"label": "测验：第 4 章：过渡金属与配位化合物", "href": "#/quiz/ch04"}]}, {"label": "抽认卡", "href": "#/cards"}, {"label": "术语表", "href": "#/glossary"}, {"label": "模式库", "href": "#/patterns"}, {"label": "速查表", "href": "#/cheatsheet"}], "rendered": {"ch01": "<div class=\"source-badge\">📖 出处：《简明无机化学》化学原理部分<\/div><h1>第 1 章：元素周期律与无机化学地图<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★☆ | <strong>预估学时<\/strong>：1 小时 | <strong>前置<\/strong>：普化第 10 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n按周期表分区说出元素的大致性质；\n<\/li><li>\n用&quot;价电子构型&quot;判断元素属于主族、过渡金属还是 f 区；\n<\/li><li>\n建立无机化学的学习地图（结构—性质—制备—用途）。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>无机化学不是背反应，而是用&quot;构型决定性质、性质决定用途&quot;这条线，把几百种物质串起来。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：周期表的五个区（难度：基础）<\/h3>\n<ul><li>\n<strong>s 区<\/strong>：第 ⅠA、ⅡA 族，价电子构型 ns¹⁻²，活泼金属。\n<\/li><li>\n<strong>p 区<\/strong>：第 ⅢA–ⅦA 族及 0 族，价电子 ns²np¹⁻⁶，非金属与半金属集中在这里。\n<\/li><li>\n<strong>d 区<\/strong>：第 ⅢB–ⅧB 族（过渡金属），价电子 (n−1)d¹⁻¹⁰ns¹⁻²。\n<\/li><li>\n<strong>ds 区<\/strong>：第 ⅠB、ⅡB 族，价电子 (n−1)d¹⁰ns¹⁻²，Cu、Ag、Au、Zn、Cd、Hg。\n<\/li><li>\n<strong>f 区<\/strong>：镧系、锕系，价电子 (n−2)f¹⁻¹⁴。\n<\/ul>\n<p>记分区的好处是：同一区元素性质相似，反应类型也相似。<\/p>\n<h3>概念 2：周期性规律的四条主线（难度：进阶）<\/h3>\n<ol><li>\n<strong>原子半径<\/strong>：同周期右移减小，同主族下移增大。\n<\/li><li>\n<strong>电离能<\/strong>：同周期右移增大，同主族下移减小。注意 ⅡA 与 ⅢA、ⅤA 与 ⅥA 之间有反常（半充满、全充满更稳定）。\n<\/li><li>\n<strong>电负性<\/strong>：同周期右移增大，同主族下移减小。F 最大。\n<\/li><li>\n<strong>金属性/非金属性<\/strong>：同周期右移非金属性增强，同主族下移金属性增强。\n<\/ol>\n<h3>概念 3：无机物的四条性质线（难度：进阶）<\/h3>\n<p>学习一种元素，按四条线整理：<\/p>\n<ul><li>\n<strong>单质<\/strong>：颜色、状态、与酸/碱/水的反应。\n<\/li><li>\n<strong>氧化物<\/strong>：酸性/碱性/两性，与水反应生成什么酸或碱。\n<\/li><li>\n<strong>氢化物<\/strong>：稳定性、酸碱性、还原性。\n<\/li><li>\n<strong>含氧酸及其盐<\/strong>：酸性强弱、氧化性、热稳定性、溶解性。\n<\/ul>\n<p>比如学硫：单质黄色固体，燃烧生成 SO₂；SO₂ 是酸性氧化物，溶于水生成 H₂SO₃；SO₃ 溶于水生成 H₂SO₄；H₂SO₄ 是强酸，浓硫酸有强氧化性和吸水性。<\/p>\n<h3>概念 4：无机反应的四种类型（难度：基础）<\/h3>\n<ul><li>\n单质 + 单质 → 化合物（化合）\n<\/li><li>\n化合物 → 单质 + 化合物（分解、置换）\n<\/li><li>\n氧化物 + 水 → 酸/碱\n<\/li><li>\n酸 + 碱 → 盐 + 水；盐 + 盐 → 新盐 + 新盐\n<\/ul>\n<p>绝大多数无机反应可以归入这四类，剩下的是氧化还原和配位反应。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[元素] --&gt; B[价电子构型]\n  B --&gt; C[s区 活泼金属]\n  B --&gt; D[p区 非金属]\n  B --&gt; E[d区 过渡金属]\n  B --&gt; F[ds区 贵金属/锌镉汞]\n  C --&gt; G[氧化物 氢氧化物 盐]\n  D --&gt; H[氢化物 含氧酸 盐]\n  E --&gt; H\n  E --&gt; I[配合物 多价态]\n  F --&gt; I<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：构型决定分区，分区决定主要化合物类型。这张图是后面三章的地图。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：周期表像一座城市的分区地图。s 区是&quot;金属工业区&quot;，p 区是&quot;非金属生活区&quot;，d 区是&quot;多价态商业区&quot;。这个类比在&quot;分区边界元素性质模糊&quot;处失效，比如硼、硅既有金属性又有非金属性。<\/p>\n<p>实例：比较 Na、Mg、Al 的金属性。同周期从左到右，核电荷增大、半径减小，失电子变难，金属性减弱：Na &gt; Mg &gt; Al。对应最高价氢氧化物碱性：NaOH &gt; Mg(OH)₂ &gt; Al(OH)₃（Al(OH)₃ 两性）。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;d 区元素都是+2 价&quot;——过渡金属有多种价态，如 Fe 有 +2、+3，Mn 有 +2 到 +7。\n<\/li><li>\n别以为&quot;同周期电离能一定单调增大&quot;——ⅡA 到 ⅢA、ⅤA 到 ⅥA 有回落。\n<\/li><li>\n别以为&quot;金属氧化物都是碱性氧化物&quot;——Al₂O₃、ZnO 是两性氧化物。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n下列元素属于 p 区的是（ ）。A. Na B. Fe C. S D. Ag\n<p>（答案：C；解析：S 的价电子构型 3s²3p⁴，属 p 区。）<\/p>\n<\/ol>\n<ol><li>\n比较 F、Cl、Br 的非金属性强弱。\n<p>（答案：F &gt; Cl &gt; Br；解析：同主族从上到下非金属性减弱。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;Al₂O₃ 既能与酸反应又能与碱反应，所以它是碱性氧化物。&quot;\n<p>（答案：不对。它是两性氧化物。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n五个区按价电子构型分。\n<\/li><li>\n四条周期性主线：半径、电离能、电负性、金属性。\n<\/li><li>\n学元素按单质、氧化物、氢化物、含氧酸四条线走。\n<\/ul>", "ch02": "<div class=\"source-badge\">📖 出处：《简明无机化学》元素化学·非金属<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch01\">第 1 章：元素周期律与无机化学地图<\/a><\/span><\/div><h1>第 2 章：非金属元素<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★★ | <strong>预估学时<\/strong>：2 小时 | <strong>前置<\/strong>：第 1 章、普化第 8 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n写出卤素、氧、硫、氮、磷、碳、硅的主要反应；\n<\/li><li>\n比较非金属性强弱和氢化物稳定性；\n<\/li><li>\n解释含氧酸酸性强弱的变化规律；\n<\/li><li>\n记住几个工业制备反应。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>非金属元素的性质随位置变化：越靠右上，非金属性越强；同族向下，氢化物越不稳定、含氧酸越弱。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：卤素（难度：进阶）<\/h3>\n<p>卤素 ⅦA：F₂、Cl₂、Br₂、I₂。颜色由浅黄绿到紫黑，氧化性 F₂ &gt; Cl₂ &gt; Br₂ &gt; I₂。<\/p>\n<p>关键反应：<\/p>\n<ul><li>\nCl₂ + 2NaOH → NaCl + NaClO + H₂O（制漂白液）\n<\/li><li>\nCl₂ + 2KI → 2KCl + I₂（置换，证明氧化性 Cl₂ &gt; I₂）\n<\/li><li>\nCl₂ + H₂O ⇌ HCl + HClO（氯水成分，HClO 有漂白性）\n<\/li><li>\n2Cl₂ + 2Ca(OH)₂ → Ca(ClO)₂ + CaCl₂ + 2H₂O（制漂白粉）\n<\/ul>\n<p>氢化物稳定性：HF &gt; HCl &gt; HBr &gt; HI。氢卤酸酸性：HF 弱酸，HCl、HBr、HI 强酸，且酸性 HF &lt; HCl &lt; HBr &lt; HI。<\/p>\n<h3>概念 2：氧与硫（难度：进阶）<\/h3>\n<p>氧：O₂、O₃（同素异形体）。O₃ 有强氧化性，可消毒。 硫：黄色固体，燃烧发蓝紫色火焰：S + O₂ → SO₂。<\/p>\n<p>硫的化合物：<\/p>\n<ul><li>\nSO₂ 是酸性氧化物，溶于水生成 H₂SO₃（弱酸，中强还原性）。\n<\/li><li>\nSO₃ 溶于水生成 H₂SO₄。\n<\/li><li>\n2SO₂ + O₂ ⇌(催化剂, △) 2SO₃（工业制硫酸的核心步骤）。\n<\/li><li>\n浓硫酸有吸水性、脱水性、强氧化性。Cu + 2H₂SO₄(浓) → CuSO₄ + SO₂↑ + 2H₂O。\n<\/ul>\n<h3>概念 3：氮与磷（难度：进阶）<\/h3>\n<p>氮气 N₂ 极稳定，因为 N≡N 键能很大（941 kJ/mol）。固氮三条路：高能固氮（闪电）、生物固氮（根瘤菌）、工业合成氨。<\/p>\n<ul><li>\nN₂ + 3H₂ ⇌(高温高压催化剂) 2NH₃\n<\/li><li>\nNH₃ 是碱性气体，与水形成 NH₃·H₂O，能使湿润红色石蕊试纸变蓝。\n<\/li><li>\nNH₃ + HCl → NH₄Cl（白烟）\n<\/li><li>\n4NH₃ + 5O₂ →(Pt, △) 4NO + 6H₂O（催化氧化，工业制硝酸第一步）\n<\/li><li>\n2NO + O₂ → 2NO₂（红棕色）\n<\/li><li>\n3NO₂ + H₂O → 2HNO₃ + NO（工业制硝酸）\n<\/ul>\n<p>磷：白磷（P₄，剧毒，易自燃）、红磷（稳定）。P₄ + 5O₂ →(点燃) P₂O₅，P₂O₅ 吸水性强，是干燥剂。<\/p>\n<h3>概念 4：碳与硅（难度：进阶）<\/h3>\n<p>碳：金刚石（共价晶体，硬）、石墨（层状，导电）、C₆₀。CO 有还原性和毒性，CO₂ 是酸性氧化物。<\/p>\n<ul><li>\nC + O₂ →(点燃) CO₂\n<\/li><li>\nCO₂ + C →(高温) 2CO（工业制 CO）\n<\/li><li>\nCO + CuO →(△) Cu + CO₂（炼铜）\n<\/ul>\n<p>硅：SiO₂ 是共价晶体，与 NaOH 反应：SiO₂ + 2NaOH → Na₂SiO₃ + H₂O（所以不能用玻璃瓶长期装 NaOH）。工业制粗硅：SiO₂ + 2C →(高温) Si + 2CO↑。<\/p>\n<h3>概念 5：含氧酸酸性规律（难度：高难）<\/h3>\n<p>同一元素不同价态：价态越高，酸性越强。H₂SO₃ &lt; H₂SO₄，HNO₂ &lt; HNO₃。 同一主族从上到下：酸性减弱。HNO₃ &gt; H₃PO₄，H₂SO₄ &gt; H₂SeO₄ 的反例要单独记（实际 H₂SO₄ 与 H₂SeO₄ 接近，H₂SO₄ 略强）。<\/p>\n<p>Pauling 规则：含氧酸 <span class=\"katex-inline\">H_nXO_m<\/span> 的酸性随 m 增大而增强。m = 1 弱酸，m = 2 中强，m = 3 强酸。HClO（m=1）弱，HClO₂（m=2）中强，HClO₃、HClO₄（m=3、4）强。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart LR\n  A[非金属元素] --&gt; B[卤素 F Cl Br I]\n  A --&gt; C[氧族 O S]\n  A --&gt; D[氮族 N P]\n  A --&gt; E[碳族 C Si]\n  B --&gt; F[氧化性 卤素单质]\n  C --&gt; G[SO2 SO3 H2SO4]\n  D --&gt; H[NH3 HNO3]\n  E --&gt; I[CO2 SiO2]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：按族分块记，每块抓住&quot;单质—氧化物—含氧酸&quot;这条链。跨族比较看非金属性和价态。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：非金属元素像一支球队，位置越靠右上（F、O），进攻性（氧化性）越强；越往下（I、Se），越&quot;温和&quot;。这个类比在&quot;氮气特别稳定&quot;处失效，因为 N≡N 键能异常大，不按族规律走。<\/p>\n<p>实例：为什么浓硫酸能干燥 SO₂ 却不能干燥 NH₃？浓硫酸有酸性，NH₃ 是碱性气体，两者反应生成 (NH₄)₂SO₄；SO₂ 是酸性氧化物，不与浓硫酸反应，所以可以干燥。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;氯水就是 HCl 和 HClO 的混合物&quot;——氯水是 Cl₂、H₂O、HCl、HClO 多组分平衡体系。\n<\/li><li>\n别以为&quot;浓硫酸只体现酸性&quot;——浓硫酸还有强氧化性、吸水性、脱水性。\n<\/li><li>\n别以为&quot;SiO₂ 和 CO₂ 都是酸性氧化物，性质相同&quot;——SiO₂ 是共价晶体，不溶于水，CO₂ 是分子晶体，溶于水。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n下列氢化物最稳定的是（ ）。A. HF B. HCl C. HBr D. HI\n<p>（答案：A；解析：F 的非金属性最强，H—F 键最稳定。）<\/p>\n<\/ol>\n<ol><li>\n写出氯气与氢氧化钠反应的化学方程式。\n<p>（答案：Cl₂ + 2NaOH → NaCl + NaClO + H₂O。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;酸性 HClO₄ &gt; HClO₃ &gt; HClO₂ &gt; HClO。&quot;\n<p>（答案：对。含氧酸中氧原子数越多，酸性越强。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n卤素：氧化性 F₂ &gt; Cl₂ &gt; Br₂ &gt; I₂，氢化物稳定性反之。\n<\/li><li>\n硫：SO₂ 还原性、SO₃ 制硫酸、浓硫酸三性。\n<\/li><li>\n氮：合成氨、氨的催化氧化、硝酸制备。\n<\/li><li>\n含氧酸酸性随中心元素价态升高而增强。\n<\/ul>", "ch03": "<div class=\"source-badge\">📖 出处：《简明无机化学》元素化学·主族金属<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch01\">第 1 章：元素周期律与无机化学地图<\/a><\/span><\/div><h1>第 3 章：主族金属<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★☆ | <strong>预估学时<\/strong>：1.2 小时 | <strong>前置<\/strong>：第 1 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n写出钠、镁、铝与水或酸反应的现象和方程式；\n<\/li><li>\n比较碱金属、碱土金属的活泼性；\n<\/li><li>\n说明铝的两性；\n<\/li><li>\n解释 Na₂O₂ 的特殊性质。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>主族金属越往下越活泼；铝是&quot;两性金属&quot;，既能与酸反应，也能与强碱反应。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：碱金属（难度：基础）<\/h3>\n<p>第 ⅠA 族：Li、Na、K、Rb、Cs。最外层 1 个电子，极易失电子，活泼性从上到下增强。<\/p>\n<ul><li>\n2Na + 2H₂O → 2NaOH + H₂↑（浮、熔、游、响、红）\n<\/li><li>\n2Na + O₂ →(点燃) Na₂O₂（过氧化钠，淡黄色）\n<\/li><li>\n2Na₂O₂ + 2H₂O → 4NaOH + O₂↑\n<\/li><li>\n2Na₂O₂ + 2CO₂ → 2Na₂CO₃ + O₂\n<\/ul>\n<p>Na₂O₂ 中 O 为 −1 价，既有氧化性又有还原性，常作供氧剂（潜水艇、呼吸面具）。Na₂O 是白色固体，碱性氧化物；Na₂O₂ 是过氧化物，不是碱性氧化物。<\/p>\n<h3>概念 2：碱土金属（难度：基础）<\/h3>\n<p>第 ⅡA 族：Be、Mg、Ca、Sr、Ba。最外层 2 个电子，活泼性次于碱金属，从上到下增强。<\/p>\n<ul><li>\nMg + 2H₂O →(△) Mg(OH)₂ + H₂↑（热水才反应）\n<\/li><li>\nMg + 2HCl → MgCl₂ + H₂↑\n<\/li><li>\n2Mg + O₂ →(点燃) 2MgO（耀眼白光）\n<\/li><li>\nCa + 2H₂O → Ca(OH)₂ + H₂↑\n<\/ul>\n<p>MgO 是碱性氧化物，熔点高，作耐火材料。Ca(OH)₂ 微溶，澄清水溶液叫石灰水，通 CO₂ 变浑浊：Ca(OH)₂ + CO₂ → CaCO₃↓ + H₂O。<\/p>\n<h3>概念 3：铝的两性（难度：进阶）<\/h3>\n<p>Al 是第 ⅢA 族，表面易形成致密氧化膜，耐腐蚀。<\/p>\n<ul><li>\n2Al + 6HCl → 2AlCl₃ + 3H₂↑\n<\/li><li>\n2Al + 2NaOH + 2H₂O → 2NaAlO₂ + 3H₂↑（偏铝酸钠）\n<\/li><li>\nAl₂O₃ + 6HCl → 2AlCl₃ + 3H₂O\n<\/li><li>\nAl₂O₃ + 2NaOH → 2NaAlO₂ + H₂O\n<\/li><li>\nAl(OH)₃ + 3HCl → AlCl₃ + 3H₂O\n<\/li><li>\nAl(OH)₃ + NaOH → NaAlO₂ + 2H₂O\n<\/ul>\n<p>铝热反应：2Al + Fe₂O₃ →(高温) Al₂O₃ + 2Fe，用于焊接钢轨、冶炼难熔金属。<\/p>\n<h3>概念 4：锡与铅（难度：进阶）<\/h3>\n<p>Sn、Pb 是第 ⅣA 族金属。Sn 有 +2、+4 价，Pb 以 +2 价稳定（惰性电子对效应：6s² 不易失去）。<\/p>\n<ul><li>\nSn + 2HCl → SnCl₂ + H₂↑\n<\/li><li>\nPb + 2HCl → PbCl₂↓ + H₂↑（PbCl₂ 难溶，反应很快停止）\n<\/ul>\n<p>惰性电子对效应：同族向下，ns² 电子对越来越难参与成键，所以 Tl、Pb、Bi 的低价态更稳定。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart LR\n  A[主族金属] --&gt; B[IA 碱金属]\n  A --&gt; C[IIA 碱土金属]\n  A --&gt; D[IIIA 铝]\n  B --&gt; E[与水反应 越来越剧烈]\n  C --&gt; F[与热水/酸反应]\n  D --&gt; G[两性 酸和碱都反应]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：活泼性从上到下增强，铝特殊在两性。记反应时先看金属位置，再看条件。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：碱金属像&quot;急着交作业的学生&quot;，最外层 1 个电子随时准备交出去；碱土金属有 2 个，稍犹豫；铝交了 3 个之后，剩下的核心很稳定，所以既能让酸拿走，也能让碱&quot;溶解&quot;它。这个类比在&quot;铝表面氧化膜保护&quot;这一点上要补一句：铝其实很活泼，只是被膜保护了。<\/p>\n<p>实例：为什么不能用铝锅煮碱性食物？Al₂O₃ 和 Al 都能与 NaOH 反应，保护膜被破坏，铝会继续溶解，既损坏锅又使食物含铝。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;Na₂O₂ 是碱性氧化物&quot;——它是过氧化物，与水反应生成 NaOH 和 O₂，不是简单的碱性氧化物。\n<\/li><li>\n别以为&quot;铝不活泼&quot;——铝的活泼性接近镁，只是表面氧化膜让它耐腐蚀。\n<\/li><li>\n别以为&quot;镁不与冷水反应，所以镁不活泼&quot;——镁与热水、酸反应都很剧烈。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n钠与水反应的现象不包括（ ）。A. 浮在水面 B. 熔成小球 C. 沉入水底 D. 四处游动\n<p>（答案：C；解析：钠密度比水小，浮在水面。）<\/p>\n<\/ol>\n<ol><li>\n写出 Al 与 NaOH 溶液反应的化学方程式。\n<p>（答案：2Al + 2NaOH + 2H₂O → 2NaAlO₂ + 3H₂↑。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;Na₂O 和 Na₂O₂ 都是碱性氧化物。&quot;\n<p>（答案：不对。Na₂O 是碱性氧化物，Na₂O₂ 是过氧化物。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n碱金属最活泼，与水反应&quot;浮熔游响红&quot;。\n<\/li><li>\nNa₂O₂ 中 O 为 −1，可作供氧剂。\n<\/li><li>\n铝两性：与酸、强碱都反应；铝热反应放大量热。\n<\/ul>", "ch04": "<div class=\"source-badge\">📖 出处：《简明无机化学》元素化学·过渡金属 + 配位化学基础<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch01\">第 1 章：元素周期律与无机化学地图<\/a><\/span> · <span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch03\">第 3 章：主族金属<\/a><\/span><\/div><h1>第 4 章：过渡金属与配位化合物<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★★ | <strong>预估学时<\/strong>：1.5 小时 | <strong>前置<\/strong>：第 1 章、普化第 12 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n说出铬、锰、铁、铜、银、锌的主要价态和颜色；\n<\/li><li>\n写出 Fe²⁺/Fe³⁺ 的相互转化；\n<\/li><li>\n解释 Cu²⁺ 与氨水形成配合物的现象；\n<\/li><li>\n记住常见离子的检验方法。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>过渡金属的特点是&quot;多价态 + 有色 + 易形成配合物&quot;，这三条决定了它们的化学行为。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：铬与锰（难度：进阶）<\/h3>\n<p>铬：常见 +3、+6。Cr³⁺ 绿色，Cr₂O₇²⁻ 橙色，CrO₄²⁻ 黄色。<\/p>\n<ul><li>\nCr₂O₇²⁻ + 14H⁺ + 6e⁻ → 2Cr³⁺ + 7H₂O（酸性条件，强氧化性）\n<\/li><li>\n2CrO₄²⁻ + 2H⁺ ⇌ Cr₂O₇²⁻ + H₂O（加酸变橙，加碱变黄）\n<\/ul>\n<p>锰：常见 +2、+4、+7。Mn²⁺ 浅粉色，MnO₂ 黑色，MnO₄⁻ 紫色。<\/p>\n<ul><li>\n2MnO₄⁻ + 5H₂O₂ + 6H⁺ → 2Mn²⁺ + 5O₂↑ + 8H₂O（高锰酸钾滴定双氧水）\n<\/li><li>\nMnO₂ + 4HCl(浓) → MnCl₂ + Cl₂↑ + 2H₂O（实验室制氯气）\n<\/ul>\n<h3>概念 2：铁（难度：进阶）<\/h3>\n<p>铁：+2、+3。Fe²⁺ 浅绿色，Fe³⁺ 黄色。<\/p>\n<ul><li>\n2Fe³⁺ + Fe → 3Fe²⁺（三价铁被铁还原）\n<\/li><li>\n2Fe²⁺ + Cl₂ → 2Fe³⁺ + 2Cl⁻（二价铁被氯气氧化）\n<\/li><li>\nFe³⁺ + 3SCN⁻ → Fe(SCN)₃（血红色，检验 Fe³⁺）\n<\/li><li>\nFe²⁺ + 2OH⁻ → Fe(OH)₂↓（白色，迅速变灰绿，最终红褐）\n<\/li><li>\nFe³⁺ + 3OH⁻ → Fe(OH)₃↓（红褐色）\n<\/ul>\n<p>检验 Fe³⁺ 用 KSCN，现象血红色；检验 Fe²⁺ 先加 KSCN 不变色，再加氯水变红。<\/p>\n<h3>概念 3：铜与银（难度：进阶）<\/h3>\n<p>铜：+1、+2。Cu²⁺ 蓝色，Cu(OH)₂ 蓝色沉淀，CuSO₄·5H₂O 蓝色晶体。<\/p>\n<ul><li>\nCu + 2H₂SO₄(浓) → CuSO₄ + SO₂↑ + 2H₂O\n<\/li><li>\n2Cu + O₂ + CO₂ + H₂O → Cu₂(OH)₂CO₃（铜绿）\n<\/li><li>\nCu²⁺ + 4NH₃ → [Cu(NH₃)₄]²⁺（深蓝色，检验 Cu²⁺）\n<\/ul>\n<p>银：+1。AgCl 白色、AgBr 淡黄、AgI 黄色，溶解度依次减小，可用来检验卤素离子。<\/p>\n<ul><li>\nAg⁺ + Cl⁻ → AgCl↓\n<\/li><li>\nAgCl + 2NH₃ → [Ag(NH₃)₂]⁺ + Cl⁻（银氨溶液）\n<\/ul>\n<h3>概念 4：锌与配合物（难度：进阶）<\/h3>\n<p>锌：+2。Zn²⁺ 无色，ZnO、Zn(OH)₂ 两性。<\/p>\n<ul><li>\nZn + 2HCl → ZnCl₂ + H₂↑\n<\/li><li>\nZn(OH)₂ + 2NaOH → Na₂[Zn(OH)₄]（四羟基合锌酸钠）\n<\/ul>\n<p>配合物的应用：检验离子（Cu²⁺、Fe³⁺）、湿法冶金（氰化法提金）、配位滴定（EDTA 滴定 Ca²⁺、Mg²⁺、Ni²⁺）、生物体内（血红素是 Fe 配合物、叶绿素是 Mg 配合物）。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart LR\n  A[过渡金属] --&gt; B[多价态]\n  A --&gt; C[有色离子]\n  A --&gt; D[易形成配合物]\n  B --&gt; E[氧化还原反应]\n  C --&gt; F[比色/检验]\n  D --&gt; G[配位滴定/冶金]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：三条特点对应三类应用。看到过渡金属，先想它有哪些价态，再想颜色和配合物。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：过渡金属像&quot;会变装的人&quot;，同一元素换不同价态就换一套颜色和性质。这个类比在&quot;颜色由 d 电子跃迁产生&quot;这一点上要补一句：颜色不是染料，是电子吸收可见光后跃迁造成的。<\/p>\n<p>实例：为什么 Fe(OH)₂ 沉淀颜色会变？Fe(OH)₂ 白色，被空气氧化：4Fe(OH)₂ + O₂ + 2H₂O → 4Fe(OH)₃，颜色由白→灰绿→红褐。所以实验中要滴加苯隔绝空气，才能看到白色。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;所有过渡金属离子都有颜色&quot;——Zn²⁺、Sc³⁺、Ti⁴⁺ 无色，因为 d 轨道全空或全满。\n<\/li><li>\n别以为&quot;Fe³⁺ 与 KSCN 反应生成沉淀&quot;——生成的是血红色配合物，不是沉淀。\n<\/li><li>\n别以为&quot;铜只能被浓硫酸氧化&quot;——铜也能被稀硝酸氧化：3Cu + 8HNO₃(稀) → 3Cu(NO₃)₂ + 2NO↑ + 4H₂O。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n检验 Fe³⁺ 常用的试剂是（ ）。A. NaOH B. KSCN C. BaCl₂ D. AgNO₃\n<p>（答案：B；解析：Fe³⁺ 与 SCN⁻ 生成血红色配合物。）<\/p>\n<\/ol>\n<ol><li>\nCu²⁺ 与过量氨水反应的现象是（ ）。\n<p>（答案：先产生蓝色沉淀，继续加氨水沉淀溶解，溶液变深蓝色；解析：生成 [Cu(NH₃)₄]²⁺。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;Fe²⁺ 与 KSCN 直接反应显血红色。&quot;\n<p>（答案：不对。Fe²⁺ 与 KSCN 不显红色，需先氧化为 Fe³⁺。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n铬：Cr³⁺ 绿、Cr₂O₇²⁻ 橙；锰：MnO₄⁻ 紫。\n<\/li><li>\n铁：Fe²⁺ 浅绿、Fe³⁺ 黄，KSCN 检验 Fe³⁺。\n<\/li><li>\n铜：Cu²⁺ 蓝，遇过量氨水生成深蓝色配合物。\n<\/ul>", "c01": "<div class=\"source-badge\">📖 出处：《简明无机化学》配位化学基础<\/div><h1>配合物与配位键<\/h1>\n<ul><li>\n<strong>难度<\/strong>：进阶 | <strong>涉及章节<\/strong>：普化第 12 章、无机第 4 章\n<\/ul>\n<h2>一句话定义<\/h2>\n<p>配合物是由中心离子（或原子）与配体通过配位键结合成的配离子，再与外界离子组成的化合物。<\/p>\n<h2>为什么重要<\/h2>\n<p>它解释了为什么 AgCl 能溶于氨水、为什么 Cu²⁺ 遇过量氨水变深蓝、为什么血红蛋白能运氧。配合物也是配位滴定、湿法冶金、催化剂的基础。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[配合物] --&gt; B[内界 配离子]\n  A --&gt; C[外界 离子]\n  B --&gt; D[中心离子]\n  B --&gt; E[配体]\n  E --&gt; F[配位原子]\n  D --&gt; G[配位数]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<h2>详解<\/h2>\n<p>以 [Cu(NH₃)₄]SO₄ 为例：中心离子 Cu²⁺，配体 NH₃，配位数 4，内界 [Cu(NH₃)₄]²⁺，外界 SO₄²⁻。<\/p>\n<p>配位键的形成：配体提供孤对电子，中心离子提供空轨道。NH₃ 的 N 有一对孤对，Cu²⁺ 有空的 d 轨道，二者形成配位键。<\/p>\n<p>命名顺序：阴离子在前、阳离子在后；配体数用一、二、三；配体名后加&quot;合&quot;；中心离子用罗马数字标氧化数。K₃[Fe(CN)₆] 叫六氰合铁(Ⅲ)酸钾。<\/p>\n<p>稳定常数 K稳 衡量配合物稳定性，K稳 越大越稳定。配合物在溶液中存在解离平衡，加酸、加沉淀剂可能破坏配合物。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;配位数等于配体个数&quot;——多齿配体一个分子可占多个配位位点。\n<\/li><li>\n别以为&quot;配合物一定溶于水&quot;——有些难溶，如某些金属配合物沉淀。\n<\/li><li>\n别以为&quot;配位键是特殊的共价键&quot;——它本质是共价键的一种，电子对由一方提供。\n<\/ul>\n<h2>在书中出现的脉络<\/h2>\n<table><thead><tr><th>章节<\/th><th>语境<\/th><th>关键结论<\/th><\/tr><\/thead><tbody><tr><td>普化第 12 章<\/td><td>配合物组成<\/td><td>内界、外界、配位数<\/td><\/tr><tr><td>无机第 4 章<\/td><td>Cu²⁺、Ag⁺<\/td><td>深蓝色、银氨溶液<\/td><\/tr><tr><td>无机第 4 章<\/td><td>生物配合物<\/td><td>血红素、叶绿素<\/td><\/tr><\/tbody><\/table>\n<h2>相关概念<\/h2>\n<ul><li>\n前置：共价键、过渡金属\n<\/li><li>\n后续：配位滴定、晶体场\n<\/ul>", "__path__": "<h1>学习路径<\/h1><p>按推荐顺序学习；每步通过检查点（自测题）后再继续。<\/p><ol class='path-list'><li class='path-step' id='path-01'><strong>步骤 01：先拿地图<\/strong><br>阅读：<a href=\"#/chapter/ch01\">第 1 章：元素周期律与无机化学地图<\/a><br>检查点：能说出五个分区和四条周期性主线<\/li><li class='path-step' id='path-02'><strong>步骤 02：非金属<\/strong><br>阅读：<a href=\"#/chapter/ch02\">第 2 章：非金属元素<\/a><br>检查点：能写卤素、硫、氮、硅的关键反应<\/li><li class='path-step' id='path-03'><strong>步骤 03：主族金属<\/strong><br>阅读：<a href=\"#/chapter/ch03\">第 3 章：主族金属<\/a><br>检查点：能写钠、镁、铝的反应并解释两性<\/li><li class='path-step' id='path-04'><strong>步骤 04：过渡金属与配合物<\/strong><br>阅读：<a href=\"#/chapter/ch04\">第 4 章：过渡金属与配位化合物<\/a><br>检查点：能写 Fe2+/Fe3+ 转化、Cu2+ 配合、命名配合物<\/li><\/ol><p>进度：<span id='path-progress-label'>0/0<\/span><\/p>", "__graph__": "<h1>🕸 知识图谱<\/h1><p>节点是概念，边是先修关系。拖拽节点、滚轮缩放，点击节点跳转到对应概念页。<\/p><div id=\"graph-container\" style=\"height:520px;border:1px solid var(--border);border-radius:10px;background:var(--panel)\"><\/div><p class=\"sub\">红线 = 必学前置 · 灰线 = 建议先看 · 蓝线 = 拓展阅读<\/p>", "__quiz_all__": "<p>（无综合题）<\/p>", "__quiz_ch01__": "<h1>测验：第 1 章：元素周期律与无机化学地图<\/h1><div class='quiz-item' data-qid='q01' data-type='single' data-concept='' data-chapter='ch01'><p class='quiz-q'><b>Q1.<\/b> 下列元素属于 p 区的是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q01' value='0'> Na<\/label><label class='quiz-opt'><input type='radio' name='q01' value='1'> Fe<\/label><label class='quiz-opt'><input type='radio' name='q01' value='2'> S<\/label><label class='quiz-opt'><input type='radio' name='q01' value='3'> Ag<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q02' data-type='single' data-concept='' data-chapter='ch01'><p class='quiz-q'><b>Q2.<\/b> F、Cl、Br 非金属性由强到弱是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q02' value='0'> F&gt;Cl&gt;Br<\/label><label class='quiz-opt'><input type='radio' name='q02' value='1'> Br&gt;Cl&gt;F<\/label><label class='quiz-opt'><input type='radio' name='q02' value='2'> Cl&gt;F&gt;Br<\/label><label class='quiz-opt'><input type='radio' name='q02' value='3'> F&gt;Br&gt;Cl<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "__quiz_ch02__": "<h1>测验：第 2 章：非金属元素<\/h1><div class='quiz-item' data-qid='q03' data-type='single' data-concept='' data-chapter='ch02'><p class='quiz-q'><b>Q1.<\/b> 下列氢化物最稳定的是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q03' value='0'> HF<\/label><label class='quiz-opt'><input type='radio' name='q03' value='1'> HCl<\/label><label class='quiz-opt'><input type='radio' name='q03' value='2'> HBr<\/label><label class='quiz-opt'><input type='radio' name='q03' value='3'> HI<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q04' data-type='single' data-concept='' data-chapter='ch02'><p class='quiz-q'><b>Q2.<\/b> 氯气与氢氧化钠反应生成？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q04' value='0'> NaCl 和 NaClO<\/label><label class='quiz-opt'><input type='radio' name='q04' value='1'> NaCl 和 NaClO3<\/label><label class='quiz-opt'><input type='radio' name='q04' value='2'> NaClO 和 O2<\/label><label class='quiz-opt'><input type='radio' name='q04' value='3'> NaCl 和 HClO4<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "__quiz_ch03__": "<h1>测验：第 3 章：主族金属<\/h1><div class='quiz-item' data-qid='q05' data-type='single' data-concept='' data-chapter='ch03'><p class='quiz-q'><b>Q1.<\/b> 钠与水反应的现象不包括？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q05' value='0'> 浮在水面<\/label><label class='quiz-opt'><input type='radio' name='q05' value='1'> 熔成小球<\/label><label class='quiz-opt'><input type='radio' name='q05' value='2'> 沉入水底<\/label><label class='quiz-opt'><input type='radio' name='q05' value='3'> 四处游动<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q06' data-type='single' data-concept='' data-chapter='ch03'><p class='quiz-q'><b>Q2.<\/b> Al 与 NaOH 溶液反应生成？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q06' value='0'> Al(OH)3 和 H2<\/label><label class='quiz-opt'><input type='radio' name='q06' value='1'> NaAlO2 和 H2<\/label><label class='quiz-opt'><input type='radio' name='q06' value='2'> Al2O3 和 H2O<\/label><label class='quiz-opt'><input type='radio' name='q06' value='3'> AlCl3 和 H2<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "__quiz_ch04__": "<h1>测验：第 4 章：过渡金属与配位化合物<\/h1><div class='quiz-item' data-qid='q07' data-type='single' data-concept='c01' data-chapter='ch04'><p class='quiz-q'><b>Q1.<\/b> 检验 Fe3+ 常用的试剂是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q07' value='0'> NaOH<\/label><label class='quiz-opt'><input type='radio' name='q07' value='1'> KSCN<\/label><label class='quiz-opt'><input type='radio' name='q07' value='2'> BaCl2<\/label><label class='quiz-opt'><input type='radio' name='q07' value='3'> AgNO3<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q08' data-type='single' data-concept='c01' data-chapter='ch04'><p class='quiz-q'><b>Q2.<\/b> Cu2+ 与过量氨水反应的现象是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q08' value='0'> 生成白色沉淀<\/label><label class='quiz-opt'><input type='radio' name='q08' value='1'> 生成蓝色沉淀后溶解变深蓝<\/label><label class='quiz-opt'><input type='radio' name='q08' value='2'> 生成红褐色沉淀<\/label><label class='quiz-opt'><input type='radio' name='q08' value='3'> 无现象<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "__cards__": "<h1>抽认卡<\/h1><p>点击卡片翻面；判断「认识 / 不熟」以记录复习状态。<\/p><div class='card-controls'><label>按章节筛选：<select id='card-filter'><option value=''>全部<\/option><\/select><\/label><span class='card-counts'>认识 <b id='card-known'>0<\/b> · 不熟 <b id='card-again'>0<\/b> · 剩余 <b id='card-left'>0<\/b><\/span><\/div><div id='card-stage'><div class='flashcard' id='flashcard'><div class='fc-inner'><div class='fc-front'><\/div><div class='fc-back'><\/div><\/div><\/div><\/div><div class='card-actions'><button id='card-again-btn'>不熟<\/button><button id='card-known-btn'>认识<\/button><\/div>", "__glossary__": "<h1>术语表<\/h1><input id='glossary-filter' type='search' placeholder='筛选术语…'><ul id='glossary-list'><li data-term='两性氧化物'>两性氧化物 — 既能与酸反应又能与碱反应生成盐和水的氧化物 <span class=glossary-ref>（第 1 章：元素周期律与无机化学地图）<\/span><\/li><li data-term='惰性电子对效应'>惰性电子对效应 — 同族向下 ns2 电子对越来越难参与成键的现象 <span class=glossary-ref>（第 3 章：主族金属）<\/span><\/li><li data-term='配位键'>配位键 — 配体提供孤对电子、中心离子提供空轨道形成的共价键 <span class=glossary-ref>（第 4 章：过渡金属与配位化合物）<\/span><\/li><li data-term='配位数'>配位数 — 中心离子周围配位原子的数目 <span class=glossary-ref>（第 4 章：过渡金属与配位化合物）<\/span><\/li><li data-term='稳定常数'>稳定常数 — 配合物生成反应的平衡常数，越大越稳定 <span class=glossary-ref>（第 4 章：过渡金属与配位化合物）<\/span><\/li><li data-term='铝热反应'>铝热反应 — 铝与金属氧化物在高温下反应，放出大量热并还原出金属 <span class=glossary-ref>（第 3 章：主族金属）<\/span><\/li><\/ul>", "__diagnosis__": "<h1>🩺 诊断测试<\/h1><p>系统会从全书中抽题。答错的题会自动沿知识依赖链回溯，告诉你真正需要补的前置知识点。<\/p><div class='diag-controls'><button id='diag-start'>开始诊断（随机抽 5 题）<\/button><span id='diag-progress'><\/span><\/div><div id='diag-stage'><\/div><div id='diag-result'><\/div>", "__patterns__": "<h1>模式与框架库<\/h1>\n<h2>框架：元素学习四条线<\/h2>\n<p>单质（颜色、状态、与酸碱水的反应）→ 氧化物（酸碱性、与水反应）→ 氢化物（稳定性、还原性）→ 含氧酸及盐（酸性、氧化性、溶解性）。<\/p>\n<h2>决策规则<\/h2>\n<ul><li>\n比较非金属性：看氢化物稳定性、最高价含氧酸酸性。\n<\/li><li>\n比较金属性：看单质与水/酸反应剧烈程度、最高价氢氧化物碱性。\n<\/li><li>\n判断两性：氧化物或氢氧化物既能与强酸反应又能与强碱反应，如 Al2O3、Al(OH)3、ZnO。\n<\/li><li>\n配合物命名：配体数 + 配体名 + 合 + 中心离子（氧化数）。\n<\/ul>\n<h2>反模式<\/h2>\n<ul><li>\n把 Na2O2 当碱性氧化物。它是过氧化物，O 为 -1。\n<\/li><li>\n认为过渡金属离子都有颜色。Zn2+、Sc3+ 无色。\n<\/li><li>\n认为铝不活泼。铝表面有致密氧化膜，内部很活泼。\n<\/ul>", "__cheatsheet__": "<h1>速查表<\/h1>\n<h2>常见反应<\/h2>\n<table><thead><tr><th>反应<\/th><th>方程式<\/th><\/tr><\/thead><tbody><tr><td>氯气与碱<\/td><td>Cl2 + 2NaOH → NaCl + NaClO + H2O<\/td><\/tr><tr><td>钠与水<\/td><td>2Na + 2H2O → 2NaOH + H2↑<\/td><\/tr><tr><td>过氧化钠<\/td><td>2Na2O2 + 2H2O → 4NaOH + O2↑<\/td><\/tr><tr><td>铝与碱<\/td><td>2Al + 2NaOH + 2H2O → 2NaAlO2 + 3H2↑<\/td><\/tr><tr><td>铝热<\/td><td>2Al + Fe2O3 → Al2O3 + 2Fe<\/td><\/tr><tr><td>合成氨<\/td><td>N2 + 3H2 ⇌ 2NH3<\/td><\/tr><tr><td>氨催化氧化<\/td><td>4NH3 + 5O2 → 4NO + 6H2O<\/td><\/tr><\/tbody><\/table>\n<h2>离子颜色<\/h2>\n<table><thead><tr><th>离子<\/th><th>颜色<\/th><\/tr><\/thead><tbody><tr><td>Fe2+<\/td><td>浅绿<\/td><\/tr><tr><td>Fe3+<\/td><td>黄<\/td><\/tr><tr><td>Cu2+<\/td><td>蓝<\/td><\/tr><tr><td>Mn2+<\/td><td>浅粉<\/td><\/tr><tr><td>MnO4-<\/td><td>紫<\/td><\/tr><tr><td>Cr2O7^2-<\/td><td>橙<\/td><\/tr><tr><td>CrO4^2-<\/td><td>黄<\/td><\/tr><\/tbody><\/table>"}};
+const pages = DATA.rendered;
+const manifest = DATA.manifest;
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SLUG = manifest.slug || 'book';
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(SLUG+':'+k)||'null') }catch(e){ return null } },
+  set(k,v){ try{ localStorage.setItem(SLUG+':'+k, JSON.stringify(v)) }catch(e){} }
+};
+let state = { visited: store.get('visited')||[], quiz: store.get('quiz')||{}, cards: store.get('cards')||{}, mastery: store.get('mastery')||{} };
+
+/* ---------- 导航 ---------- */
+function renderNav(){
+  const nav = $('#nav'); nav.innerHTML='';
+  const build = items => items.forEach(it=>{
+    if(it.children){
+      const sec=document.createElement('div'); sec.className='nav-sec'; sec.textContent=it.label; nav.appendChild(sec);
+      it.children.forEach(c=>{
+        const a=document.createElement('a'); a.className='nav-item'; a.href=c.href; a.textContent=c.label;
+        const id=routeId(c.href);
+        if(state.visited.includes(id)) a.innerHTML = esc(c.label)+' <span class="done">✓</span>';
+        nav.appendChild(a);
+      });
+    }else{
+      const a=document.createElement('a'); a.className='nav-item'; a.href=it.href; a.textContent=it.label;
+      const id=routeId(it.href);
+      if(state.visited.includes(id)) a.innerHTML = esc(it.label)+' <span class="done">✓</span>';
+      nav.appendChild(a);
+    }
+  });
+  build(DATA.nav);
+  updateProgress();
+}
+function routeId(href){ return href.replace('#/',''); }
+
+/* ---------- 路由 ---------- */
+function routeIdFromHash(){
+  let h = location.hash.replace(/^#\//,'');
+  if(!h) return 'path';
+  if(h==='path') return 'path';
+  if(h==='diagnosis') return 'diagnosis';
+  const m = h.match(/^(chapter|concept)\/(.+)$/);
+  if(m) return m[1]+'/'+m[2];
+  return h;
+}
+function showPage(rid){
+  let id;
+  if(rid==='path') id='__path__';
+  else if(rid==='diagnosis') id='__diagnosis__';
+  else if(rid==='graph') id='__graph__';
+  else if(rid.startsWith('quiz/')) id='__quiz_'+rid.split('/')[1]+'__';
+  else if(rid==='cards') id='__cards__';
+  else if(rid==='glossary') id='__glossary__';
+  else if(rid==='patterns') id='__patterns__';
+  else if(rid==='cheatsheet') id='__cheatsheet__';
+  else if(rid.startsWith('chapter/')) id=rid.split('/')[1];
+  else if(rid.startsWith('concept/')) id=rid.split('/')[1];
+  else id=rid;
+  const html = pages[id] || '<div class="empty">页面不存在</div>';
+  $('#view').innerHTML = html;
+  $$('.nav-item').forEach(a=>a.classList.toggle('active', routeId(a.getAttribute('href'))===rid));
+  if(!state.visited.includes(rid) && (rid.startsWith('chapter/')||rid.startsWith('concept/'))){
+    state.visited.push(rid); store.set('visited', state.visited); renderNav();
+  }
+  window.scrollTo(0,0);
+  if(rid==='cards') initCards();
+  if(rid==='glossary') initGlossary();
+  if(rid.startsWith('quiz')) initQuizzes(rid);
+  if(rid==='diagnosis') initDiagnosis();
+  if(rid==='graph') initGraph();
+  if(id==='__path__') updatePath();
+  renderMath();
+  renderMermaid();
+}
+
+/* ---------- KaTeX 渲染（多源回退） ---------- */
+let katexLoading = false, katexReady = false;
+function renderMath(){
+  const hasMath = document.querySelector('.katex-inline, .katex-block');
+  if(!hasMath) return;
+  if(katexReady){ doRenderMath(); return; }
+  if(katexLoading) return;
+  katexLoading = true;
+  const cssUrls = [
+    'https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.css',
+    'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css',
+    'https://unpkg.com/katex@0.16.9/dist/katex.min.css'
+  ];
+  const jsUrls = [
+    'https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.js',
+    'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js',
+    'https://unpkg.com/katex@0.16.9/dist/katex.min.js'
+  ];
+  let ci = 0, ji = 0;
+  const tryCss = () => {
+    if(ci >= cssUrls.length) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet'; link.href = cssUrls[ci++];
+    link.onload = tryJs; link.onerror = () => { link.remove(); tryCss(); };
+    document.head.appendChild(link);
+  };
+  const tryJs = () => {
+    if(ji >= jsUrls.length){ katexLoading = false; return; }
+    const s = document.createElement('script');
+    s.src = jsUrls[ji++];
+    s.onload = () => { katexReady = true; katexLoading = false; doRenderMath(); };
+    s.onerror = () => { s.remove(); tryJs(); };
+    document.head.appendChild(s);
+  };
+  tryCss();
+}
+function doRenderMath(){
+  if(typeof katex === 'undefined') return;
+  // 行内公式：.katex-inline 里的内容
+  $$('.katex-inline').forEach(el=>{
+    try{ katex.render(el.textContent, el, {throwOnError:false}); }catch(e){}
+  });
+  // 块级公式：.katex-block 里的内容
+  $$('.katex-block').forEach(el=>{
+    try{ katex.render(el.textContent, el, {displayMode:true, throwOnError:false}); }catch(e){}
+  });
+}
+// 公式内容预处理：把 < 后跟字母的位置转成 &lt;，避免被 HTML 解析器当标签吃掉
+// （这是 first-principles-derivation 踩过的坑：$m<n$ 会变成残留 $m）
+function sanitizeMathHTML(){
+  $$('.katex-inline, .katex-block').forEach(el=>{
+    el.innerHTML = el.innerHTML.replace(/<([a-zA-Z])/g, '&lt;$1');
+  });
+}
+
+/* ---------- 进度 ---------- */
+function updateProgress(){
+  const chs = (manifest.chapters||[]).length;
+  const done = (manifest.chapters||[]).filter(c=>state.visited.includes('chapter/'+c.id)).length;
+  const pct = chs? Math.round(done/chs*100) : 0;
+  $('#progress-fill').style.width = pct+'%';
+  $('#progress-label').textContent = `进度 ${pct}% · 已学 ${done}/${chs} 章`;
+}
+function updatePath(){
+  $$('.path-step').forEach(el=>{
+    const step = el.id.replace('path-','');
+    const s = (manifest.learningPath||[]).find(x=>x.step===step);
+    if(s && (s.chapterIds||[]).every(c=>state.visited.includes('chapter/'+c))){
+      el.classList.add('passed');
+      const lbl = el.querySelector('.checkpoint-ok'); if(!lbl){ const sp=document.createElement('span'); sp.className='done'; sp.textContent=' ✓ 已完成'; el.appendChild(sp); }
+    }
+  });
+}
+
+/* ---------- 概念/章节依赖查找（用于诊断倒推） ---------- */
+function findConcept(id){ return (manifest.concepts||[]).find(c=>c.id===id); }
+function findChapter(id){ return (manifest.chapters||[]).find(c=>c.id===id); }
+function getPrereqs(node){
+  if(!node) return [];
+  return node.prerequisites || node.prereqs || [];
+}
+/**
+ * 答错倒推：从错题关联的概念/章节出发，沿 prerequisites 回溯，
+ * 返回一串"你可能需要先补的"节点，带跳转链接。
+ */
+function traceBack(startConceptId, startChapterId){
+  const visited = new Set();
+  const chain = [];
+  const queue = [];
+  if(startConceptId){ const c = findConcept(startConceptId); if(c) queue.push({node:c, kind:'concept'}); }
+  if(startChapterId){ const c = findChapter(startChapterId); if(c) queue.push({node:c, kind:'chapter'}); }
+  while(queue.length && chain.length < 6){
+    const {node, kind} = queue.shift();
+    if(visited.has(node.id)) continue;
+    visited.add(node.id);
+    chain.push({node, kind});
+    (getPrereqs(node)||[]).forEach(pid=>{
+      const cn = findConcept(pid); if(cn){ queue.push({node:cn, kind:'concept'}); return; }
+      const ch = findChapter(pid); if(ch) queue.push({node:ch, kind:'chapter'});
+    });
+  }
+  return chain;
+}
+
+/* ---------- 测验（带倒推） ---------- */
+function initQuizzes(rid){
+  $$('.quiz-item').forEach(item=>{
+    const btn = item.querySelector('.quiz-check');
+    if(!btn || item.dataset.inited){ return }
+    item.dataset.inited='1';
+    btn.addEventListener('click', ()=>{
+      const qid = item.dataset.qid; const type = item.dataset.type;
+      const q = (manifest.quizzes||[]).find(x=>x.id===qid); if(!q) return;
+      let user, correct=false, fb;
+      if(type==='single'){
+        const sel = item.querySelector('input:checked');
+        user = sel? parseInt(sel.value) : null;
+        correct = user===q.answer;
+        fb = correct?'✓ 正确':'✗ 错误'+(user==null?'（未作答）':'');
+      } else if(type==='multi'){
+        user = Array.from(item.querySelectorAll('input:checked')).map(i=>parseInt(i.value)).sort();
+        const ans = Array.isArray(q.answer)? q.answer.slice().sort(): [q.answer];
+        correct = user.length>0 && JSON.stringify(user)===JSON.stringify(ans);
+        fb = correct?'✓ 正确':'✗ 错误';
+      } else if(type==='blank'){
+        const v = (item.querySelector('.quiz-blank').value||'').trim().toLowerCase();
+        const a = String(q.answer).trim().toLowerCase();
+        correct = v===a;
+        fb = correct?'✓ 正确':'✗ 错误'+(v?'':'（未作答）');
+      }
+      item.querySelectorAll('input:checked').forEach(i=>{
+        const val=parseInt(i.value);
+        i.parentElement.style.color = (Array.isArray(q.answer)? q.answer.includes(val) : val===q.answer) ? 'var(--ok)' : 'var(--bad)';
+      });
+      const feed = item.querySelector('.quiz-feedback');
+      feed.className = 'quiz-feedback '+(correct?'fb-ok':'fb-bad');
+      feed.textContent = fb;
+      let ex = item.querySelector('.quiz-explain');
+      if(!ex){ ex=document.createElement('div'); ex.className='quiz-explain'; item.appendChild(ex); }
+      ex.innerHTML = '解析：' + esc(q.explain||'');
+      // 答错时：倒推前置 + 误解卡片 + 掌握度更新
+      if(!correct){
+        let remedy = item.querySelector('.quiz-remedy');
+        if(!remedy){ remedy = document.createElement('div'); remedy.className='quiz-remedy'; item.appendChild(remedy); }
+        const chain = traceBack(item.dataset.concept, item.dataset.chapter);
+        if(chain.length > 1){
+          const links = chain.slice(1).map(({node,kind})=>{
+            const href = kind==='concept' ? `#/concept/${node.id}` : `#/chapter/${node.id}`;
+            return `<a href="${href}">${esc(node.title||node.id)}</a>`;
+          }).join(' → ');
+          remedy.innerHTML = '🔍 可能的根因（沿依赖链回溯）：' + links;
+        }
+        // 误解卡片：如果选错的选项标注了 misconceptionId
+        const checked = item.querySelector('input:checked');
+        const misId = checked ? checked.dataset.misconception : '';
+        if(misId){
+          const mis = (manifest.misconceptions||[]).find(m=>m.id===misId);
+          if(mis){
+            let misCard = item.querySelector('.misconception-card');
+            if(!misCard){ misCard = document.createElement('div'); misCard.className='misconception-card'; item.appendChild(misCard); }
+            misCard.innerHTML = `<b>⚠ 常见误解</b><br>你选了「${esc(mis.wrong)}」——${esc(mis.correction)}`;
+          }
+        }
+        // 掌握度下降
+        updateMastery(item.dataset.concept, -0.15);
+      } else {
+        updateMastery(item.dataset.concept, +0.15);
+      }
+      const ch = q.chapterId||'__all__';
+      if(!state.quiz[ch]) state.quiz[ch]={done:0,total:0};
+      state.quiz[ch].done = Math.min(state.quiz[ch].total+1, state.quiz[ch].done+1);
+      state.quiz[ch].total += 1;
+      store.set('quiz', state.quiz);
+    });
+  });
+}
+
+/* ---------- 知识图谱（vis-network） ---------- */
+let networkLoaded = false;
+function loadVisNetwork(cb){
+  if(networkLoaded){ cb(); return; }
+  const urls = [
+    'https://registry.npmmirror.com/vis-network/9.1.9/dist/dist/vis-network.min.js',
+    'https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js',
+    'https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js'
+  ];
+  let i = 0;
+  const tryNext = () => {
+    if(i >= urls.length) return;
+    const s = document.createElement('script');
+    s.src = urls[i++];
+    s.onload = () => { networkLoaded = true; cb(); };
+    s.onerror = () => { s.remove(); tryNext(); };
+    document.head.appendChild(s);
+  };
+  tryNext();
+}
+function initGraph(){
+  const container = document.getElementById('graph-container');
+  if(!container) return;
+  loadVisNetwork(() => {
+    if(typeof vis === 'undefined'){ container.innerHTML = '<p class="empty">图谱库加载失败，请联网后刷新</p>'; return; }
+    const concepts = manifest.concepts || [];
+    const chapters = manifest.chapters || [];
+    const nodes = [];
+    const edges = [];
+    concepts.forEach(c => {
+      const mastery = Math.round(getMastery(c.id)*100);
+      nodes.push({
+        id: 'c_' + c.id,
+        label: c.title || c.id,
+        title: (c.title||c.id) + '（掌握度 ' + mastery + '%）',
+        color: mastery > 70 ? '#86efac' : mastery > 40 ? '#fde68a' : '#fca5a5',
+        shape: 'dot',
+        size: mastery > 70 ? 20 : 14,
+        font: { size: 13 }
+      });
+    });
+    chapters.forEach(ch => {
+      nodes.push({
+        id: 'ch_' + ch.id,
+        label: ch.title || ch.id,
+        shape: 'box',
+        color: '#93c5fd',
+        font: { size: 12 }
+      });
+    });
+    // 前置边
+    concepts.forEach(c => {
+      (c.prerequisites || []).forEach(p => {
+        const pid = typeof p === 'string' ? p : p.id;
+        const ptype = typeof p === 'string' ? 'hard' : (p.type || 'hard');
+        const from = (pid.startsWith('ch') ? 'ch_' : 'c_') + pid;
+        const to = 'c_' + c.id;
+        if(nodes.find(n => n.id === from)){
+          edges.push({
+            from: from, to: to,
+            color: { color: ptype === 'hard' ? '#dc2626' : ptype === 'soft' ? '#9ca3af' : '#3b82f6' },
+            arrows: 'to',
+            width: ptype === 'hard' ? 2 : 1,
+            dashes: ptype !== 'hard'
+          });
+        }
+      });
+    });
+    const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+    const options = {
+      physics: { stabilization: true, barnesHut: { gravitationalConstant: -3000 } },
+      interaction: { hover: true, tooltipDelay: 200 }
+    };
+    const net = new vis.Network(container, data, options);
+    net.on('click', params => {
+      if(params.nodes.length > 0){
+        const nid = params.nodes[0];
+        if(nid.startsWith('c_')) location.hash = '#/concept/' + nid.slice(2);
+        else if(nid.startsWith('ch_')) location.hash = '#/chapter/' + nid.slice(3);
+      }
+    });
+  });
+}
+
+/* ---------- 诊断模式 ---------- */
+let diagQueue = [], diagIdx = 0, diagWrong = [];
+function initDiagnosis(){
+  const startBtn = $('#diag-start');
+  if(!startBtn || startBtn.dataset.inited) return;
+  startBtn.dataset.inited='1';
+  startBtn.addEventListener('click', ()=>{
+    const all = (manifest.quizzes||[]).slice();
+    // 随机抽 5 题（不够就全抽）
+    for(let i = all.length-1; i>0; i--){ const j = Math.floor(Math.random()*(i+1)); [all[i],all[j]]=[all[j],all[i]]; }
+    diagQueue = all.slice(0, Math.min(5, all.length));
+    diagIdx = 0; diagWrong = [];
+    showDiagQuestion();
+  });
+}
+function showDiagQuestion(){
+  const stage = $('#diag-stage');
+  const result = $('#diag-result');
+  result.innerHTML = '';
+  if(diagIdx >= diagQueue.length){ finishDiagnosis(); return; }
+  const q = diagQueue[diagIdx];
+  $('#diag-progress').textContent = `第 ${diagIdx+1} / ${diagQueue.length} 题`;
+  const fakeItem = document.createElement('div');
+  fakeItem.innerHTML = _renderQuizHTML(q, diagIdx+1);
+  stage.innerHTML = fakeItem.innerHTML;
+  // 绑定检查按钮
+  const item = stage.querySelector('.quiz-item');
+  const btn = item.querySelector('.quiz-check');
+  btn.addEventListener('click', ()=>{
+    const type = item.dataset.type;
+    let user, correct=false;
+    if(type==='single'){
+      const sel = item.querySelector('input:checked');
+      user = sel? parseInt(sel.value) : null;
+      correct = user===q.answer;
+    } else if(type==='multi'){
+      user = Array.from(item.querySelectorAll('input:checked')).map(i=>parseInt(i.value)).sort();
+      const ans = Array.isArray(q.answer)? q.answer.slice().sort(): [q.answer];
+      correct = user.length>0 && JSON.stringify(user)===JSON.stringify(ans);
+    } else if(type==='blank'){
+      const v = (item.querySelector('.quiz-blank').value||'').trim().toLowerCase();
+      correct = v===String(q.answer).trim().toLowerCase();
+    }
+    if(!correct){
+      diagWrong.push(q);
+      const chain = traceBack(q.relatedConceptId, q.chapterId);
+      if(chain.length > 1){
+        const links = chain.slice(1).map(({node,kind})=>{
+          const href = kind==='concept' ? `#/concept/${node.id}` : `#/chapter/${node.id}`;
+          return `<div class="diag-remedy-item">建议先学：<a href="${href}">${esc(node.title||node.id)}</a></div>`;
+        }).join('');
+        $('#diag-result').innerHTML = '<h3>这道题答错了，可能的根因：</h3>' + links +
+          '<p><button id="diag-next" class="quiz-check">下一题 →</button></p>';
+      } else {
+        $('#diag-result').innerHTML = '<p><button id="diag-next" class="quiz-check">下一题 →</button></p>';
+      }
+    } else {
+      $('#diag-result').innerHTML = '<p>✓ 正确。<button id="diag-next" class="quiz-check">下一题 →</button></p>';
+    }
+    $('#diag-next').addEventListener('click', ()=>{ diagIdx++; showDiagQuestion(); });
+  });
+}
+function _renderQuizHTML(q, idx){
+  // 复用服务端渲染的 quiz HTML 结构
+  const qtype = q.type||'single';
+  const qid = q.id||('diag'+idx);
+  let html = `<div class='quiz-item' data-qid='${qid}' data-type='${qtype}' data-concept='${esc(q.relatedConceptId||"")}' data-chapter='${esc(q.chapterId||"")}'>`;
+  html += `<p class='quiz-q'><b>Q${idx}.</b> ${esc(q.question||"")}</p>`;
+  if(qtype==='single'||qtype==='multi'){
+    const it = qtype==='single'?'radio':'checkbox';
+    html += "<div class='quiz-opts'>";
+    (q.options||[]).forEach((o,i)=>{ html += `<label class='quiz-opt'><input type='${it}' name='${qid}' value='${i}'> ${esc(String(o))}</label>`; });
+    html += '</div>';
+  } else {
+    html += `<input class='quiz-blank' type='text' placeholder='填写答案'>`;
+  }
+  html += `<div class='quiz-actions'><button class='quiz-check'>检查答案</button><span class='quiz-feedback'></span></div></div>`;
+  return html;
+}
+function finishDiagnosis(){
+  const total = diagQueue.length;
+  const wrong = diagWrong.length;
+  const right = total - wrong;
+  let html = `<h2>诊断完成：${right}/${total} 正确</h2>`;
+  if(wrong === 0){
+    html += '<p>🎉 这组题全对，可以继续往下学。</p>';
+  } else {
+    html += `<p>有 ${wrong} 道题答错。下面是按依赖链回溯的补强建议：</p>`;
+    const seen = new Set();
+    diagWrong.forEach(q=>{
+      const chain = traceBack(q.relatedConceptId, q.chapterId);
+      chain.slice(1).forEach(({node,kind})=>{
+        if(seen.has(node.id)) return;
+        seen.add(node.id);
+        const href = kind==='concept' ? `#/concept/${node.id}` : `#/chapter/${node.id}`;
+        html += `<div class="diag-remedy-item">📚 <a href="${href}">${esc(node.title||node.id)}</a></div>`;
+      });
+    });
+  }
+  html += '<p><button id="diag-restart" class="quiz-check">重新诊断</button></p>';
+  $('#diag-stage').innerHTML = '';
+  $('#diag-progress').textContent = '';
+  $('#diag-result').innerHTML = html;
+  $('#diag-restart').addEventListener('click', ()=>{
+    $('#diag-start').click();
+  });
+}
+
+/* ---------- 掌握度（简化 BKT） ---------- */
+function getMastery(cid){
+  if(!cid) return 0.5;
+  const m = (state.mastery||{})[cid];
+  return m !== undefined ? m : 0.3;
+}
+function updateMastery(cid, delta){
+  if(!cid) return;
+  if(!state.mastery) state.mastery = {};
+  const cur = state.mastery[cid] !== undefined ? state.mastery[cid] : 0.3;
+  state.mastery[cid] = Math.max(0, Math.min(1, cur + delta));
+  store.set('mastery', state.mastery);
+}
+function masteryBar(cid){
+  const v = Math.round(getMastery(cid)*100);
+  return `<div class="mastery-bar"><div style="width:${v}%"></div></div><span class="mastery-label">掌握度 ${v}%</span>`;
+}
+
+/* ---------- 抽认卡 ---------- */
+let cardIdx = 0, cardList = [];
+function initCards(){
+  const cards = manifest.flashcards||[];
+  cardList = cards.slice();
+  cardIdx = 0;
+  const sel = $('#card-filter');
+  sel.innerHTML = '<option value="">全部</option>';
+  [...new Set(cards.map(c=>c.chapterId).filter(Boolean))].forEach(c=>{
+    const o=document.createElement('option'); o.value=c; o.textContent=manifestChTitle(c); sel.appendChild(o);
+  });
+  sel.onchange = ()=>{ const v=sel.value; cardList = v? cards.filter(c=>c.chapterId===v): cards.slice(); cardIdx=0; showCard(); };
+  $('#flashcard').onclick = ()=>$('#flashcard').classList.toggle('flip');
+  $('#card-known-btn').onclick = ()=>{ markCard(true); };
+  $('#card-again-btn').onclick = ()=>{ markCard(false); };
+  showCard();
+}
+function showCard(){
+  updateCardCounts();
+  if(cardIdx>=cardList.length){ $('#card-stage').innerHTML='<div class="empty">本组卡片已全部复习完 🎉</div>'; return; }
+  const c = cardList[cardIdx];
+  document.querySelector('.fc-front').textContent = c.front;
+  document.querySelector('.fc-back').textContent = c.back;
+  $('#flashcard').classList.remove('flip');
+}
+function markCard(known){
+  const c = cardList[cardIdx]; if(!c) return;
+  state.cards[c.id] = known?'known':'again';
+  store.set('cards', state.cards);
+  cardIdx++; showCard();
+}
+function updateCardCounts(){
+  const known = Object.values(state.cards).filter(v=>v==='known').length;
+  const again = Object.values(state.cards).filter(v=>v==='again').length;
+  $('#card-known').textContent = known;
+  $('#card-again').textContent = again;
+  $('#card-left').textContent = Math.max(0, cardList.length-cardIdx);
+}
+function manifestChTitle(id){
+  const c=(manifest.chapters||[]).find(x=>x.id===id); return c? c.title : id;
+}
+
+/* ---------- 术语表 ---------- */
+function initGlossary(){
+  const input = $('#glossary-filter');
+  if(!input || input.dataset.inited) return;
+  input.dataset.inited='1';
+  input.oninput = ()=>{
+    const v = input.value.trim().toLowerCase();
+    $$('#glossary-list li').forEach(li=>{
+      li.style.display = (!v || li.dataset.term.includes(v)) ? '' : 'none';
+    });
+  };
+}
+
+/* ---------- 搜索 ---------- */
+let searchIndex = null;
+function buildSearchIndex(){
+  if(searchIndex) return searchIndex;
+  searchIndex = [];
+  Object.entries(pages).forEach(([id, htmlText])=>{
+    if(id.startsWith('__')) return;
+    const text = htmlText.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ');
+    searchIndex.push({id, text});
+  });
+  return searchIndex;
+}
+$('#q').addEventListener('input', e=>{
+  const v = e.target.value.trim().toLowerCase();
+  if(!v){ showPage(routeIdFromHash()); return; }
+  buildSearchIndex();
+  const hits = searchIndex.filter(p=>p.text.toLowerCase().includes(v)).slice(0,20);
+  const label = id => id.startsWith('chapter/')? ('章节：'+manifestChTitle(id.split('/')[1])) : id.startsWith('concept/')? ('概念：'+id.split('/')[1]) : id;
+  $('#view').innerHTML = '<h1>搜索结果：'+esc(v)+'</h1>' +
+    (hits.length? hits.map(h=>`<div class="search-hit"><a href="#/${h.id}">${esc(label(h.id))}</a><br><span class="sub">${esc(h.text.slice(0,180))}</span></div>`).join('')
+                 : '<div class="empty">未找到相关页面，试试章节名/概念名/术语。</div>');
+});
+
+/* ---------- Mermaid 懒加载 ---------- */
+function renderMermaid(){
+  if(!document.querySelector('.mermaid')) return;
+  const boot=()=>{ try{
+    mermaid.initialize({startOnLoad:false, theme: matchMedia('(prefers-color-scheme: dark)').matches?'dark':'default'});
+    document.querySelectorAll('.mermaid').forEach(el=>{
+      const code=el.textContent;
+      mermaid.render('mm'+Math.random().toString(36).slice(2), code)
+        .then(({svg})=>{ el.innerHTML=svg; })
+        .catch(()=>{ el.textContent=code; });
+    });
+  }catch(e){} };
+  const urls=['https://registry.npmmirror.com/mermaid/10/files/dist/mermaid.min.js',
+              'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js',
+              'https://unpkg.com/mermaid@10/dist/mermaid.min.js'];
+  let ui=0;
+  const tryNext=()=>{
+    if(ui>=urls.length) return;
+    const s=document.createElement('script');
+    s.src=urls[ui++];
+    s.onload=boot;
+    s.onerror=()=>{ s.remove(); tryNext(); };
+    document.head.appendChild(s);
+  };
+  tryNext();
+}
+
+/* ---------- 深色模式 ---------- */
+const themeBtn=$('#theme-btn');
+themeBtn.onclick=()=>{
+  const d = document.body.dataset.theme==='dark';
+  document.body.dataset.theme = d? '' : 'dark';
+  themeBtn.textContent = d? '🌙 深色' : '☀️ 浅色';
+};
+
+/* ---------- 启动 ---------- */
+renderNav();
+window.addEventListener('hashchange', ()=>showPage(routeIdFromHash()));
+(function(){
+  const sb=document.querySelector('.sidebar'); if(!sb) return;
+  const btn=document.createElement('button'); btn.id='nav-toggle'; btn.textContent='目录（点开选择章节）';
+  btn.onclick=()=>sb.classList.toggle('open');
+  sb.insertBefore(btn, sb.querySelector('#nav'));
+  window.addEventListener('hashchange',()=>{ if(window.innerWidth<=760) sb.classList.remove('open'); });
+})();
+showPage(routeIdFromHash());
+</script>
+</body>
+</html>

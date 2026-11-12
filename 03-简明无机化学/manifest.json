@@ -1,0 +1,351 @@
+{
+  "slug": "inorganic-chem",
+  "title": "简明无机化学：元素的性质地图",
+  "subtitle": "按周期表分区，把非金属、主族金属、过渡金属串成一张性质网",
+  "book": {
+    "title": "简明无机化学（第2版）",
+    "author": "宋天佑",
+    "source": [
+      "简明无机化学 第2版.pdf"
+    ]
+  },
+  "audience": "已读完入门篇、正在学大学的元素化学",
+  "goal": "掌握常见元素单质、氧化物、含氧酸、配合物的性质与反应",
+  "learningPath": [
+    {
+      "step": "01",
+      "title": "先拿地图",
+      "chapterIds": [
+        "ch01"
+      ],
+      "checkpoint": "能说出五个分区和四条周期性主线"
+    },
+    {
+      "step": "02",
+      "title": "非金属",
+      "chapterIds": [
+        "ch02"
+      ],
+      "checkpoint": "能写卤素、硫、氮、硅的关键反应"
+    },
+    {
+      "step": "03",
+      "title": "主族金属",
+      "chapterIds": [
+        "ch03"
+      ],
+      "checkpoint": "能写钠、镁、铝的反应并解释两性"
+    },
+    {
+      "step": "04",
+      "title": "过渡金属与配合物",
+      "chapterIds": [
+        "ch04"
+      ],
+      "checkpoint": "能写 Fe2+/Fe3+ 转化、Cu2+ 配合、命名配合物"
+    }
+  ],
+  "chapters": [
+    {
+      "id": "ch01",
+      "title": "第 1 章：元素周期律与无机化学地图",
+      "file": "chapters/ch01-元素周期律与无机地图.md",
+      "difficulty": 2,
+      "source": "《简明无机化学》化学原理部分",
+      "prerequisites": []
+    },
+    {
+      "id": "ch02",
+      "title": "第 2 章：非金属元素",
+      "file": "chapters/ch02-非金属元素.md",
+      "difficulty": 3,
+      "source": "《简明无机化学》元素化学·非金属",
+      "prerequisites": [
+        "ch01"
+      ]
+    },
+    {
+      "id": "ch03",
+      "title": "第 3 章：主族金属",
+      "file": "chapters/ch03-主族金属.md",
+      "difficulty": 2,
+      "source": "《简明无机化学》元素化学·主族金属",
+      "prerequisites": [
+        "ch01"
+      ]
+    },
+    {
+      "id": "ch04",
+      "title": "第 4 章：过渡金属与配位化合物",
+      "file": "chapters/ch04-过渡金属与配位.md",
+      "difficulty": 3,
+      "source": "《简明无机化学》元素化学·过渡金属 + 配位化学基础",
+      "prerequisites": [
+        "ch01",
+        "ch03"
+      ]
+    }
+  ],
+  "concepts": [
+    {
+      "id": "c01",
+      "title": "配合物与配位键",
+      "file": "concepts/c01-配合物.md",
+      "chapterIds": [
+        "ch04"
+      ],
+      "difficulty": "进阶",
+      "source": "《简明无机化学》配位化学基础",
+      "prerequisites": [
+        "ch01"
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "term": "两性氧化物",
+      "def": "既能与酸反应又能与碱反应生成盐和水的氧化物",
+      "chapterId": "ch01"
+    },
+    {
+      "term": "惰性电子对效应",
+      "def": "同族向下 ns2 电子对越来越难参与成键的现象",
+      "chapterId": "ch03"
+    },
+    {
+      "term": "配位键",
+      "def": "配体提供孤对电子、中心离子提供空轨道形成的共价键",
+      "chapterId": "ch04"
+    },
+    {
+      "term": "配位数",
+      "def": "中心离子周围配位原子的数目",
+      "chapterId": "ch04"
+    },
+    {
+      "term": "稳定常数",
+      "def": "配合物生成反应的平衡常数，越大越稳定",
+      "chapterId": "ch04"
+    },
+    {
+      "term": "铝热反应",
+      "def": "铝与金属氧化物在高温下反应，放出大量热并还原出金属",
+      "chapterId": "ch03"
+    }
+  ],
+  "patterns": {
+    "file": "patterns.md"
+  },
+  "cheatsheet": {
+    "file": "cheatsheet.md"
+  },
+  "quizzes": [
+    {
+      "id": "q01",
+      "chapterId": "ch01",
+      "type": "single",
+      "question": "下列元素属于 p 区的是？",
+      "options": [
+        "Na",
+        "Fe",
+        "S",
+        "Ag"
+      ],
+      "answer": 2,
+      "explain": "S 的价电子构型 3s2 3p4，属 p 区。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q02",
+      "chapterId": "ch01",
+      "type": "single",
+      "question": "F、Cl、Br 非金属性由强到弱是？",
+      "options": [
+        "F>Cl>Br",
+        "Br>Cl>F",
+        "Cl>F>Br",
+        "F>Br>Cl"
+      ],
+      "answer": 0,
+      "explain": "同主族从上到下非金属性减弱。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q03",
+      "chapterId": "ch02",
+      "type": "single",
+      "question": "下列氢化物最稳定的是？",
+      "options": [
+        "HF",
+        "HCl",
+        "HBr",
+        "HI"
+      ],
+      "answer": 0,
+      "explain": "F 的非金属性最强，H—F 键最稳定。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q04",
+      "chapterId": "ch02",
+      "type": "single",
+      "question": "氯气与氢氧化钠反应生成？",
+      "options": [
+        "NaCl 和 NaClO",
+        "NaCl 和 NaClO3",
+        "NaClO 和 O2",
+        "NaCl 和 HClO4"
+      ],
+      "answer": 0,
+      "explain": "Cl2+2NaOH→NaCl+NaClO+H2O。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q05",
+      "chapterId": "ch03",
+      "type": "single",
+      "question": "钠与水反应的现象不包括？",
+      "options": [
+        "浮在水面",
+        "熔成小球",
+        "沉入水底",
+        "四处游动"
+      ],
+      "answer": 2,
+      "explain": "钠密度比水小，浮在水面而不是沉底。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q06",
+      "chapterId": "ch03",
+      "type": "single",
+      "question": "Al 与 NaOH 溶液反应生成？",
+      "options": [
+        "Al(OH)3 和 H2",
+        "NaAlO2 和 H2",
+        "Al2O3 和 H2O",
+        "AlCl3 和 H2"
+      ],
+      "answer": 1,
+      "explain": "2Al+2NaOH+2H2O→2NaAlO2+3H2↑。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q07",
+      "chapterId": "ch04",
+      "type": "single",
+      "question": "检验 Fe3+ 常用的试剂是？",
+      "options": [
+        "NaOH",
+        "KSCN",
+        "BaCl2",
+        "AgNO3"
+      ],
+      "answer": 1,
+      "explain": "Fe3+ 与 SCN- 生成血红色配合物。",
+      "relatedConceptId": "c01",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q08",
+      "chapterId": "ch04",
+      "type": "single",
+      "question": "Cu2+ 与过量氨水反应的现象是？",
+      "options": [
+        "生成白色沉淀",
+        "生成蓝色沉淀后溶解变深蓝",
+        "生成红褐色沉淀",
+        "无现象"
+      ],
+      "answer": 1,
+      "explain": "先生成 Cu(OH)2 蓝色沉淀，继续加氨水生成深蓝色 [Cu(NH3)4]2+。",
+      "relatedConceptId": "c01",
+      "optionMisconceptions": []
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "f01",
+      "chapterId": "ch01",
+      "front": "元素周期律与无机化学地图：一句话核心是什么？",
+      "back": "无机化学不是背反应，而是用构型决定性质、性质决定用途这条线，把几百种物质串起来。",
+      "tags": [
+        "ch01"
+      ]
+    },
+    {
+      "id": "f02",
+      "chapterId": "ch01",
+      "front": "元素周期律与无机化学地图最容易错在哪？",
+      "back": "Al2O3 是两性氧化物，不是碱性氧化物。",
+      "tags": [
+        "ch01",
+        "易错"
+      ]
+    },
+    {
+      "id": "f03",
+      "chapterId": "ch02",
+      "front": "非金属元素：一句话核心是什么？",
+      "back": "非金属性越靠右上越强；同族向下，氢化物越不稳定、含氧酸越弱。",
+      "tags": [
+        "ch02"
+      ]
+    },
+    {
+      "id": "f04",
+      "chapterId": "ch02",
+      "front": "非金属元素最容易错在哪？",
+      "back": "氯水不是 HCl 和 HClO 的简单混合物，是多组分平衡体系。",
+      "tags": [
+        "ch02",
+        "易错"
+      ]
+    },
+    {
+      "id": "f05",
+      "chapterId": "ch03",
+      "front": "主族金属：一句话核心是什么？",
+      "back": "主族金属越往下越活泼；铝是两性金属，既能与酸反应也能与强碱反应。",
+      "tags": [
+        "ch03"
+      ]
+    },
+    {
+      "id": "f06",
+      "chapterId": "ch03",
+      "front": "主族金属最容易错在哪？",
+      "back": "Na2O2 是过氧化物，不是碱性氧化物。",
+      "tags": [
+        "ch03",
+        "易错"
+      ]
+    },
+    {
+      "id": "f07",
+      "chapterId": "ch04",
+      "front": "过渡金属与配位化合物：一句话核心是什么？",
+      "back": "过渡金属的特点是多价态、有色、易形成配合物，这三条决定它们的化学行为。",
+      "tags": [
+        "ch04"
+      ]
+    },
+    {
+      "id": "f08",
+      "chapterId": "ch04",
+      "front": "过渡金属与配位化合物最容易错在哪？",
+      "back": "Zn2+ 无色，不是所有过渡金属离子都有颜色。",
+      "tags": [
+        "ch04",
+        "易错"
+      ]
+    }
+  ],
+  "companion": "学习伴侣.html"
+}

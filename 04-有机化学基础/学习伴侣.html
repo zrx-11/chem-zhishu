@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>基础有机化学：从碳骨架到手性</title>
+<link rel="stylesheet" href="https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.css">
+<link rel="stylesheet" href="https://registry.npmmirror.com/picocss/2.0.6/dist/css/pico.min.css">
+<link rel="stylesheet" href="https://registry.npmmirror.com/vis-network/9.1.9/dist/dist/vis-network.min.css">
+<style>
+:root{
+  --bg:#f7f7f8; --panel:#ffffff; --text:#1f2328; --muted:#6b7280;
+  --accent:#2563eb; --accent-soft:#dbeafe; --border:#e5e7eb;
+  --ok:#16a34a; --bad:#dc2626; --code-bg:#f3f4f6;
+  --depth-bg:#fef9c3; --depth-border:#ca8a04;
+}
+[data-theme="dark"]{
+  --bg:#111318; --panel:#1a1d24; --text:#e5e7eb; --muted:#9ca3af;
+  --accent:#60a5fa; --accent-soft:#1e3a5f; --border:#2d333d;
+  --ok:#4ade80; --bad:#f87171; --code-bg:#20242c;
+  --depth-bg:#2a2410; --depth-border:#a16207;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.7;font-size:15px}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:290px;flex:none;background:var(--panel);border-right:1px solid var(--border);
+  padding:14px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.sidebar h1{font-size:17px;margin:2px 0 2px}
+.sidebar .sub{font-size:12px;color:var(--muted);margin-bottom:10px}
+#q{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);margin-bottom:10px}
+.nav-sec{font-size:12px;color:var(--muted);margin:12px 0 4px;text-transform:uppercase;letter-spacing:.4px}
+.nav-item{display:block;padding:5px 10px;border-radius:6px;color:var(--text);font-size:14px}
+.nav-item:hover{background:var(--accent-soft);text-decoration:none}
+.nav-item.active{background:var(--accent-soft);color:var(--accent);font-weight:600}
+.nav-item .done{float:right;color:var(--ok);font-size:12px}
+#nav-toggle{display:none}
+.main{flex:1;min-width:0;padding:28px 40px 80px;max-width:920px;margin:0 auto}
+.page h1{font-size:26px;border-bottom:2px solid var(--border);padding-bottom:8px;margin-top:0}
+.page h2{font-size:20px;margin-top:26px}
+.page h3{font-size:17px;margin-top:22px}
+.page table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+.page th,.page td{border:1px solid var(--border);padding:6px 10px;text-align:left}
+.page th{background:var(--code-bg)}
+.page code{background:var(--code-bg);padding:2px 5px;border-radius:4px;font-size:.9em}
+.page pre{background:var(--code-bg);padding:12px;border-radius:8px;overflow-x:auto;font-size:13px}
+.page pre code{background:none;padding:0}
+.page blockquote{border-left:4px solid var(--accent);margin:12px 0;padding:6px 14px;background:var(--accent-soft);border-radius:0 6px 6px 0}
+.page blockquote blockquote{border-color:var(--muted)}
+.page img{max-width:100%}
+.mermaid{background:var(--code-bg);padding:14px;border-radius:8px;overflow-x:auto;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;white-space:pre;color:var(--muted)}
+.mermaid-hint{font-size:12px;color:var(--muted);margin:4px 0 14px}
+svg{max-width:100%;height:auto}
+/* 出处脚注 */
+.source-badge{font-size:12px;color:var(--muted);background:var(--code-bg);padding:4px 10px;border-radius:6px;margin:0 0 12px;display:inline-block}
+/* 前置知识条 */
+.prereq-bar{font-size:13px;color:var(--muted);border-left:3px solid var(--accent);padding:4px 10px;margin:0 0 12px;background:var(--accent-soft)}
+.prereq-hard a{color:var(--bad);font-weight:600}
+.prereq-soft a{color:var(--muted)}
+.prereq-rec a{color:var(--accent)}
+.prereq-tag{display:inline-block;font-size:10px;padding:0 4px;border-radius:3px;margin-right:2px;vertical-align:middle}
+.prereq-hard .prereq-tag{background:var(--bad);color:#fff}
+.prereq-soft .prereq-tag{background:var(--muted);color:#fff}
+.prereq-rec .prereq-tag{background:var(--accent);color:#fff}
+/* 误解卡片 */
+.misconception-card{margin-top:10px;padding:10px 14px;border-left:4px solid var(--bad);background:#fef2f2;border-radius:0 8px 8px 0;font-size:13px}
+.misconception-card b{color:var(--bad)}
+[data-theme="dark"] .misconception-card{background:#2a1215}
+/* 掌握度条 */
+.mastery-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin:4px 0}
+.mastery-bar>div{height:100%;background:var(--ok);transition:width .3s}
+.mastery-label{font-size:11px;color:var(--muted)}
+/* 深度推导片段 */
+.depth-fragment{margin:18px 0;border:1px solid var(--depth-border);border-radius:10px;background:var(--depth-bg);overflow:hidden}
+.depth-fragment>summary{padding:10px 14px;cursor:pointer;font-weight:600;font-size:14px;list-style:none}
+.depth-fragment>summary:hover{filter:brightness(.95)}
+.depth-body{padding:14px 18px;border-top:1px dashed var(--depth-border);background:var(--panel)}
+.depth-missing{color:var(--bad);font-size:13px;padding:8px;background:var(--code-bg);border-radius:6px}
+/* KaTeX */
+.katex-inline{font-size:1.05em}
+.katex-block{overflow-x:auto;padding:8px 0;text-align:center}
+.katex-block .katex{font-size:1.1em}
+/* 测验 */
+.quiz-item{border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin:14px 0;background:var(--panel)}
+.quiz-q{margin:0 0 8px;font-weight:500}
+.quiz-opts label{display:block;padding:4px 0;cursor:pointer}
+.quiz-blank{width:60%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text)}
+.quiz-check{margin-top:10px;padding:6px 16px;border:none;border-radius:6px;background:var(--accent);color:#fff;cursor:pointer}
+.quiz-feedback{margin-left:12px;font-size:13px}
+.fb-ok{color:var(--ok)}.fb-bad{color:var(--bad)}
+.quiz-explain{margin-top:8px;font-size:13px;color:var(--muted);border-top:1px dashed var(--border);padding-top:6px}
+.quiz-remedy{margin-top:8px;padding:8px 12px;background:var(--accent-soft);border-radius:6px;font-size:13px}
+/* 抽认卡 */
+.flashcard{perspective:1200px;margin:24px auto;max-width:520px;cursor:pointer;user-select:none}
+.fc-inner{position:relative;width:100%;height:240px;transform-style:preserve-3d;transition:transform .5s}
+.flashcard.flip .fc-inner{transform:rotateY(180deg)}
+.fc-front,.fc-back{position:absolute;inset:0;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;
+  padding:22px;border-radius:14px;border:1px solid var(--border);background:var(--panel);font-size:16px;text-align:center}
+.fc-back{transform:rotateY(180deg);background:var(--accent-soft);color:var(--text)}
+.card-controls{display:flex;gap:14px;align-items:center;margin:12px 0;flex-wrap:wrap}
+.card-actions{display:flex;gap:12px;justify-content:center}
+.card-actions button{padding:8px 22px;border:none;border-radius:8px;cursor:pointer;font-size:14px}
+#card-known-btn{background:var(--ok);color:#fff}
+#card-again-btn{background:var(--bad);color:#fff}
+.card-counts{color:var(--muted);font-size:13px}
+.path-step{margin:8px 0;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--panel)}
+.path-step.passed{border-color:var(--ok)}
+#glossary-filter{width:100%;max-width:380px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);margin-bottom:10px}
+#glossary-list li{padding:6px 0;border-bottom:1px dashed var(--border)}
+.glossary-ref{color:var(--muted);font-size:12px}
+.search-hit{margin:10px 0}
+.topbar{position:sticky;top:0;background:var(--bg);padding:8px 0;display:flex;justify-content:flex-end;z-index:10}
+#theme-btn{border:1px solid var(--border);background:var(--panel);color:var(--text);border-radius:8px;padding:5px 12px;cursor:pointer;white-space:nowrap}
+#progress-bar{height:5px;background:var(--border);border-radius:3px;margin:8px 0;overflow:hidden}
+#progress-bar>div{height:100%;width:0;background:var(--accent);transition:width .3s}
+.empty{color:var(--muted);padding:20px 0}
+/* 诊断 */
+.diag-controls{margin:14px 0;padding:14px;background:var(--panel);border-radius:10px;border:1px solid var(--border)}
+#diag-start{padding:8px 20px;border:none;border-radius:8px;background:var(--accent);color:#fff;cursor:pointer;font-size:14px}
+#diag-progress{margin-left:12px;color:var(--muted);font-size:13px}
+#diag-stage .quiz-item{margin:10px 0}
+#diag-result{margin-top:16px;padding:14px;background:var(--panel);border-radius:10px;border:1px solid var(--border)}
+.diag-remedy-item{padding:10px;margin:8px 0;background:var(--accent-soft);border-radius:8px;font-size:14px}
+@media print{.sidebar,.topbar,.quiz-actions,.card-actions,.card-controls,.diag-controls{display:none!important}.main{max-width:none;padding:0}}
+@media (max-width:760px){.sidebar{width:100%;height:auto;position:static;padding:10px 14px}
+  #nav{display:none;max-height:46vh;overflow-y:auto;overscroll-behavior:contain}.sidebar.open #nav{display:block}
+  .nav-item{padding:9px 10px}
+  #q,#glossary-filter{font-size:16px}
+  .quiz-opts label{padding:8px 0;min-height:30px}
+  .quiz-check{padding:10px 18px;min-height:40px}
+  #diag-start{min-height:40px}
+  .card-actions button{min-height:40px}
+  #nav-toggle{display:block;width:100%;padding:8px 10px;margin:4px 0;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:14px;text-align:left;cursor:pointer}
+  .layout{flex-direction:column}.main{padding:20px 18px 64px;max-width:none;width:100%}
+  .page{overflow-wrap:anywhere}.page table{display:block;overflow-x:auto;max-width:100%}
+  .page h1,.page h2,.page h3{line-height:1.35}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>基础有机化学：从碳骨架到手性</h1>
+    <div class="sub">按官能团组织，讲清烷、烯、芳、卤代与立体化学</div>
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div class="sub" id="progress-label">进度 0%</div>
+    <input id="q" type="search" placeholder="搜索章节 / 概念 / 术语 / 全文…">
+    <nav id="nav"></nav>
+  </aside>
+  <main class="main">
+    <div class="topbar"><button id="theme-btn">🌙 深色</button></div>
+    <div id="view" class="page"></div>
+  </main>
+</div>
+<script>
+const DATA = {"manifest": {"slug": "organic-chem", "title": "基础有机化学：从碳骨架到手性", "subtitle": "按官能团组织，讲清烷、烯、芳、卤代与立体化学", "book": {"title": "基础有机化学（第4版）上册", "author": "邢其毅、裴伟伟、徐瑞秋、裴坚", "source": ["基础有机化学 上册.pdf"]}, "audience": "读完入门篇、准备学有机", "goal": "掌握有机物的结构语言、常见官能团反应与立体化学基础", "learningPath": [{"step": "01", "title": "学会画结构和命名", "chapterIds": ["ch01"], "checkpoint": "能把分子式画成键线式并命名"}, {"step": "02", "title": "饱和烃", "chapterIds": ["ch02"], "checkpoint": "能解释构象与自由基取代"}, {"step": "03", "title": "不饱和烃", "chapterIds": ["ch03"], "checkpoint": "能用马氏规则预测产物"}, {"step": "04", "title": "芳香、卤代与手性", "chapterIds": ["ch04"], "checkpoint": "能写苯的亲电取代、判断手性碳"}], "chapters": [{"id": "ch01", "title": "第 1 章：有机化学的结构语言", "file": "chapters/ch01-有机结构语言.md", "difficulty": 2, "source": "《基础有机化学》上册·绪论", "prerequisites": []}, {"id": "ch02", "title": "第 2 章：烷烃与构象", "file": "chapters/ch02-烷烃与构象.md", "difficulty": 2, "source": "《基础有机化学》上册·饱和烃", "prerequisites": ["ch01"]}, {"id": "ch03", "title": "第 3 章：烯烃与亲电加成", "file": "chapters/ch03-烯烃与亲电加成.md", "difficulty": 3, "source": "《基础有机化学》上册·烯烃", "prerequisites": ["ch02"]}, {"id": "ch04", "title": "第 4 章：芳香烃、卤代烃与立体化学", "file": "chapters/ch04-芳香烃卤代烃与立体化学.md", "difficulty": 3, "source": "《基础有机化学》上册·芳香烃、卤代烃、立体化学", "prerequisites": ["ch03"]}], "concepts": [{"id": "c01", "title": "手性与对映异构", "file": "concepts/c01-手性.md", "chapterIds": ["ch04"], "difficulty": "高难", "source": "《基础有机化学》上册·立体化学", "prerequisites": ["ch01", "ch03"], "depthFragment": "concepts/c01-手性-depth.md"}], "glossary": [{"term": "键线式", "def": "省略碳和碳氢键、只画碳骨架与官能团的结构式", "chapterId": "ch01"}, {"term": "同分异构体", "def": "分子式相同、结构不同的化合物", "chapterId": "ch01"}, {"term": "构象", "def": "单键旋转形成的不同空间排列，不断键即可互变", "chapterId": "ch02"}, {"term": "马氏规则", "def": "不对称烯烃与 HX 加成时 H 加在含氢较多的碳上", "chapterId": "ch03"}, {"term": "芳香性", "def": "环状、平面、π 电子数为 4n+2 的体系具有的特殊稳定性", "chapterId": "ch04"}, {"term": "手性碳", "def": "连有四个不同基团的碳原子", "chapterId": "ch04"}, {"term": "对映异构体", "def": "互为镜像、不能重合的一对立体异构体", "chapterId": "ch04"}, {"term": "外消旋体", "def": "等量对映异构体的混合物，旋光相互抵消", "chapterId": "ch04"}], "patterns": {"file": "patterns.md"}, "cheatsheet": {"file": "cheatsheet.md"}, "quizzes": [{"id": "q01", "chapterId": "ch01", "type": "single", "question": "下列属于官能团的是？", "options": ["—CH3", "—OH", "—C2H5", "苯环"], "answer": 1, "explain": "羟基是官能团；甲基、乙基是取代基。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q02", "chapterId": "ch01", "type": "single", "question": "C4H10 的同分异构体有几种？", "options": ["1", "2", "3", "4"], "answer": 1, "explain": "正丁烷和异丁烷两种。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q03", "chapterId": "ch02", "type": "single", "question": "甲烷的空间构型是？", "options": ["平面正方形", "正四面体", "三角锥", "直线形"], "answer": 1, "explain": "sp3 杂化，四个键指向四面体顶点。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q04", "chapterId": "ch02", "type": "single", "question": "乙烷最稳定的构象是？", "options": ["交叉式", "重叠式", "半重叠式", "平面式"], "answer": 0, "explain": "交叉式氢与氢错开，排斥最小。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q05", "chapterId": "ch03", "type": "single", "question": "丙烯与 HBr 加成的主要产物是？", "options": ["1-溴丙烷", "2-溴丙烷", "1,2-二溴丙烷", "丙醇"], "answer": 1, "explain": "马氏规则，H 加在含氢多的碳上。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q06", "chapterId": "ch03", "type": "single", "question": "下列能发生顺反异构的是？", "options": ["CH2=CH2", "CH2=CHCH3", "CH3CH=CHCH3", "CH2=C(CH3)2"], "answer": 2, "explain": "两个双键碳各连两个不同基团。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q07", "chapterId": "ch04", "type": "single", "question": "苯的硝化反应条件是？", "options": ["浓硝酸、浓硫酸、加热", "稀硝酸、常温", "氯气、光照", "氢氧化钠、加热"], "answer": 0, "explain": "混酸硝化，浓硫酸作催化剂和脱水剂。", "relatedConceptId": "", "optionMisconceptions": []}, {"id": "q08", "chapterId": "ch04", "type": "single", "question": "下列化合物中有手性碳的是？", "options": ["CH3Cl", "CH2Cl2", "CH3CHClCH3", "CH3CHClCH2CH3"], "answer": 3, "explain": "2 号碳连 H、Cl、CH3、C2H5 四个不同基团。", "relatedConceptId": "c01", "optionMisconceptions": []}], "flashcards": [{"id": "f01", "chapterId": "ch01", "front": "有机化学的结构语言：一句话核心是什么？", "back": "有机分子靠碳骨架加官能团两件事描述；同一分子式画出不同骨架，就是不同物质。", "tags": ["ch01"]}, {"id": "f02", "chapterId": "ch01", "front": "有机化学的结构语言最容易错在哪？", "back": "分子式相同不一定是同一种物质。", "tags": ["ch01", "易错"]}, {"id": "f03", "chapterId": "ch02", "front": "烷烃与构象：一句话核心是什么？", "back": "烷烃的 C—C 单键可以自由旋转，不同旋转角度形成不同构象；化学性质以自由基取代为主。", "tags": ["ch02"]}, {"id": "f04", "chapterId": "ch02", "front": "烷烃与构象最容易错在哪？", "back": "构象不同不断键，是同一物质。", "tags": ["ch02", "易错"]}, {"id": "f05", "chapterId": "ch03", "front": "烯烃与亲电加成：一句话核心是什么？", "back": "C=C 由一个 σ 键和一个 π 键组成，π 电子云暴露在外，容易被亲电试剂进攻发生加成。", "tags": ["ch03"]}, {"id": "f06", "chapterId": "ch03", "front": "烯烃与亲电加成最容易错在哪？", "back": "过氧化物存在下 HBr 加成是反马氏，是特例。", "tags": ["ch03", "易错"]}, {"id": "f07", "chapterId": "ch04", "front": "芳香烃、卤代烃与立体化学：一句话核心是什么？", "back": "苯环的 π 电子离域使体系特别稳定，倾向取代；手性来自四个不同基团连在同一个碳上。", "tags": ["ch04"]}, {"id": "f08", "chapterId": "ch04", "front": "芳香烃、卤代烃与立体化学最容易错在哪？", "back": "R 不一定是右旋，S 不一定是左旋，必须实测。", "tags": ["ch04", "易错"]}], "companion": "学习伴侣.html"}, "pages": {"ch01": {"html": "<div class=\"source-badge\">📖 出处：《基础有机化学》上册·绪论<\/div><h1>第 1 章：有机化学的结构语言<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★☆ | <strong>预估学时<\/strong>：1.2 小时 | <strong>前置<\/strong>：入门篇第 10 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n把分子式展开成构造式、键线式；\n<\/li><li>\n认出常见官能团并说出所属类别；\n<\/li><li>\n判断两种结构是不是同分异构体；\n<\/li><li>\n用&quot;IUPAC 三步法&quot;给简单有机物命名。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>有机分子靠&quot;碳骨架 + 官能团&quot;两件事描述；同一分子式画出不同骨架，就是不同的物质。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：构造式与键线式（难度：基础）<\/h3>\n<p><strong>构造式<\/strong>把每个原子和每根键都画出来：<\/p>\n<pre><code>    H   H\n    |   |\nH - C - C - O - H\n    |   |\n    H   H<\/code><\/pre>\n<p><strong>键线式<\/strong>省略 C 和 C—H 键，只画碳骨架和官能团，端点与拐点都是碳。乙醇的键线式是一根折线，末端接 OH。<\/p>\n<p>读键线式三条规则：<\/p>\n<ol><li>\n每个端点和拐点是碳原子；\n<\/li><li>\n碳上没画出的键都由氢补满（碳四价）；\n<\/li><li>\n杂原子（O、N、S、卤素）必须写出来。\n<\/ol>\n<h3>概念 2：官能团（难度：基础）<\/h3>\n<p>官能团决定有机物的化学性质。必认清单：<\/p>\n<table><thead><tr><th>官能团<\/th><th>结构<\/th><th>所属类别<\/th><th>典型性质<\/th><\/tr><\/thead><tbody><tr><td>羟基<\/td><td>—OH<\/td><td>醇/酚<\/td><td>与 Na 反应、酯化<\/td><\/tr><tr><td>羧基<\/td><td>—COOH<\/td><td>羧酸<\/td><td>酸性、酯化<\/td><\/tr><tr><td>醛基<\/td><td>—CHO<\/td><td>醛<\/td><td>银镜反应、被氧化<\/td><\/tr><tr><td>羰基<\/td><td>C=O<\/td><td>酮/醛<\/td><td>加成、还原<\/td><\/tr><tr><td>酯基<\/td><td>—COO—<\/td><td>酯<\/td><td>水解<\/td><\/tr><tr><td>碳碳双键<\/td><td>C=C<\/td><td>烯烃<\/td><td>加成、氧化<\/td><\/tr><tr><td>碳碳三键<\/td><td>C≡C<\/td><td>炔烃<\/td><td>加成<\/td><\/tr><tr><td>氨基<\/td><td>—NH₂<\/td><td>胺<\/td><td>碱性<\/td><\/tr><tr><td>卤素<\/td><td>—X<\/td><td>卤代烃<\/td><td>取代、消除<\/td><\/tr><\/tbody><\/table>\n<h3>概念 3：同分异构（难度：进阶）<\/h3>\n<p>分子式相同、结构不同叫<strong>同分异构体<\/strong>。四类：<\/p>\n<ul><li>\n<strong>碳链异构<\/strong>：正丁烷与异丁烷。\n<\/li><li>\n<strong>位置异构<\/strong>：1-丙醇与 2-丙醇；邻、间、对二甲苯。\n<\/li><li>\n<strong>官能团异构<\/strong>：乙醇与二甲醚；乙酸与甲酸甲酯。\n<\/li><li>\n<strong>立体异构<\/strong>：顺反异构、对映异构（第 4 章讲）。\n<\/ul>\n<p>数同分异构体要按&quot;碳链由长到短、支链由少到多、位置由中到边&quot;的顺序，避免漏数。<\/p>\n<h3>概念 4：IUPAC 命名三步法（难度：进阶）<\/h3>\n<ol><li>\n<strong>选主链<\/strong>：含主要官能团的最长碳链。\n<\/li><li>\n<strong>编号<\/strong>：从离官能团最近的一端开始，让官能团位次最小。\n<\/li><li>\n<strong>写名称<\/strong>：位次-取代基-母体。\n<\/ol>\n<p>例：CH₃CH(CH₃)CH₂OH 主链 3 个碳（丙醇），OH 在 1 号位，2 号位有甲基 → 2-甲基-1-丙醇。<\/p>\n<p>常见母体：烷（-ane）、烯（-ene）、炔（-yne）、醇（-ol）、醛（-al）、酸（-oic acid）。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[分子式] --&gt; B[画出碳骨架]\n  B --&gt; C[补氢 满足四价]\n  C --&gt; D[标官能团]\n  D --&gt; E[命名: 主链 编号 取代基]\n  B --&gt; F{骨架不同?}\n  F --&gt;|是| G[同分异构体]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：从分子式到结构，先搭骨架再挂官能团。骨架不同就构成同分异构。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：有机分子像乐高。碳骨架是积木底座，官能团是插在上面的功能件。同样的底座插不同功能件，就是不同物质。这个类比在&quot;官能团之间会相互影响&quot;（共轭、诱导）时失效。<\/p>\n<p>实例：C₄H₁₀ 有几种同分异构体？两种：正丁烷（直链）和异丁烷（2-甲基丙烷）。C₅H₁₂ 有三种：正戊烷、异戊烷、新戊烷。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;分子式相同就是同一种物质&quot;——要看结构。\n<\/li><li>\n别以为&quot;键线式的拐点不是碳&quot;——每个拐点和端点都是碳。\n<\/li><li>\n别以为&quot;命名时编号可以从任意一端开始&quot;——必须让官能团位次最小。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n下列属于官能团的是（ ）。A. —CH₃ B. —OH C. —C₂H₅ D. 苯环\n<p>（答案：B；解析：羟基是官能团，甲基、乙基是取代基。）<\/p>\n<\/ol>\n<ol><li>\nC₄H₁₀ 的同分异构体有几种？\n<p>（答案：2 种；解析：正丁烷、异丁烷。）<\/p>\n<\/ol>\n<ol><li>\n命名 CH₃CH₂CH₂OH。\n<p>（答案：1-丙醇；解析：主链 3 个碳，OH 在 1 号位。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n键线式：端点、拐点都是碳，氢省略。\n<\/li><li>\n官能团决定性质，先认羟基、羧基、双键、酯基。\n<\/li><li>\n命名三步：选主链、编号、写位次。\n<\/ul>", "kind": "chapter", "title": "第 1 章：有机化学的结构语言"}, "ch02": {"html": "<div class=\"source-badge\">📖 出处：《基础有机化学》上册·饱和烃<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch01\">第 1 章：有机化学的结构语言<\/a><\/span><\/div><h1>第 2 章：烷烃与构象<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★☆ | <strong>预估学时<\/strong>：1.2 小时 | <strong>前置<\/strong>：第 1 章、普化第 11 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n说清 sp³ 杂化与甲烷的四面体结构；\n<\/li><li>\n区分乙烷的交叉式和重叠式构象；\n<\/li><li>\n写出烷烃的自由基取代反应；\n<\/li><li>\n解释烷烃沸点随碳数增加而升高的原因。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>烷烃的 C—C 单键可以自由旋转，不同旋转角度形成不同构象；化学性质以自由基取代为主。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：sp³ 与四面体（难度：基础）<\/h3>\n<p>烷烃碳原子是 sp³ 杂化，四个杂化轨道指向四面体四个顶点，键角 109.5°。甲烷 CH₄ 是正四面体，四个 C—H 键完全等价。<\/p>\n<p>因为四个键等价，甲烷的一氯代物只有一种 CH₃Cl，二氯代物只有一种 CH₂Cl₂。如果甲烷是平面结构，二氯代物会有两种（相邻、相对），实验只发现一种，这反过来证明甲烷是四面体。<\/p>\n<h3>概念 2：构象（难度：进阶）<\/h3>\n<p>C—C 单键可以旋转，同一分子在不同旋转角度下的空间排列叫<strong>构象<\/strong>。构象之间不经过断键就能互变，所以它们是同一物质的不同形态，不是同分异构体。<\/p>\n<p>乙烷的两种典型构象：<\/p>\n<ul><li>\n<strong>交叉式<\/strong>：两个甲基的氢相互错开，能量最低，最稳定。\n<\/li><li>\n<strong>重叠式<\/strong>：氢与氢正对，排斥最大，能量最高。\n<\/ul>\n<p>室温下分子碰撞能量足以越过旋转能垒（约 12 kJ/mol），所以乙烷快速在两种构象间转换，平均以交叉式为主。<\/p>\n<h3>概念 3：自由基取代（难度：进阶）<\/h3>\n<p>烷烃在光照下与卤素发生取代，机理是自由基链反应，三步：<\/p>\n<ol><li>\n<strong>链引发<\/strong>：Cl₂ →(光照) 2Cl·（氯自由基）\n<\/li><li>\n<strong>链增长<\/strong>：Cl· + CH₄ → CH₃· + HCl；CH₃· + Cl₂ → CH₃Cl + Cl·\n<\/li><li>\n<strong>链终止<\/strong>：Cl· + Cl· → Cl₂；CH₃· + Cl· → CH₃Cl；CH₃· + CH₃· → C₂H₆\n<\/ol>\n<p>选择性：叔氢 &gt; 仲氢 &gt; 伯氢，因为形成的自由基越稳定，反应越容易。所以甲烷氯代会得到多种产物，工业上难以只停在 CH₃Cl。<\/p>\n<h3>概念 4：烷烃的物理性质（难度：基础）<\/h3>\n<ul><li>\n碳数 1–4：气体；5–16：液体；17 以上：固体。\n<\/li><li>\n沸点随碳数增加而升高：分子越大，色散力越强。\n<\/li><li>\n同分异构体中，支链越多，沸点越低：支链使分子更接近球形，接触面积小。\n<\/ul>\n<p>烷烃不溶于水，溶于有机溶剂，密度比水小。化学性质稳定，不与酸、碱、KMnO₄ 反应，可作溶剂和燃料。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart LR\n  A[乙烷 C2H6] --&gt; B[交叉式 能量低]\n  A --&gt; C[重叠式 能量高]\n  B --&gt;|旋转 12 kJ/mol| C\n  C --&gt;|继续旋转| B<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：能量曲线有两个低点（交叉式）和两个高点（重叠式）。室温下分子轻松越过能垒，所以两种构象快速互变。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：乙烷的 C—C 键像一根可以转动的轴，两端各挂一个风扇叶片。转到叶片错开时最省力（交叉式），正对时最费劲（重叠式）。这个类比在&quot;构象影响反应选择性&quot;这一点上要补一句：酶和受体识别的是特定构象。<\/p>\n<p>实例：正丁烷有几种构象？沿 C2—C3 键旋转，有对位交叉、邻位交叉、部分重叠、全重叠等，其中对位交叉最稳定。室温下以对位交叉为主。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;构象不同就是不同物质&quot;——不断键就能互变，是同一物质。\n<\/li><li>\n别以为&quot;烷烃完全没反应&quot;——光照下能与卤素取代，高温下能燃烧、裂解。\n<\/li><li>\n别以为&quot;支链越多沸点越高&quot;——恰好相反，支链多沸点低。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n甲烷的空间构型是（ ）。A. 平面正方形 B. 正四面体 C. 三角锥 D. 直线形\n<p>（答案：B；解析：sp³ 杂化，四个键指向四面体顶点。）<\/p>\n<\/ol>\n<ol><li>\n乙烷最稳定的构象是（ ）。\n<p>（答案：交叉式；解析：氢与氢错开，排斥最小。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;烷烃能使酸性 KMnO₄ 溶液褪色。&quot;\n<p>（答案：不对。烷烃不含不饱和键，不被 KMnO₄ 氧化。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\nsp³ 四面体，键角 109.5°。\n<\/li><li>\n交叉式稳定、重叠式不稳定，构象不断键互变。\n<\/li><li>\n自由基取代三步：引发、增长、终止。\n<\/ul>", "kind": "chapter", "title": "第 2 章：烷烃与构象"}, "ch03": {"html": "<div class=\"source-badge\">📖 出处：《基础有机化学》上册·烯烃<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch02\">第 2 章：烷烃与构象<\/a><\/span><\/div><h1>第 3 章：烯烃与亲电加成<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★★ | <strong>预估学时<\/strong>：1.5 小时 | <strong>前置<\/strong>：第 2 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n说清 C=C 的 sp² 结构与 π 键；\n<\/li><li>\n判断顺反异构；\n<\/li><li>\n用马氏规则预测加成产物；\n<\/li><li>\n写出烯烃的氧化反应。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>C=C 由一个 σ 键和一个 π 键组成，π 电子云暴露在外，容易被亲电试剂进攻，发生加成。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：sp² 与 π 键（难度：进阶）<\/h3>\n<p>双键碳是 sp² 杂化，三个杂化轨道在同一平面内，键角约 120°。剩下的一个 p 轨道垂直于该平面，两个碳的 p 轨道肩并肩重叠形成 <strong>π 键<\/strong>。<\/p>\n<p>π 键的特点：电子云在平面上下，暴露在外，容易被亲电试剂进攻；π 键比 σ 键弱，容易断裂，所以烯烃易加成。双键碳不能自由旋转，否则 π 键断裂。<\/p>\n<h3>概念 2：顺反异构（难度：进阶）<\/h3>\n<p>双键不能旋转，当两个双键碳各连两个不同基团时，会出现<strong>顺反异构<\/strong>。<\/p>\n<p>以 2-丁烯为例：<\/p>\n<ul><li>\n顺式：两个甲基在双键同侧。\n<\/li><li>\n反式：两个甲基在双键异侧。\n<\/ul>\n<p>判断条件：每个双键碳必须连两个不同的基团。若有一个碳连两个相同的氢，就没有顺反异构。<\/p>\n<h3>概念 3：亲电加成与马氏规则（难度：高难）<\/h3>\n<p>烯烃与 HX、H₂O、X₂ 等加成，分两步：亲电试剂先进攻 π 电子，生成碳正离子中间体；亲核试剂再结合。<\/p>\n<p>马氏规则：不对称烯烃与 HX 加成时，H 加在含氢较多的碳上，X 加在含氢较少的碳上。<\/p>\n<p>例：CH₃CH=CH₂ + HBr → CH₃CHBrCH₃（2-溴丙烷为主） 原因：生成的二级碳正离子比一级碳正离子稳定。碳正离子稳定性：三级 &gt; 二级 &gt; 一级。<\/p>\n<p>反马氏加成：在过氧化物存在下，HBr 与烯烃发生自由基加成，Br 加在含氢多的碳上。这条是特例，要单独记。<\/p>\n<h3>概念 4：烯烃的氧化（难度：进阶）<\/h3>\n<ul><li>\n与酸性 KMnO₄：双键断裂，生成羧酸或酮。RCH=CHR&#x27; → RCOOH + R&#x27;COOH。可用 KMnO₄ 褪色检验双键。\n<\/li><li>\n与臭氧（O₃）后还原水解：双键断裂生成醛或酮，可用来确定双键位置。\n<\/li><li>\n催化加氢：H₂/Ni 或 Pd，生成烷烃。\n<\/ul>\n<h3>概念 5：聚合（难度：基础）<\/h3>\n<p>烯烃加成聚合，双键打开连成长链： n CH₂=CH₂ →(-CH₂-CH₂-)ₙ（聚乙烯） 工业上聚乙烯、聚丙烯、聚氯乙烯都是这样来的。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[烯烃 C=C] --&gt; B[亲电试剂 H+]\n  B --&gt; C[碳正离子中间体]\n  C --&gt; D[亲核试剂 X-]\n  D --&gt; E[加成产物]\n  C --&gt; F{碳正离子稳定性}\n  F --&gt;|三级最稳| G[马氏产物为主]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：两步加成，第一步决定区域选择性。碳正离子越稳定，路径越容易走。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：π 键像两个人隔空拉手，力量不如真正握手（σ 键）牢。外来的人一推（亲电试剂），隔空的手就松开，改与新人握手（加成）。这个类比在&quot;碳正离子会重排&quot;这一点上要补一句：中间体还可能变形重组。<\/p>\n<p>实例：丙烯与水加成（酸催化）遵循马氏规则，主要产物是 2-丙醇： CH₃CH=CH₂ + H₂O →(H⁺) CH₃CH(OH)CH₃<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;双键可以自由旋转&quot;——旋转会破坏 π 键，所以有顺反异构。\n<\/li><li>\n别以为&quot;马氏规则适用于所有加成&quot;——只适用于亲电加成；过氧化物存在下的 HBr 加成是反马氏。\n<\/li><li>\n别以为&quot;烯烃与溴水反应是取代&quot;——是加成，溴水褪色。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n丙烯与 HBr 加成的主要产物是（ ）。A. 1-溴丙烷 B. 2-溴丙烷 C. 1,2-二溴丙烷 D. 丙醇\n<p>（答案：B；解析：马氏规则，H 加在含氢多的碳上。）<\/p>\n<\/ol>\n<ol><li>\n下列能发生顺反异构的是（ ）。A. CH₂=CH₂ B. CH₂=CHCH₃ C. CH₃CH=CHCH₃ D. CH₂=C(CH₃)₂\n<p>（答案：C；解析：两个双键碳各连两个不同基团。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;烯烃使酸性 KMnO₄ 褪色，是因为发生了加成反应。&quot;\n<p>（答案：不对。是氧化反应，双键被氧化断裂。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\nsp² 平面，π 键暴露，易亲电加成。\n<\/li><li>\n马氏规则：H 加到含氢多的碳上，碳正离子稳定性决定方向。\n<\/li><li>\n酸性 KMnO₄ 褪色可检验双键。\n<\/ul>", "kind": "chapter", "title": "第 3 章：烯烃与亲电加成"}, "ch04": {"html": "<div class=\"source-badge\">📖 出处：《基础有机化学》上册·芳香烃、卤代烃、立体化学<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch03\">第 3 章：烯烃与亲电加成<\/a><\/span><\/div><h1>第 4 章：芳香烃、卤代烃与立体化学<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★★ | <strong>预估学时<\/strong>：1.8 小时 | <strong>前置<\/strong>：第 3 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n解释苯的芳香性；\n<\/li><li>\n写出苯的亲电取代反应；\n<\/li><li>\n区分卤代烃的取代和消除；\n<\/li><li>\n判断手性碳并写出 R/S 标记。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>苯环的 π 电子离域使体系特别稳定，所以苯倾向于取代而不是加成；手性来自&quot;四个不同基团连在同一个碳上&quot;。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：苯的结构与芳香性（难度：进阶）<\/h3>\n<p>苯 C₆H₆ 是平面正六边形，每个碳 sp² 杂化，剩余 p 轨道形成离域的 π 体系，6 个 π 电子分布在环上。键长介于单键和双键之间，都是 139 pm。<\/p>\n<p><strong>芳香性<\/strong>的三个条件（Hückel 规则）：<\/p>\n<ol><li>\n环状；\n<\/li><li>\n平面；\n<\/li><li>\nπ 电子数为 4n+2（n = 0, 1, 2…）。\n<\/ol>\n<p>苯有 6 个 π 电子，4n+2 中 n=1，满足。萘有 10 个，也满足。环丁二烯有 4 个，不满足，不稳定。<\/p>\n<p>芳香性的结果：苯不容易加成（加成会破坏离域体系），容易取代（取代后环仍保持芳香）。<\/p>\n<h3>概念 2：苯的亲电取代（难度：进阶）<\/h3>\n<p>五类典型反应，机理都是&quot;亲电试剂进攻环 → 碳正离子中间体 → 失去 H⁺ 恢复芳香&quot;。<\/p>\n<ul><li>\n卤代：C₆H₆ + Br₂ →(FeBr₃) C₆H₅Br + HBr\n<\/li><li>\n硝化：C₆H₆ + HNO₃ →(浓H₂SO₄, △) C₆H₅NO₂ + H₂O\n<\/li><li>\n磺化：C₆H₆ + H₂SO₄(浓) →(△) C₆H₅SO₃H + H₂O\n<\/li><li>\n傅–克烷基化：C₆H₆ + CH₃Cl →(AlCl₃) C₆H₅CH₃ + HCl\n<\/li><li>\n傅–克酰基化：C₆H₆ + CH₃COCl →(AlCl₃) C₆H₅COCH₃ + HCl\n<\/ul>\n<p>取代基的定位效应：<\/p>\n<ul><li>\n<strong>邻对位定位基<\/strong>：—OH、—NH₂、—CH₃、—X，使反应更容易，主要上邻位和对位。\n<\/li><li>\n<strong>间位定位基<\/strong>：—NO₂、—COOH、—SO₃H、—CHO，使反应变难，主要上间位。\n<\/ul>\n<h3>概念 3：卤代烃的取代与消除（难度：进阶）<\/h3>\n<p>卤代烃的 C—X 键极性大，碳带部分正电，容易被亲核试剂进攻。<\/p>\n<p><strong>取代（SN）<\/strong>：R—X + OH⁻ → R—OH + X⁻（水解制醇） <strong>消除（E）<\/strong>：R—CH₂—CH₂—X + OH⁻ → R—CH=CH₂ + H₂O + X⁻（醇钠、加热，生成烯烃）<\/p>\n<p>两者竞争：强碱、高温有利于消除；弱碱、低温有利于取代。叔卤代烃更容易消除，伯卤代烃更容易取代。<\/p>\n<h3>概念 4：手性与 R/S（难度：高难）<\/h3>\n<p><strong>手性碳<\/strong>：连四个不同基团的碳原子。含一个手性碳的分子通常有一对对映异构体，互为镜像、不能重合，就像左右手。<\/p>\n<p>R/S 标记步骤：<\/p>\n<ol><li>\n把手性碳的四个基团按<strong>次序规则<\/strong>排优先顺序（原子序数大的优先）。\n<\/li><li>\n把最低优先级的基团转向远离观察者（虚线）。\n<\/li><li>\n看剩下三个基团的排列方向：顺时针为 R，逆时针为 S。\n<\/ol>\n<p>次序规则：I &gt; Br &gt; Cl &gt; S &gt; O &gt; N &gt; C &gt; H；同种原子比下一层原子。<\/p>\n<p>旋光性：对映异构体能使平面偏振光旋转，一个右旋（+）、一个左旋（−）。等量混合叫外消旋体，旋光相互抵消。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[卤代烃 R-X] --&gt; B{条件}\n  B --&gt;|弱碱 低温| C[取代 生成醇]\n  B --&gt;|强碱 高温| D[消除 生成烯烃]\n  E[手性碳] --&gt; F{四个基团不同?}\n  F --&gt;|是| G[一对对映异构体 R/S]\n  F --&gt;|否| H[无手性]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：卤代烃有两条竞争路径，条件决定走哪条。手性只看一个碳上的四个基团是否全不同。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：苯环像一圈手拉手的人，电子在圈上流动，整体特别稳。想插一个人进来（取代），圈还完整；想两个人分别拉住（加成），圈就断了，所以苯宁可取代。这个类比在&quot;休克尔规则&quot;处要补一句：不是所有环都稳，人数要符合 4n+2。<\/p>\n<p>实例：判断 2-丁醇 CH₃CH(OH)CH₂CH₃ 是否有手性。2 号碳连 —H、—OH、—CH₃、—CH₂CH₃，四个不同，是手性碳，有一对对映异构体。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;苯有单双键交替，所以能加成&quot;——苯的键是离域的，加成会破坏芳香性。\n<\/li><li>\n别以为&quot;卤代烃水解一定生成醇&quot;——在强碱醇溶液中加热，主要发生消除生成烯烃。\n<\/li><li>\n别以为&quot;有手性碳就一定有旋光性&quot;——外消旋体旋光抵消，要分离出单一对映体才有旋光。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n苯的硝化反应条件是（ ）。\n<p>（答案：浓硝酸、浓硫酸、加热；解析：混酸硝化，浓硫酸作催化剂和脱水剂。）<\/p>\n<\/ol>\n<ol><li>\n下列化合物中有手性碳的是（ ）。A. CH₃Cl B. CH₂Cl₂ C. CH₃CHClCH₃ D. CH₃CHClCH₂CH₃\n<p>（答案：D；解析：2 号碳连 H、Cl、CH₃、C₂H₅ 四个不同基团。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;苯容易发生加成反应，因为含有 π 电子。&quot;\n<p>（答案：不对。苯的离域 π 体系特别稳定，加成会破坏芳香性，所以主要发生取代。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n芳香性三条件：环状、平面、4n+2 个 π 电子。\n<\/li><li>\n苯的亲电取代五类：卤代、硝化、磺化、烷基化、酰基化。\n<\/li><li>\n手性碳四个基团不同，R/S 按次序规则判。\n<\/ul>", "kind": "chapter", "title": "第 4 章：芳香烃、卤代烃与立体化学"}, "c01": {"html": "<div class=\"source-badge\">📖 出处：《基础有机化学》上册·立体化学<\/div><h1>手性与对映异构<\/h1>\n<ul><li>\n<strong>难度<\/strong>：高难 | <strong>涉及章节<\/strong>：第 4 章\n<\/ul>\n<h2>一句话定义<\/h2>\n<p>手性是指分子与它的镜像不能重合的性质；含一个手性碳的分子通常有一对互为镜像的对映异构体。<\/p>\n<h2>为什么重要<\/h2>\n<p>药物、氨基酸、糖，全都靠手性起作用。沙利度胺的两种对映体，一种镇吐、一种致畸；人体只能利用左旋氨基酸。不懂手性，有机化学只学了一半。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[手性碳] --&gt; B{四个基团都不同?}\n  B --&gt;|是| C[一对对映异构体]\n  B --&gt;|否| D[无手性]\n  C --&gt; E[R/S 标记]\n  C --&gt; F[旋光性]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<h2>详解<\/h2>\n<p>判断手性碳：看一个碳上连的四个基团是否全不同。有 H、CH₃、OH、C₂H₅ 四个不同基团，就是手性碳。<\/p>\n<p>R/S 标记：按次序规则排优先级（原子序数大的优先），把最低优先级基团转向远离观察者，剩下三个顺时针为 R、逆时针为 S。<\/p>\n<p>对映异构体物理性质相同（熔点、沸点、溶解度），只有旋光方向相反。等量混合是外消旋体，旋光抵消。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;有手性碳就一定有旋光性&quot;——外消旋体没有。\n<\/li><li>\n别以为&quot;手性分子一定含手性碳&quot;——有些联苯、丙二烯型分子没有手性碳也有手性。\n<\/li><li>\n别以为&quot;对映体化学性质完全相同&quot;——在非手性环境中相同，在手性环境（如酶）中反应速率不同。\n<\/ul>\n<h2>在书中出现的脉络<\/h2>\n<table><thead><tr><th>章节<\/th><th>语境<\/th><th>关键结论<\/th><\/tr><\/thead><tbody><tr><td>有机第 1 章<\/td><td>同分异构<\/td><td>立体异构是一类<\/td><\/tr><tr><td>有机第 4 章<\/td><td>手性碳<\/td><td>R/S 标记<\/td><\/tr><tr><td>有机第 4 章<\/td><td>药物<\/td><td>对映体药效不同<\/td><\/tr><\/tbody><\/table>\n<h2>相关概念<\/h2>\n<ul><li>\n前置：构造式、同分异构\n<\/li><li>\n后续：不对称合成、酶催化\n<\/ul><details class=\"depth-fragment\"><summary>🔬 展开完整第一性原理推导（手性与对映异构）<\/summary><div class=\"depth-body\"><h2>为什么&quot;镜像不能重合&quot;这件事值得单独讲<\/h2>\n<p>先做一个动作：把左手和右手掌心相对，它们看起来一样；把手掌朝同一个方向并排，它们不能重合。左手的大拇指在右边，右手的大拇指在左边。这就是&quot;手性&quot;这个名字的来源。<\/p>\n<p>分子层面完全一样。把一个手性分子和它的镜像放在一起，无论怎么旋转、平移，都无法让所有原子对齐。这不是&quot;看起来不同&quot;，而是几何上不可能。<\/p>\n<h3>第一步：什么条件造成&quot;不能重合&quot;<\/h3>\n<p>一个碳原子连四个基团，这四个基团在空间上指向四面体的四个顶点。如果四个基团全不同，那么&quot;交换任意两个基团&quot;会得到一个新的、不能重合的排列。<\/p>\n<p>用组合数算：四个不同基团在四面体四个位置的排列有 4! = 24 种。但旋转整个分子可以把一些排列重合。真正不同的只有 2 种，互为镜像。这就是一对对映体。<\/p>\n<p>如果四个基团中有两个相同（比如两个 H），交换它们得到的是同一个分子，所以没有手性。<\/p>\n<h3>第二步：为什么用&quot;次序规则&quot;排优先级<\/h3>\n<p>R/S 是把三维信息压成一个字母的约定。规则：比较与手性碳直接相连的原子，原子序数大的优先；若相同，比较下一层，直到分出高低。<\/p>\n<p>例：2-丁醇的 2 号碳连 —OH（O，8）、—CH₂CH₃（C，6）、—CH₃（C，6）、—H（1）。—OH 最高，—H 最低。—CH₂CH₃ 与 —CH₃ 第一层都是 C，比第二层：前者连 C、H、H，后者连 H、H、H，所以乙基优先于甲基。<\/p>\n<h3>第三步：R/S 怎么判<\/h3>\n<p>把最低优先级基团（这里是 H）放到远离你的方向，看剩下三个：—OH → —C₂H₅ → —CH₃。顺时针为 R，逆时针为 S。<\/p>\n<p>一个常见的错误是&quot;直接看平面图顺时针&quot;。平面图是三维分子的投影，必须先把最低优先级基团转向后方，否则结论会反。<\/p>\n<h3>第四步：旋光为什么相反<\/h3>\n<p>偏振光穿过手性分子溶液时，电场矢量会被旋转。两个对映体一个右旋（+）、一个左旋（−），旋转角度相同、方向相反。等量混合，旋转相互抵消，所以外消旋体不旋光。<\/p>\n<p>旋光方向（+ / −）与 R/S 没有固定对应关系，必须实测。这是初学者最容易混的一点：R 不一定是右旋，S 不一定是左旋。<\/p>\n<h3>第五步：为什么生物体只认一种<\/h3>\n<p>酶是手性环境。酶的活性口袋由 L-氨基酸构成，只与特定构型的底物匹配。就像左手只能戴左手套。所以人体只能利用左旋氨基酸，药物的一种对映体有效、另一种可能无效甚至有害。<\/p>\n<h3>边界<\/h3>\n<p>手性不只来自手性碳。联苯类化合物如果两侧取代基太大、不能自由旋转，整个分子可以有轴手性；丙二烯型有面手性。判断手性要看整个分子的对称性，不能只数手性碳。<\/p><\/div><\/details>", "kind": "concept", "title": "手性与对映异构"}, "__path__": {"html": "<h1>学习路径<\/h1><p>按推荐顺序学习；每步通过检查点（自测题）后再继续。<\/p><ol class='path-list'><li class='path-step' id='path-01'><strong>步骤 01：学会画结构和命名<\/strong><br>阅读：<a href=\"#/chapter/ch01\">第 1 章：有机化学的结构语言<\/a><br>检查点：能把分子式画成键线式并命名<\/li><li class='path-step' id='path-02'><strong>步骤 02：饱和烃<\/strong><br>阅读：<a href=\"#/chapter/ch02\">第 2 章：烷烃与构象<\/a><br>检查点：能解释构象与自由基取代<\/li><li class='path-step' id='path-03'><strong>步骤 03：不饱和烃<\/strong><br>阅读：<a href=\"#/chapter/ch03\">第 3 章：烯烃与亲电加成<\/a><br>检查点：能用马氏规则预测产物<\/li><li class='path-step' id='path-04'><strong>步骤 04：芳香、卤代与手性<\/strong><br>阅读：<a href=\"#/chapter/ch04\">第 4 章：芳香烃、卤代烃与立体化学<\/a><br>检查点：能写苯的亲电取代、判断手性碳<\/li><\/ol><p>进度：<span id='path-progress-label'>0/0<\/span><\/p>", "kind": "path", "title": "学习路径"}, "__graph__": {"html": "<h1>🕸 知识图谱<\/h1><p>节点是概念，边是先修关系。拖拽节点、滚轮缩放，点击节点跳转到对应概念页。<\/p><div id=\"graph-container\" style=\"height:520px;border:1px solid var(--border);border-radius:10px;background:var(--panel)\"><\/div><p class=\"sub\">红线 = 必学前置 · 灰线 = 建议先看 · 蓝线 = 拓展阅读<\/p>", "kind": "graph", "title": "知识图谱"}, "__quiz_all__": {"html": "<p>（无综合题）<\/p>", "kind": "quiz", "title": "综合测验"}, "__quiz_ch01__": {"html": "<h1>测验：第 1 章：有机化学的结构语言<\/h1><div class='quiz-item' data-qid='q01' data-type='single' data-concept='' data-chapter='ch01'><p class='quiz-q'><b>Q1.<\/b> 下列属于官能团的是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q01' value='0'> —CH3<\/label><label class='quiz-opt'><input type='radio' name='q01' value='1'> —OH<\/label><label class='quiz-opt'><input type='radio' name='q01' value='2'> —C2H5<\/label><label class='quiz-opt'><input type='radio' name='q01' value='3'> 苯环<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q02' data-type='single' data-concept='' data-chapter='ch01'><p class='quiz-q'><b>Q2.<\/b> C4H10 的同分异构体有几种？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q02' value='0'> 1<\/label><label class='quiz-opt'><input type='radio' name='q02' value='1'> 2<\/label><label class='quiz-opt'><input type='radio' name='q02' value='2'> 3<\/label><label class='quiz-opt'><input type='radio' name='q02' value='3'> 4<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "kind": "quiz", "title": "测验"}, "__quiz_ch02__": {"html": "<h1>测验：第 2 章：烷烃与构象<\/h1><div class='quiz-item' data-qid='q03' data-type='single' data-concept='' data-chapter='ch02'><p class='quiz-q'><b>Q1.<\/b> 甲烷的空间构型是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q03' value='0'> 平面正方形<\/label><label class='quiz-opt'><input type='radio' name='q03' value='1'> 正四面体<\/label><label class='quiz-opt'><input type='radio' name='q03' value='2'> 三角锥<\/label><label class='quiz-opt'><input type='radio' name='q03' value='3'> 直线形<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q04' data-type='single' data-concept='' data-chapter='ch02'><p class='quiz-q'><b>Q2.<\/b> 乙烷最稳定的构象是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q04' value='0'> 交叉式<\/label><label class='quiz-opt'><input type='radio' name='q04' value='1'> 重叠式<\/label><label class='quiz-opt'><input type='radio' name='q04' value='2'> 半重叠式<\/label><label class='quiz-opt'><input type='radio' name='q04' value='3'> 平面式<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "kind": "quiz", "title": "测验"}, "__quiz_ch03__": {"html": "<h1>测验：第 3 章：烯烃与亲电加成<\/h1><div class='quiz-item' data-qid='q05' data-type='single' data-concept='' data-chapter='ch03'><p class='quiz-q'><b>Q1.<\/b> 丙烯与 HBr 加成的主要产物是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q05' value='0'> 1-溴丙烷<\/label><label class='quiz-opt'><input type='radio' name='q05' value='1'> 2-溴丙烷<\/label><label class='quiz-opt'><input type='radio' name='q05' value='2'> 1,2-二溴丙烷<\/label><label class='quiz-opt'><input type='radio' name='q05' value='3'> 丙醇<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q06' data-type='single' data-concept='' data-chapter='ch03'><p class='quiz-q'><b>Q2.<\/b> 下列能发生顺反异构的是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q06' value='0'> CH2=CH2<\/label><label class='quiz-opt'><input type='radio' name='q06' value='1'> CH2=CHCH3<\/label><label class='quiz-opt'><input type='radio' name='q06' value='2'> CH3CH=CHCH3<\/label><label class='quiz-opt'><input type='radio' name='q06' value='3'> CH2=C(CH3)2<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "kind": "quiz", "title": "测验"}, "__quiz_ch04__": {"html": "<h1>测验：第 4 章：芳香烃、卤代烃与立体化学<\/h1><div class='quiz-item' data-qid='q07' data-type='single' data-concept='' data-chapter='ch04'><p class='quiz-q'><b>Q1.<\/b> 苯的硝化反应条件是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q07' value='0'> 浓硝酸、浓硫酸、加热<\/label><label class='quiz-opt'><input type='radio' name='q07' value='1'> 稀硝酸、常温<\/label><label class='quiz-opt'><input type='radio' name='q07' value='2'> 氯气、光照<\/label><label class='quiz-opt'><input type='radio' name='q07' value='3'> 氢氧化钠、加热<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q08' data-type='single' data-concept='c01' data-chapter='ch04'><p class='quiz-q'><b>Q2.<\/b> 下列化合物中有手性碳的是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q08' value='0'> CH3Cl<\/label><label class='quiz-opt'><input type='radio' name='q08' value='1'> CH2Cl2<\/label><label class='quiz-opt'><input type='radio' name='q08' value='2'> CH3CHClCH3<\/label><label class='quiz-opt'><input type='radio' name='q08' value='3'> CH3CHClCH2CH3<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "kind": "quiz", "title": "测验"}, "__cards__": {"html": "<h1>抽认卡<\/h1><p>点击卡片翻面；判断「认识 / 不熟」以记录复习状态。<\/p><div class='card-controls'><label>按章节筛选：<select id='card-filter'><option value=''>全部<\/option><\/select><\/label><span class='card-counts'>认识 <b id='card-known'>0<\/b> · 不熟 <b id='card-again'>0<\/b> · 剩余 <b id='card-left'>0<\/b><\/span><\/div><div id='card-stage'><div class='flashcard' id='flashcard'><div class='fc-inner'><div class='fc-front'><\/div><div class='fc-back'><\/div><\/div><\/div><\/div><div class='card-actions'><button id='card-again-btn'>不熟<\/button><button id='card-known-btn'>认识<\/button><\/div>", "kind": "cards", "title": "抽认卡"}, "__glossary__": {"html": "<h1>术语表<\/h1><input id='glossary-filter' type='search' placeholder='筛选术语…'><ul id='glossary-list'><li data-term='键线式'>键线式 — 省略碳和碳氢键、只画碳骨架与官能团的结构式 <span class=glossary-ref>（第 1 章：有机化学的结构语言）<\/span><\/li><li data-term='同分异构体'>同分异构体 — 分子式相同、结构不同的化合物 <span class=glossary-ref>（第 1 章：有机化学的结构语言）<\/span><\/li><li data-term='构象'>构象 — 单键旋转形成的不同空间排列，不断键即可互变 <span class=glossary-ref>（第 2 章：烷烃与构象）<\/span><\/li><li data-term='马氏规则'>马氏规则 — 不对称烯烃与 HX 加成时 H 加在含氢较多的碳上 <span class=glossary-ref>（第 3 章：烯烃与亲电加成）<\/span><\/li><li data-term='芳香性'>芳香性 — 环状、平面、π 电子数为 4n+2 的体系具有的特殊稳定性 <span class=glossary-ref>（第 4 章：芳香烃、卤代烃与立体化学）<\/span><\/li><li data-term='手性碳'>手性碳 — 连有四个不同基团的碳原子 <span class=glossary-ref>（第 4 章：芳香烃、卤代烃与立体化学）<\/span><\/li><li data-term='对映异构体'>对映异构体 — 互为镜像、不能重合的一对立体异构体 <span class=glossary-ref>（第 4 章：芳香烃、卤代烃与立体化学）<\/span><\/li><li data-term='外消旋体'>外消旋体 — 等量对映异构体的混合物，旋光相互抵消 <span class=glossary-ref>（第 4 章：芳香烃、卤代烃与立体化学）<\/span><\/li><\/ul>", "kind": "glossary", "title": "术语表"}, "__diagnosis__": {"html": "<h1>🩺 诊断测试<\/h1><p>系统会从全书中抽题。答错的题会自动沿知识依赖链回溯，告诉你真正需要补的前置知识点。<\/p><div class='diag-controls'><button id='diag-start'>开始诊断（随机抽 5 题）<\/button><span id='diag-progress'><\/span><\/div><div id='diag-stage'><\/div><div id='diag-result'><\/div>", "kind": "diagnosis", "title": "诊断测试"}, "__patterns__": {"html": "<h1>模式与框架库<\/h1>\n<h2>框架：结构决定性质<\/h2>\n<p>先画碳骨架，再标官能团，最后由官能团判断反应类型：双键加成、羟基酯化、羧基酸性、卤代烃取代/消除。<\/p>\n<h2>决策规则<\/h2>\n<ul><li>\n数同分异构：碳链由长到短、支链由少到多、位置由中到边。\n<\/li><li>\n判断马氏加成：看碳正离子稳定性，三级 &gt; 二级 &gt; 一级。\n<\/li><li>\n判断手性碳：一个碳上四个基团是否全不同；再用次序规则定 R/S。\n<\/li><li>\n卤代烃取代还是消除：弱碱低温取代，强碱高温消除。\n<\/ul>\n<h2>反模式<\/h2>\n<ul><li>\n把构象当同分异构。单键旋转不断键，是同一物质。\n<\/li><li>\n认为苯容易加成。加成破坏芳香性，苯主要发生取代。\n<\/li><li>\n认为 R 一定右旋。旋光方向必须实测，与 R/S 无固定对应。\n<\/ul>", "kind": "模式库", "title": "模式库"}, "__cheatsheet__": {"html": "<h1>速查表<\/h1>\n<h2>官能团与反应<\/h2>\n<table><thead><tr><th>官能团<\/th><th>典型反应<\/th><\/tr><\/thead><tbody><tr><td>C=C<\/td><td>加成、氧化、聚合<\/td><\/tr><tr><td>—OH<\/td><td>与 Na 反应、酯化、氧化<\/td><\/tr><tr><td>—COOH<\/td><td>酸性、酯化<\/td><\/tr><tr><td>—CHO<\/td><td>银镜反应、还原<\/td><\/tr><tr><td>—X<\/td><td>取代、消除<\/td><\/tr><tr><td>苯环<\/td><td>亲电取代<\/td><\/tr><\/tbody><\/table>\n<h2>规则<\/h2>\n<table><thead><tr><th>场景<\/th><th>规则<\/th><\/tr><\/thead><tbody><tr><td>马氏加成<\/td><td>H 加到含氢多的碳上<\/td><\/tr><tr><td>反马氏<\/td><td>过氧化物存在下的 HBr 加成<\/td><\/tr><tr><td>手性碳<\/td><td>四个基团全不同<\/td><\/tr><tr><td>R/S<\/td><td>最低优先级朝后，其余顺 R 逆 S<\/td><\/tr><tr><td>卤代烃<\/td><td>弱碱低温取代，强碱高温消除<\/td><\/tr><\/tbody><\/table>", "kind": "速查表", "title": "速查表"}}, "base_dir": "/home/user/Doubao/chats/38453368250906626/化学知枢/04-有机化学基础", "nav": [{"label": "学习路径", "href": "#/path"}, {"label": "🕸 知识图谱", "href": "#/graph"}, {"label": "🩺 诊断测试", "href": "#/diagnosis"}, {"label": "章节", "children": [{"label": "第 1 章：有机化学的结构语言", "href": "#/chapter/ch01"}, {"label": "第 2 章：烷烃与构象", "href": "#/chapter/ch02"}, {"label": "第 3 章：烯烃与亲电加成", "href": "#/chapter/ch03"}, {"label": "第 4 章：芳香烃、卤代烃与立体化学", "href": "#/chapter/ch04"}]}, {"label": "概念", "children": [{"label": "手性与对映异构", "href": "#/concept/c01"}]}, {"label": "测验", "children": [{"label": "综合测验", "href": "#/quiz/all"}, {"label": "测验：第 1 章：有机化学的结构语言", "href": "#/quiz/ch01"}, {"label": "测验：第 2 章：烷烃与构象", "href": "#/quiz/ch02"}, {"label": "测验：第 3 章：烯烃与亲电加成", "href": "#/quiz/ch03"}, {"label": "测验：第 4 章：芳香烃、卤代烃与立体化学", "href": "#/quiz/ch04"}]}, {"label": "抽认卡", "href": "#/cards"}, {"label": "术语表", "href": "#/glossary"}, {"label": "模式库", "href": "#/patterns"}, {"label": "速查表", "href": "#/cheatsheet"}], "rendered": {"ch01": "<div class=\"source-badge\">📖 出处：《基础有机化学》上册·绪论<\/div><h1>第 1 章：有机化学的结构语言<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★☆ | <strong>预估学时<\/strong>：1.2 小时 | <strong>前置<\/strong>：入门篇第 10 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n把分子式展开成构造式、键线式；\n<\/li><li>\n认出常见官能团并说出所属类别；\n<\/li><li>\n判断两种结构是不是同分异构体；\n<\/li><li>\n用&quot;IUPAC 三步法&quot;给简单有机物命名。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>有机分子靠&quot;碳骨架 + 官能团&quot;两件事描述；同一分子式画出不同骨架，就是不同的物质。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：构造式与键线式（难度：基础）<\/h3>\n<p><strong>构造式<\/strong>把每个原子和每根键都画出来：<\/p>\n<pre><code>    H   H\n    |   |\nH - C - C - O - H\n    |   |\n    H   H<\/code><\/pre>\n<p><strong>键线式<\/strong>省略 C 和 C—H 键，只画碳骨架和官能团，端点与拐点都是碳。乙醇的键线式是一根折线，末端接 OH。<\/p>\n<p>读键线式三条规则：<\/p>\n<ol><li>\n每个端点和拐点是碳原子；\n<\/li><li>\n碳上没画出的键都由氢补满（碳四价）；\n<\/li><li>\n杂原子（O、N、S、卤素）必须写出来。\n<\/ol>\n<h3>概念 2：官能团（难度：基础）<\/h3>\n<p>官能团决定有机物的化学性质。必认清单：<\/p>\n<table><thead><tr><th>官能团<\/th><th>结构<\/th><th>所属类别<\/th><th>典型性质<\/th><\/tr><\/thead><tbody><tr><td>羟基<\/td><td>—OH<\/td><td>醇/酚<\/td><td>与 Na 反应、酯化<\/td><\/tr><tr><td>羧基<\/td><td>—COOH<\/td><td>羧酸<\/td><td>酸性、酯化<\/td><\/tr><tr><td>醛基<\/td><td>—CHO<\/td><td>醛<\/td><td>银镜反应、被氧化<\/td><\/tr><tr><td>羰基<\/td><td>C=O<\/td><td>酮/醛<\/td><td>加成、还原<\/td><\/tr><tr><td>酯基<\/td><td>—COO—<\/td><td>酯<\/td><td>水解<\/td><\/tr><tr><td>碳碳双键<\/td><td>C=C<\/td><td>烯烃<\/td><td>加成、氧化<\/td><\/tr><tr><td>碳碳三键<\/td><td>C≡C<\/td><td>炔烃<\/td><td>加成<\/td><\/tr><tr><td>氨基<\/td><td>—NH₂<\/td><td>胺<\/td><td>碱性<\/td><\/tr><tr><td>卤素<\/td><td>—X<\/td><td>卤代烃<\/td><td>取代、消除<\/td><\/tr><\/tbody><\/table>\n<h3>概念 3：同分异构（难度：进阶）<\/h3>\n<p>分子式相同、结构不同叫<strong>同分异构体<\/strong>。四类：<\/p>\n<ul><li>\n<strong>碳链异构<\/strong>：正丁烷与异丁烷。\n<\/li><li>\n<strong>位置异构<\/strong>：1-丙醇与 2-丙醇；邻、间、对二甲苯。\n<\/li><li>\n<strong>官能团异构<\/strong>：乙醇与二甲醚；乙酸与甲酸甲酯。\n<\/li><li>\n<strong>立体异构<\/strong>：顺反异构、对映异构（第 4 章讲）。\n<\/ul>\n<p>数同分异构体要按&quot;碳链由长到短、支链由少到多、位置由中到边&quot;的顺序，避免漏数。<\/p>\n<h3>概念 4：IUPAC 命名三步法（难度：进阶）<\/h3>\n<ol><li>\n<strong>选主链<\/strong>：含主要官能团的最长碳链。\n<\/li><li>\n<strong>编号<\/strong>：从离官能团最近的一端开始，让官能团位次最小。\n<\/li><li>\n<strong>写名称<\/strong>：位次-取代基-母体。\n<\/ol>\n<p>例：CH₃CH(CH₃)CH₂OH 主链 3 个碳（丙醇），OH 在 1 号位，2 号位有甲基 → 2-甲基-1-丙醇。<\/p>\n<p>常见母体：烷（-ane）、烯（-ene）、炔（-yne）、醇（-ol）、醛（-al）、酸（-oic acid）。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[分子式] --&gt; B[画出碳骨架]\n  B --&gt; C[补氢 满足四价]\n  C --&gt; D[标官能团]\n  D --&gt; E[命名: 主链 编号 取代基]\n  B --&gt; F{骨架不同?}\n  F --&gt;|是| G[同分异构体]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：从分子式到结构，先搭骨架再挂官能团。骨架不同就构成同分异构。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：有机分子像乐高。碳骨架是积木底座，官能团是插在上面的功能件。同样的底座插不同功能件，就是不同物质。这个类比在&quot;官能团之间会相互影响&quot;（共轭、诱导）时失效。<\/p>\n<p>实例：C₄H₁₀ 有几种同分异构体？两种：正丁烷（直链）和异丁烷（2-甲基丙烷）。C₅H₁₂ 有三种：正戊烷、异戊烷、新戊烷。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;分子式相同就是同一种物质&quot;——要看结构。\n<\/li><li>\n别以为&quot;键线式的拐点不是碳&quot;——每个拐点和端点都是碳。\n<\/li><li>\n别以为&quot;命名时编号可以从任意一端开始&quot;——必须让官能团位次最小。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n下列属于官能团的是（ ）。A. —CH₃ B. —OH C. —C₂H₅ D. 苯环\n<p>（答案：B；解析：羟基是官能团，甲基、乙基是取代基。）<\/p>\n<\/ol>\n<ol><li>\nC₄H₁₀ 的同分异构体有几种？\n<p>（答案：2 种；解析：正丁烷、异丁烷。）<\/p>\n<\/ol>\n<ol><li>\n命名 CH₃CH₂CH₂OH。\n<p>（答案：1-丙醇；解析：主链 3 个碳，OH 在 1 号位。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n键线式：端点、拐点都是碳，氢省略。\n<\/li><li>\n官能团决定性质，先认羟基、羧基、双键、酯基。\n<\/li><li>\n命名三步：选主链、编号、写位次。\n<\/ul>", "ch02": "<div class=\"source-badge\">📖 出处：《基础有机化学》上册·饱和烃<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch01\">第 1 章：有机化学的结构语言<\/a><\/span><\/div><h1>第 2 章：烷烃与构象<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★☆ | <strong>预估学时<\/strong>：1.2 小时 | <strong>前置<\/strong>：第 1 章、普化第 11 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n说清 sp³ 杂化与甲烷的四面体结构；\n<\/li><li>\n区分乙烷的交叉式和重叠式构象；\n<\/li><li>\n写出烷烃的自由基取代反应；\n<\/li><li>\n解释烷烃沸点随碳数增加而升高的原因。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>烷烃的 C—C 单键可以自由旋转，不同旋转角度形成不同构象；化学性质以自由基取代为主。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：sp³ 与四面体（难度：基础）<\/h3>\n<p>烷烃碳原子是 sp³ 杂化，四个杂化轨道指向四面体四个顶点，键角 109.5°。甲烷 CH₄ 是正四面体，四个 C—H 键完全等价。<\/p>\n<p>因为四个键等价，甲烷的一氯代物只有一种 CH₃Cl，二氯代物只有一种 CH₂Cl₂。如果甲烷是平面结构，二氯代物会有两种（相邻、相对），实验只发现一种，这反过来证明甲烷是四面体。<\/p>\n<h3>概念 2：构象（难度：进阶）<\/h3>\n<p>C—C 单键可以旋转，同一分子在不同旋转角度下的空间排列叫<strong>构象<\/strong>。构象之间不经过断键就能互变，所以它们是同一物质的不同形态，不是同分异构体。<\/p>\n<p>乙烷的两种典型构象：<\/p>\n<ul><li>\n<strong>交叉式<\/strong>：两个甲基的氢相互错开，能量最低，最稳定。\n<\/li><li>\n<strong>重叠式<\/strong>：氢与氢正对，排斥最大，能量最高。\n<\/ul>\n<p>室温下分子碰撞能量足以越过旋转能垒（约 12 kJ/mol），所以乙烷快速在两种构象间转换，平均以交叉式为主。<\/p>\n<h3>概念 3：自由基取代（难度：进阶）<\/h3>\n<p>烷烃在光照下与卤素发生取代，机理是自由基链反应，三步：<\/p>\n<ol><li>\n<strong>链引发<\/strong>：Cl₂ →(光照) 2Cl·（氯自由基）\n<\/li><li>\n<strong>链增长<\/strong>：Cl· + CH₄ → CH₃· + HCl；CH₃· + Cl₂ → CH₃Cl + Cl·\n<\/li><li>\n<strong>链终止<\/strong>：Cl· + Cl· → Cl₂；CH₃· + Cl· → CH₃Cl；CH₃· + CH₃· → C₂H₆\n<\/ol>\n<p>选择性：叔氢 &gt; 仲氢 &gt; 伯氢，因为形成的自由基越稳定，反应越容易。所以甲烷氯代会得到多种产物，工业上难以只停在 CH₃Cl。<\/p>\n<h3>概念 4：烷烃的物理性质（难度：基础）<\/h3>\n<ul><li>\n碳数 1–4：气体；5–16：液体；17 以上：固体。\n<\/li><li>\n沸点随碳数增加而升高：分子越大，色散力越强。\n<\/li><li>\n同分异构体中，支链越多，沸点越低：支链使分子更接近球形，接触面积小。\n<\/ul>\n<p>烷烃不溶于水，溶于有机溶剂，密度比水小。化学性质稳定，不与酸、碱、KMnO₄ 反应，可作溶剂和燃料。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart LR\n  A[乙烷 C2H6] --&gt; B[交叉式 能量低]\n  A --&gt; C[重叠式 能量高]\n  B --&gt;|旋转 12 kJ/mol| C\n  C --&gt;|继续旋转| B<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：能量曲线有两个低点（交叉式）和两个高点（重叠式）。室温下分子轻松越过能垒，所以两种构象快速互变。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：乙烷的 C—C 键像一根可以转动的轴，两端各挂一个风扇叶片。转到叶片错开时最省力（交叉式），正对时最费劲（重叠式）。这个类比在&quot;构象影响反应选择性&quot;这一点上要补一句：酶和受体识别的是特定构象。<\/p>\n<p>实例：正丁烷有几种构象？沿 C2—C3 键旋转，有对位交叉、邻位交叉、部分重叠、全重叠等，其中对位交叉最稳定。室温下以对位交叉为主。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;构象不同就是不同物质&quot;——不断键就能互变，是同一物质。\n<\/li><li>\n别以为&quot;烷烃完全没反应&quot;——光照下能与卤素取代，高温下能燃烧、裂解。\n<\/li><li>\n别以为&quot;支链越多沸点越高&quot;——恰好相反，支链多沸点低。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n甲烷的空间构型是（ ）。A. 平面正方形 B. 正四面体 C. 三角锥 D. 直线形\n<p>（答案：B；解析：sp³ 杂化，四个键指向四面体顶点。）<\/p>\n<\/ol>\n<ol><li>\n乙烷最稳定的构象是（ ）。\n<p>（答案：交叉式；解析：氢与氢错开，排斥最小。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;烷烃能使酸性 KMnO₄ 溶液褪色。&quot;\n<p>（答案：不对。烷烃不含不饱和键，不被 KMnO₄ 氧化。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\nsp³ 四面体，键角 109.5°。\n<\/li><li>\n交叉式稳定、重叠式不稳定，构象不断键互变。\n<\/li><li>\n自由基取代三步：引发、增长、终止。\n<\/ul>", "ch03": "<div class=\"source-badge\">📖 出处：《基础有机化学》上册·烯烃<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch02\">第 2 章：烷烃与构象<\/a><\/span><\/div><h1>第 3 章：烯烃与亲电加成<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★★ | <strong>预估学时<\/strong>：1.5 小时 | <strong>前置<\/strong>：第 2 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n说清 C=C 的 sp² 结构与 π 键；\n<\/li><li>\n判断顺反异构；\n<\/li><li>\n用马氏规则预测加成产物；\n<\/li><li>\n写出烯烃的氧化反应。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>C=C 由一个 σ 键和一个 π 键组成，π 电子云暴露在外，容易被亲电试剂进攻，发生加成。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：sp² 与 π 键（难度：进阶）<\/h3>\n<p>双键碳是 sp² 杂化，三个杂化轨道在同一平面内，键角约 120°。剩下的一个 p 轨道垂直于该平面，两个碳的 p 轨道肩并肩重叠形成 <strong>π 键<\/strong>。<\/p>\n<p>π 键的特点：电子云在平面上下，暴露在外，容易被亲电试剂进攻；π 键比 σ 键弱，容易断裂，所以烯烃易加成。双键碳不能自由旋转，否则 π 键断裂。<\/p>\n<h3>概念 2：顺反异构（难度：进阶）<\/h3>\n<p>双键不能旋转，当两个双键碳各连两个不同基团时，会出现<strong>顺反异构<\/strong>。<\/p>\n<p>以 2-丁烯为例：<\/p>\n<ul><li>\n顺式：两个甲基在双键同侧。\n<\/li><li>\n反式：两个甲基在双键异侧。\n<\/ul>\n<p>判断条件：每个双键碳必须连两个不同的基团。若有一个碳连两个相同的氢，就没有顺反异构。<\/p>\n<h3>概念 3：亲电加成与马氏规则（难度：高难）<\/h3>\n<p>烯烃与 HX、H₂O、X₂ 等加成，分两步：亲电试剂先进攻 π 电子，生成碳正离子中间体；亲核试剂再结合。<\/p>\n<p>马氏规则：不对称烯烃与 HX 加成时，H 加在含氢较多的碳上，X 加在含氢较少的碳上。<\/p>\n<p>例：CH₃CH=CH₂ + HBr → CH₃CHBrCH₃（2-溴丙烷为主） 原因：生成的二级碳正离子比一级碳正离子稳定。碳正离子稳定性：三级 &gt; 二级 &gt; 一级。<\/p>\n<p>反马氏加成：在过氧化物存在下，HBr 与烯烃发生自由基加成，Br 加在含氢多的碳上。这条是特例，要单独记。<\/p>\n<h3>概念 4：烯烃的氧化（难度：进阶）<\/h3>\n<ul><li>\n与酸性 KMnO₄：双键断裂，生成羧酸或酮。RCH=CHR&#x27; → RCOOH + R&#x27;COOH。可用 KMnO₄ 褪色检验双键。\n<\/li><li>\n与臭氧（O₃）后还原水解：双键断裂生成醛或酮，可用来确定双键位置。\n<\/li><li>\n催化加氢：H₂/Ni 或 Pd，生成烷烃。\n<\/ul>\n<h3>概念 5：聚合（难度：基础）<\/h3>\n<p>烯烃加成聚合，双键打开连成长链： n CH₂=CH₂ →(-CH₂-CH₂-)ₙ（聚乙烯） 工业上聚乙烯、聚丙烯、聚氯乙烯都是这样来的。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[烯烃 C=C] --&gt; B[亲电试剂 H+]\n  B --&gt; C[碳正离子中间体]\n  C --&gt; D[亲核试剂 X-]\n  D --&gt; E[加成产物]\n  C --&gt; F{碳正离子稳定性}\n  F --&gt;|三级最稳| G[马氏产物为主]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：两步加成，第一步决定区域选择性。碳正离子越稳定，路径越容易走。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：π 键像两个人隔空拉手，力量不如真正握手（σ 键）牢。外来的人一推（亲电试剂），隔空的手就松开，改与新人握手（加成）。这个类比在&quot;碳正离子会重排&quot;这一点上要补一句：中间体还可能变形重组。<\/p>\n<p>实例：丙烯与水加成（酸催化）遵循马氏规则，主要产物是 2-丙醇： CH₃CH=CH₂ + H₂O →(H⁺) CH₃CH(OH)CH₃<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;双键可以自由旋转&quot;——旋转会破坏 π 键，所以有顺反异构。\n<\/li><li>\n别以为&quot;马氏规则适用于所有加成&quot;——只适用于亲电加成；过氧化物存在下的 HBr 加成是反马氏。\n<\/li><li>\n别以为&quot;烯烃与溴水反应是取代&quot;——是加成，溴水褪色。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n丙烯与 HBr 加成的主要产物是（ ）。A. 1-溴丙烷 B. 2-溴丙烷 C. 1,2-二溴丙烷 D. 丙醇\n<p>（答案：B；解析：马氏规则，H 加在含氢多的碳上。）<\/p>\n<\/ol>\n<ol><li>\n下列能发生顺反异构的是（ ）。A. CH₂=CH₂ B. CH₂=CHCH₃ C. CH₃CH=CHCH₃ D. CH₂=C(CH₃)₂\n<p>（答案：C；解析：两个双键碳各连两个不同基团。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;烯烃使酸性 KMnO₄ 褪色，是因为发生了加成反应。&quot;\n<p>（答案：不对。是氧化反应，双键被氧化断裂。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\nsp² 平面，π 键暴露，易亲电加成。\n<\/li><li>\n马氏规则：H 加到含氢多的碳上，碳正离子稳定性决定方向。\n<\/li><li>\n酸性 KMnO₄ 褪色可检验双键。\n<\/ul>", "ch04": "<div class=\"source-badge\">📖 出处：《基础有机化学》上册·芳香烃、卤代烃、立体化学<\/div><div class=\"prereq-bar\">⬅ 前置：<span class=\"prereq-hard\"><span class=\"prereq-tag\">必<\/span> <a href=\"#/chapter/ch03\">第 3 章：烯烃与亲电加成<\/a><\/span><\/div><h1>第 4 章：芳香烃、卤代烃与立体化学<\/h1>\n<ul><li>\n<strong>难度<\/strong>：★★★ | <strong>预估学时<\/strong>：1.8 小时 | <strong>前置<\/strong>：第 3 章\n<\/ul>\n<h2>学习目标<\/h2>\n<p>学完本章，你能：<\/p>\n<ol><li>\n解释苯的芳香性；\n<\/li><li>\n写出苯的亲电取代反应；\n<\/li><li>\n区分卤代烃的取代和消除；\n<\/li><li>\n判断手性碳并写出 R/S 标记。\n<\/ol>\n<h2>一句话核心<\/h2>\n<p>苯环的 π 电子离域使体系特别稳定，所以苯倾向于取代而不是加成；手性来自&quot;四个不同基团连在同一个碳上&quot;。<\/p>\n<h2>零基础讲解<\/h2>\n<h3>概念 1：苯的结构与芳香性（难度：进阶）<\/h3>\n<p>苯 C₆H₆ 是平面正六边形，每个碳 sp² 杂化，剩余 p 轨道形成离域的 π 体系，6 个 π 电子分布在环上。键长介于单键和双键之间，都是 139 pm。<\/p>\n<p><strong>芳香性<\/strong>的三个条件（Hückel 规则）：<\/p>\n<ol><li>\n环状；\n<\/li><li>\n平面；\n<\/li><li>\nπ 电子数为 4n+2（n = 0, 1, 2…）。\n<\/ol>\n<p>苯有 6 个 π 电子，4n+2 中 n=1，满足。萘有 10 个，也满足。环丁二烯有 4 个，不满足，不稳定。<\/p>\n<p>芳香性的结果：苯不容易加成（加成会破坏离域体系），容易取代（取代后环仍保持芳香）。<\/p>\n<h3>概念 2：苯的亲电取代（难度：进阶）<\/h3>\n<p>五类典型反应，机理都是&quot;亲电试剂进攻环 → 碳正离子中间体 → 失去 H⁺ 恢复芳香&quot;。<\/p>\n<ul><li>\n卤代：C₆H₆ + Br₂ →(FeBr₃) C₆H₅Br + HBr\n<\/li><li>\n硝化：C₆H₆ + HNO₃ →(浓H₂SO₄, △) C₆H₅NO₂ + H₂O\n<\/li><li>\n磺化：C₆H₆ + H₂SO₄(浓) →(△) C₆H₅SO₃H + H₂O\n<\/li><li>\n傅–克烷基化：C₆H₆ + CH₃Cl →(AlCl₃) C₆H₅CH₃ + HCl\n<\/li><li>\n傅–克酰基化：C₆H₆ + CH₃COCl →(AlCl₃) C₆H₅COCH₃ + HCl\n<\/ul>\n<p>取代基的定位效应：<\/p>\n<ul><li>\n<strong>邻对位定位基<\/strong>：—OH、—NH₂、—CH₃、—X，使反应更容易，主要上邻位和对位。\n<\/li><li>\n<strong>间位定位基<\/strong>：—NO₂、—COOH、—SO₃H、—CHO，使反应变难，主要上间位。\n<\/ul>\n<h3>概念 3：卤代烃的取代与消除（难度：进阶）<\/h3>\n<p>卤代烃的 C—X 键极性大，碳带部分正电，容易被亲核试剂进攻。<\/p>\n<p><strong>取代（SN）<\/strong>：R—X + OH⁻ → R—OH + X⁻（水解制醇） <strong>消除（E）<\/strong>：R—CH₂—CH₂—X + OH⁻ → R—CH=CH₂ + H₂O + X⁻（醇钠、加热，生成烯烃）<\/p>\n<p>两者竞争：强碱、高温有利于消除；弱碱、低温有利于取代。叔卤代烃更容易消除，伯卤代烃更容易取代。<\/p>\n<h3>概念 4：手性与 R/S（难度：高难）<\/h3>\n<p><strong>手性碳<\/strong>：连四个不同基团的碳原子。含一个手性碳的分子通常有一对对映异构体，互为镜像、不能重合，就像左右手。<\/p>\n<p>R/S 标记步骤：<\/p>\n<ol><li>\n把手性碳的四个基团按<strong>次序规则<\/strong>排优先顺序（原子序数大的优先）。\n<\/li><li>\n把最低优先级的基团转向远离观察者（虚线）。\n<\/li><li>\n看剩下三个基团的排列方向：顺时针为 R，逆时针为 S。\n<\/ol>\n<p>次序规则：I &gt; Br &gt; Cl &gt; S &gt; O &gt; N &gt; C &gt; H；同种原子比下一层原子。<\/p>\n<p>旋光性：对映异构体能使平面偏振光旋转，一个右旋（+）、一个左旋（−）。等量混合叫外消旋体，旋光相互抵消。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[卤代烃 R-X] --&gt; B{条件}\n  B --&gt;|弱碱 低温| C[取代 生成醇]\n  B --&gt;|强碱 高温| D[消除 生成烯烃]\n  E[手性碳] --&gt; F{四个基团不同?}\n  F --&gt;|是| G[一对对映异构体 R/S]\n  F --&gt;|否| H[无手性]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<p>看图说明：卤代烃有两条竞争路径，条件决定走哪条。手性只看一个碳上的四个基团是否全不同。<\/p>\n<h2>类比与实例<\/h2>\n<p>类比：苯环像一圈手拉手的人，电子在圈上流动，整体特别稳。想插一个人进来（取代），圈还完整；想两个人分别拉住（加成），圈就断了，所以苯宁可取代。这个类比在&quot;休克尔规则&quot;处要补一句：不是所有环都稳，人数要符合 4n+2。<\/p>\n<p>实例：判断 2-丁醇 CH₃CH(OH)CH₂CH₃ 是否有手性。2 号碳连 —H、—OH、—CH₃、—CH₂CH₃，四个不同，是手性碳，有一对对映异构体。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;苯有单双键交替，所以能加成&quot;——苯的键是离域的，加成会破坏芳香性。\n<\/li><li>\n别以为&quot;卤代烃水解一定生成醇&quot;——在强碱醇溶液中加热，主要发生消除生成烯烃。\n<\/li><li>\n别以为&quot;有手性碳就一定有旋光性&quot;——外消旋体旋光抵消，要分离出单一对映体才有旋光。\n<\/ul>\n<h2>自测题（答案）<\/h2>\n<ol><li>\n苯的硝化反应条件是（ ）。\n<p>（答案：浓硝酸、浓硫酸、加热；解析：混酸硝化，浓硫酸作催化剂和脱水剂。）<\/p>\n<\/ol>\n<ol><li>\n下列化合物中有手性碳的是（ ）。A. CH₃Cl B. CH₂Cl₂ C. CH₃CHClCH₃ D. CH₃CHClCH₂CH₃\n<p>（答案：D；解析：2 号碳连 H、Cl、CH₃、C₂H₅ 四个不同基团。）<\/p>\n<\/ol>\n<ol><li>\n判断：&quot;苯容易发生加成反应，因为含有 π 电子。&quot;\n<p>（答案：不对。苯的离域 π 体系特别稳定，加成会破坏芳香性，所以主要发生取代。）<\/p>\n<\/ol>\n<h2>复习锚点<\/h2>\n<ul><li>\n芳香性三条件：环状、平面、4n+2 个 π 电子。\n<\/li><li>\n苯的亲电取代五类：卤代、硝化、磺化、烷基化、酰基化。\n<\/li><li>\n手性碳四个基团不同，R/S 按次序规则判。\n<\/ul>", "c01": "<div class=\"source-badge\">📖 出处：《基础有机化学》上册·立体化学<\/div><h1>手性与对映异构<\/h1>\n<ul><li>\n<strong>难度<\/strong>：高难 | <strong>涉及章节<\/strong>：第 4 章\n<\/ul>\n<h2>一句话定义<\/h2>\n<p>手性是指分子与它的镜像不能重合的性质；含一个手性碳的分子通常有一对互为镜像的对映异构体。<\/p>\n<h2>为什么重要<\/h2>\n<p>药物、氨基酸、糖，全都靠手性起作用。沙利度胺的两种对映体，一种镇吐、一种致畸；人体只能利用左旋氨基酸。不懂手性，有机化学只学了一半。<\/p>\n<h2>图示<\/h2>\n<div class=\"mermaid\" data-src=\"1\">flowchart TD\n  A[手性碳] --&gt; B{四个基团都不同?}\n  B --&gt;|是| C[一对对映异构体]\n  B --&gt;|否| D[无手性]\n  C --&gt; E[R/S 标记]\n  C --&gt; F[旋光性]<\/div><p class=\"mermaid-hint\">↑ Mermaid 图示：联网时自动渲染为图表；离线时请阅读上方源码与正文说明。<\/p>\n<h2>详解<\/h2>\n<p>判断手性碳：看一个碳上连的四个基团是否全不同。有 H、CH₃、OH、C₂H₅ 四个不同基团，就是手性碳。<\/p>\n<p>R/S 标记：按次序规则排优先级（原子序数大的优先），把最低优先级基团转向远离观察者，剩下三个顺时针为 R、逆时针为 S。<\/p>\n<p>对映异构体物理性质相同（熔点、沸点、溶解度），只有旋光方向相反。等量混合是外消旋体，旋光抵消。<\/p>\n<h2>常见误解<\/h2>\n<ul><li>\n别以为&quot;有手性碳就一定有旋光性&quot;——外消旋体没有。\n<\/li><li>\n别以为&quot;手性分子一定含手性碳&quot;——有些联苯、丙二烯型分子没有手性碳也有手性。\n<\/li><li>\n别以为&quot;对映体化学性质完全相同&quot;——在非手性环境中相同，在手性环境（如酶）中反应速率不同。\n<\/ul>\n<h2>在书中出现的脉络<\/h2>\n<table><thead><tr><th>章节<\/th><th>语境<\/th><th>关键结论<\/th><\/tr><\/thead><tbody><tr><td>有机第 1 章<\/td><td>同分异构<\/td><td>立体异构是一类<\/td><\/tr><tr><td>有机第 4 章<\/td><td>手性碳<\/td><td>R/S 标记<\/td><\/tr><tr><td>有机第 4 章<\/td><td>药物<\/td><td>对映体药效不同<\/td><\/tr><\/tbody><\/table>\n<h2>相关概念<\/h2>\n<ul><li>\n前置：构造式、同分异构\n<\/li><li>\n后续：不对称合成、酶催化\n<\/ul><details class=\"depth-fragment\"><summary>🔬 展开完整第一性原理推导（手性与对映异构）<\/summary><div class=\"depth-body\"><h2>为什么&quot;镜像不能重合&quot;这件事值得单独讲<\/h2>\n<p>先做一个动作：把左手和右手掌心相对，它们看起来一样；把手掌朝同一个方向并排，它们不能重合。左手的大拇指在右边，右手的大拇指在左边。这就是&quot;手性&quot;这个名字的来源。<\/p>\n<p>分子层面完全一样。把一个手性分子和它的镜像放在一起，无论怎么旋转、平移，都无法让所有原子对齐。这不是&quot;看起来不同&quot;，而是几何上不可能。<\/p>\n<h3>第一步：什么条件造成&quot;不能重合&quot;<\/h3>\n<p>一个碳原子连四个基团，这四个基团在空间上指向四面体的四个顶点。如果四个基团全不同，那么&quot;交换任意两个基团&quot;会得到一个新的、不能重合的排列。<\/p>\n<p>用组合数算：四个不同基团在四面体四个位置的排列有 4! = 24 种。但旋转整个分子可以把一些排列重合。真正不同的只有 2 种，互为镜像。这就是一对对映体。<\/p>\n<p>如果四个基团中有两个相同（比如两个 H），交换它们得到的是同一个分子，所以没有手性。<\/p>\n<h3>第二步：为什么用&quot;次序规则&quot;排优先级<\/h3>\n<p>R/S 是把三维信息压成一个字母的约定。规则：比较与手性碳直接相连的原子，原子序数大的优先；若相同，比较下一层，直到分出高低。<\/p>\n<p>例：2-丁醇的 2 号碳连 —OH（O，8）、—CH₂CH₃（C，6）、—CH₃（C，6）、—H（1）。—OH 最高，—H 最低。—CH₂CH₃ 与 —CH₃ 第一层都是 C，比第二层：前者连 C、H、H，后者连 H、H、H，所以乙基优先于甲基。<\/p>\n<h3>第三步：R/S 怎么判<\/h3>\n<p>把最低优先级基团（这里是 H）放到远离你的方向，看剩下三个：—OH → —C₂H₅ → —CH₃。顺时针为 R，逆时针为 S。<\/p>\n<p>一个常见的错误是&quot;直接看平面图顺时针&quot;。平面图是三维分子的投影，必须先把最低优先级基团转向后方，否则结论会反。<\/p>\n<h3>第四步：旋光为什么相反<\/h3>\n<p>偏振光穿过手性分子溶液时，电场矢量会被旋转。两个对映体一个右旋（+）、一个左旋（−），旋转角度相同、方向相反。等量混合，旋转相互抵消，所以外消旋体不旋光。<\/p>\n<p>旋光方向（+ / −）与 R/S 没有固定对应关系，必须实测。这是初学者最容易混的一点：R 不一定是右旋，S 不一定是左旋。<\/p>\n<h3>第五步：为什么生物体只认一种<\/h3>\n<p>酶是手性环境。酶的活性口袋由 L-氨基酸构成，只与特定构型的底物匹配。就像左手只能戴左手套。所以人体只能利用左旋氨基酸，药物的一种对映体有效、另一种可能无效甚至有害。<\/p>\n<h3>边界<\/h3>\n<p>手性不只来自手性碳。联苯类化合物如果两侧取代基太大、不能自由旋转，整个分子可以有轴手性；丙二烯型有面手性。判断手性要看整个分子的对称性，不能只数手性碳。<\/p><\/div><\/details>", "__path__": "<h1>学习路径<\/h1><p>按推荐顺序学习；每步通过检查点（自测题）后再继续。<\/p><ol class='path-list'><li class='path-step' id='path-01'><strong>步骤 01：学会画结构和命名<\/strong><br>阅读：<a href=\"#/chapter/ch01\">第 1 章：有机化学的结构语言<\/a><br>检查点：能把分子式画成键线式并命名<\/li><li class='path-step' id='path-02'><strong>步骤 02：饱和烃<\/strong><br>阅读：<a href=\"#/chapter/ch02\">第 2 章：烷烃与构象<\/a><br>检查点：能解释构象与自由基取代<\/li><li class='path-step' id='path-03'><strong>步骤 03：不饱和烃<\/strong><br>阅读：<a href=\"#/chapter/ch03\">第 3 章：烯烃与亲电加成<\/a><br>检查点：能用马氏规则预测产物<\/li><li class='path-step' id='path-04'><strong>步骤 04：芳香、卤代与手性<\/strong><br>阅读：<a href=\"#/chapter/ch04\">第 4 章：芳香烃、卤代烃与立体化学<\/a><br>检查点：能写苯的亲电取代、判断手性碳<\/li><\/ol><p>进度：<span id='path-progress-label'>0/0<\/span><\/p>", "__graph__": "<h1>🕸 知识图谱<\/h1><p>节点是概念，边是先修关系。拖拽节点、滚轮缩放，点击节点跳转到对应概念页。<\/p><div id=\"graph-container\" style=\"height:520px;border:1px solid var(--border);border-radius:10px;background:var(--panel)\"><\/div><p class=\"sub\">红线 = 必学前置 · 灰线 = 建议先看 · 蓝线 = 拓展阅读<\/p>", "__quiz_all__": "<p>（无综合题）<\/p>", "__quiz_ch01__": "<h1>测验：第 1 章：有机化学的结构语言<\/h1><div class='quiz-item' data-qid='q01' data-type='single' data-concept='' data-chapter='ch01'><p class='quiz-q'><b>Q1.<\/b> 下列属于官能团的是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q01' value='0'> —CH3<\/label><label class='quiz-opt'><input type='radio' name='q01' value='1'> —OH<\/label><label class='quiz-opt'><input type='radio' name='q01' value='2'> —C2H5<\/label><label class='quiz-opt'><input type='radio' name='q01' value='3'> 苯环<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q02' data-type='single' data-concept='' data-chapter='ch01'><p class='quiz-q'><b>Q2.<\/b> C4H10 的同分异构体有几种？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q02' value='0'> 1<\/label><label class='quiz-opt'><input type='radio' name='q02' value='1'> 2<\/label><label class='quiz-opt'><input type='radio' name='q02' value='2'> 3<\/label><label class='quiz-opt'><input type='radio' name='q02' value='3'> 4<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "__quiz_ch02__": "<h1>测验：第 2 章：烷烃与构象<\/h1><div class='quiz-item' data-qid='q03' data-type='single' data-concept='' data-chapter='ch02'><p class='quiz-q'><b>Q1.<\/b> 甲烷的空间构型是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q03' value='0'> 平面正方形<\/label><label class='quiz-opt'><input type='radio' name='q03' value='1'> 正四面体<\/label><label class='quiz-opt'><input type='radio' name='q03' value='2'> 三角锥<\/label><label class='quiz-opt'><input type='radio' name='q03' value='3'> 直线形<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q04' data-type='single' data-concept='' data-chapter='ch02'><p class='quiz-q'><b>Q2.<\/b> 乙烷最稳定的构象是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q04' value='0'> 交叉式<\/label><label class='quiz-opt'><input type='radio' name='q04' value='1'> 重叠式<\/label><label class='quiz-opt'><input type='radio' name='q04' value='2'> 半重叠式<\/label><label class='quiz-opt'><input type='radio' name='q04' value='3'> 平面式<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "__quiz_ch03__": "<h1>测验：第 3 章：烯烃与亲电加成<\/h1><div class='quiz-item' data-qid='q05' data-type='single' data-concept='' data-chapter='ch03'><p class='quiz-q'><b>Q1.<\/b> 丙烯与 HBr 加成的主要产物是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q05' value='0'> 1-溴丙烷<\/label><label class='quiz-opt'><input type='radio' name='q05' value='1'> 2-溴丙烷<\/label><label class='quiz-opt'><input type='radio' name='q05' value='2'> 1,2-二溴丙烷<\/label><label class='quiz-opt'><input type='radio' name='q05' value='3'> 丙醇<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q06' data-type='single' data-concept='' data-chapter='ch03'><p class='quiz-q'><b>Q2.<\/b> 下列能发生顺反异构的是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q06' value='0'> CH2=CH2<\/label><label class='quiz-opt'><input type='radio' name='q06' value='1'> CH2=CHCH3<\/label><label class='quiz-opt'><input type='radio' name='q06' value='2'> CH3CH=CHCH3<\/label><label class='quiz-opt'><input type='radio' name='q06' value='3'> CH2=C(CH3)2<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "__quiz_ch04__": "<h1>测验：第 4 章：芳香烃、卤代烃与立体化学<\/h1><div class='quiz-item' data-qid='q07' data-type='single' data-concept='' data-chapter='ch04'><p class='quiz-q'><b>Q1.<\/b> 苯的硝化反应条件是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q07' value='0'> 浓硝酸、浓硫酸、加热<\/label><label class='quiz-opt'><input type='radio' name='q07' value='1'> 稀硝酸、常温<\/label><label class='quiz-opt'><input type='radio' name='q07' value='2'> 氯气、光照<\/label><label class='quiz-opt'><input type='radio' name='q07' value='3'> 氢氧化钠、加热<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><div class='quiz-item' data-qid='q08' data-type='single' data-concept='c01' data-chapter='ch04'><p class='quiz-q'><b>Q2.<\/b> 下列化合物中有手性碳的是？<\/p><div class='quiz-opts'><label class='quiz-opt'><input type='radio' name='q08' value='0'> CH3Cl<\/label><label class='quiz-opt'><input type='radio' name='q08' value='1'> CH2Cl2<\/label><label class='quiz-opt'><input type='radio' name='q08' value='2'> CH3CHClCH3<\/label><label class='quiz-opt'><input type='radio' name='q08' value='3'> CH3CHClCH2CH3<\/label><\/div><div class='quiz-actions'><button class='quiz-check'>检查答案<\/button><span class='quiz-feedback'><\/span><\/div><\/div><p class='quiz-summary'>完成作答后点击「检查答案」查看得分与解析。<\/p>", "__cards__": "<h1>抽认卡<\/h1><p>点击卡片翻面；判断「认识 / 不熟」以记录复习状态。<\/p><div class='card-controls'><label>按章节筛选：<select id='card-filter'><option value=''>全部<\/option><\/select><\/label><span class='card-counts'>认识 <b id='card-known'>0<\/b> · 不熟 <b id='card-again'>0<\/b> · 剩余 <b id='card-left'>0<\/b><\/span><\/div><div id='card-stage'><div class='flashcard' id='flashcard'><div class='fc-inner'><div class='fc-front'><\/div><div class='fc-back'><\/div><\/div><\/div><\/div><div class='card-actions'><button id='card-again-btn'>不熟<\/button><button id='card-known-btn'>认识<\/button><\/div>", "__glossary__": "<h1>术语表<\/h1><input id='glossary-filter' type='search' placeholder='筛选术语…'><ul id='glossary-list'><li data-term='键线式'>键线式 — 省略碳和碳氢键、只画碳骨架与官能团的结构式 <span class=glossary-ref>（第 1 章：有机化学的结构语言）<\/span><\/li><li data-term='同分异构体'>同分异构体 — 分子式相同、结构不同的化合物 <span class=glossary-ref>（第 1 章：有机化学的结构语言）<\/span><\/li><li data-term='构象'>构象 — 单键旋转形成的不同空间排列，不断键即可互变 <span class=glossary-ref>（第 2 章：烷烃与构象）<\/span><\/li><li data-term='马氏规则'>马氏规则 — 不对称烯烃与 HX 加成时 H 加在含氢较多的碳上 <span class=glossary-ref>（第 3 章：烯烃与亲电加成）<\/span><\/li><li data-term='芳香性'>芳香性 — 环状、平面、π 电子数为 4n+2 的体系具有的特殊稳定性 <span class=glossary-ref>（第 4 章：芳香烃、卤代烃与立体化学）<\/span><\/li><li data-term='手性碳'>手性碳 — 连有四个不同基团的碳原子 <span class=glossary-ref>（第 4 章：芳香烃、卤代烃与立体化学）<\/span><\/li><li data-term='对映异构体'>对映异构体 — 互为镜像、不能重合的一对立体异构体 <span class=glossary-ref>（第 4 章：芳香烃、卤代烃与立体化学）<\/span><\/li><li data-term='外消旋体'>外消旋体 — 等量对映异构体的混合物，旋光相互抵消 <span class=glossary-ref>（第 4 章：芳香烃、卤代烃与立体化学）<\/span><\/li><\/ul>", "__diagnosis__": "<h1>🩺 诊断测试<\/h1><p>系统会从全书中抽题。答错的题会自动沿知识依赖链回溯，告诉你真正需要补的前置知识点。<\/p><div class='diag-controls'><button id='diag-start'>开始诊断（随机抽 5 题）<\/button><span id='diag-progress'><\/span><\/div><div id='diag-stage'><\/div><div id='diag-result'><\/div>", "__patterns__": "<h1>模式与框架库<\/h1>\n<h2>框架：结构决定性质<\/h2>\n<p>先画碳骨架，再标官能团，最后由官能团判断反应类型：双键加成、羟基酯化、羧基酸性、卤代烃取代/消除。<\/p>\n<h2>决策规则<\/h2>\n<ul><li>\n数同分异构：碳链由长到短、支链由少到多、位置由中到边。\n<\/li><li>\n判断马氏加成：看碳正离子稳定性，三级 &gt; 二级 &gt; 一级。\n<\/li><li>\n判断手性碳：一个碳上四个基团是否全不同；再用次序规则定 R/S。\n<\/li><li>\n卤代烃取代还是消除：弱碱低温取代，强碱高温消除。\n<\/ul>\n<h2>反模式<\/h2>\n<ul><li>\n把构象当同分异构。单键旋转不断键，是同一物质。\n<\/li><li>\n认为苯容易加成。加成破坏芳香性，苯主要发生取代。\n<\/li><li>\n认为 R 一定右旋。旋光方向必须实测，与 R/S 无固定对应。\n<\/ul>", "__cheatsheet__": "<h1>速查表<\/h1>\n<h2>官能团与反应<\/h2>\n<table><thead><tr><th>官能团<\/th><th>典型反应<\/th><\/tr><\/thead><tbody><tr><td>C=C<\/td><td>加成、氧化、聚合<\/td><\/tr><tr><td>—OH<\/td><td>与 Na 反应、酯化、氧化<\/td><\/tr><tr><td>—COOH<\/td><td>酸性、酯化<\/td><\/tr><tr><td>—CHO<\/td><td>银镜反应、还原<\/td><\/tr><tr><td>—X<\/td><td>取代、消除<\/td><\/tr><tr><td>苯环<\/td><td>亲电取代<\/td><\/tr><\/tbody><\/table>\n<h2>规则<\/h2>\n<table><thead><tr><th>场景<\/th><th>规则<\/th><\/tr><\/thead><tbody><tr><td>马氏加成<\/td><td>H 加到含氢多的碳上<\/td><\/tr><tr><td>反马氏<\/td><td>过氧化物存在下的 HBr 加成<\/td><\/tr><tr><td>手性碳<\/td><td>四个基团全不同<\/td><\/tr><tr><td>R/S<\/td><td>最低优先级朝后，其余顺 R 逆 S<\/td><\/tr><tr><td>卤代烃<\/td><td>弱碱低温取代，强碱高温消除<\/td><\/tr><\/tbody><\/table>"}};
+const pages = DATA.rendered;
+const manifest = DATA.manifest;
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SLUG = manifest.slug || 'book';
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(SLUG+':'+k)||'null') }catch(e){ return null } },
+  set(k,v){ try{ localStorage.setItem(SLUG+':'+k, JSON.stringify(v)) }catch(e){} }
+};
+let state = { visited: store.get('visited')||[], quiz: store.get('quiz')||{}, cards: store.get('cards')||{}, mastery: store.get('mastery')||{} };
+
+/* ---------- 导航 ---------- */
+function renderNav(){
+  const nav = $('#nav'); nav.innerHTML='';
+  const build = items => items.forEach(it=>{
+    if(it.children){
+      const sec=document.createElement('div'); sec.className='nav-sec'; sec.textContent=it.label; nav.appendChild(sec);
+      it.children.forEach(c=>{
+        const a=document.createElement('a'); a.className='nav-item'; a.href=c.href; a.textContent=c.label;
+        const id=routeId(c.href);
+        if(state.visited.includes(id)) a.innerHTML = esc(c.label)+' <span class="done">✓</span>';
+        nav.appendChild(a);
+      });
+    }else{
+      const a=document.createElement('a'); a.className='nav-item'; a.href=it.href; a.textContent=it.label;
+      const id=routeId(it.href);
+      if(state.visited.includes(id)) a.innerHTML = esc(it.label)+' <span class="done">✓</span>';
+      nav.appendChild(a);
+    }
+  });
+  build(DATA.nav);
+  updateProgress();
+}
+function routeId(href){ return href.replace('#/',''); }
+
+/* ---------- 路由 ---------- */
+function routeIdFromHash(){
+  let h = location.hash.replace(/^#\//,'');
+  if(!h) return 'path';
+  if(h==='path') return 'path';
+  if(h==='diagnosis') return 'diagnosis';
+  const m = h.match(/^(chapter|concept)\/(.+)$/);
+  if(m) return m[1]+'/'+m[2];
+  return h;
+}
+function showPage(rid){
+  let id;
+  if(rid==='path') id='__path__';
+  else if(rid==='diagnosis') id='__diagnosis__';
+  else if(rid==='graph') id='__graph__';
+  else if(rid.startsWith('quiz/')) id='__quiz_'+rid.split('/')[1]+'__';
+  else if(rid==='cards') id='__cards__';
+  else if(rid==='glossary') id='__glossary__';
+  else if(rid==='patterns') id='__patterns__';
+  else if(rid==='cheatsheet') id='__cheatsheet__';
+  else if(rid.startsWith('chapter/')) id=rid.split('/')[1];
+  else if(rid.startsWith('concept/')) id=rid.split('/')[1];
+  else id=rid;
+  const html = pages[id] || '<div class="empty">页面不存在</div>';
+  $('#view').innerHTML = html;
+  $$('.nav-item').forEach(a=>a.classList.toggle('active', routeId(a.getAttribute('href'))===rid));
+  if(!state.visited.includes(rid) && (rid.startsWith('chapter/')||rid.startsWith('concept/'))){
+    state.visited.push(rid); store.set('visited', state.visited); renderNav();
+  }
+  window.scrollTo(0,0);
+  if(rid==='cards') initCards();
+  if(rid==='glossary') initGlossary();
+  if(rid.startsWith('quiz')) initQuizzes(rid);
+  if(rid==='diagnosis') initDiagnosis();
+  if(rid==='graph') initGraph();
+  if(id==='__path__') updatePath();
+  renderMath();
+  renderMermaid();
+}
+
+/* ---------- KaTeX 渲染（多源回退） ---------- */
+let katexLoading = false, katexReady = false;
+function renderMath(){
+  const hasMath = document.querySelector('.katex-inline, .katex-block');
+  if(!hasMath) return;
+  if(katexReady){ doRenderMath(); return; }
+  if(katexLoading) return;
+  katexLoading = true;
+  const cssUrls = [
+    'https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.css',
+    'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css',
+    'https://unpkg.com/katex@0.16.9/dist/katex.min.css'
+  ];
+  const jsUrls = [
+    'https://registry.npmmirror.com/katex/0.16.9/files/dist/katex.min.js',
+    'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js',
+    'https://unpkg.com/katex@0.16.9/dist/katex.min.js'
+  ];
+  let ci = 0, ji = 0;
+  const tryCss = () => {
+    if(ci >= cssUrls.length) return;
+    const link = document.createElement('link');
+    link.rel = 'stylesheet'; link.href = cssUrls[ci++];
+    link.onload = tryJs; link.onerror = () => { link.remove(); tryCss(); };
+    document.head.appendChild(link);
+  };
+  const tryJs = () => {
+    if(ji >= jsUrls.length){ katexLoading = false; return; }
+    const s = document.createElement('script');
+    s.src = jsUrls[ji++];
+    s.onload = () => { katexReady = true; katexLoading = false; doRenderMath(); };
+    s.onerror = () => { s.remove(); tryJs(); };
+    document.head.appendChild(s);
+  };
+  tryCss();
+}
+function doRenderMath(){
+  if(typeof katex === 'undefined') return;
+  // 行内公式：.katex-inline 里的内容
+  $$('.katex-inline').forEach(el=>{
+    try{ katex.render(el.textContent, el, {throwOnError:false}); }catch(e){}
+  });
+  // 块级公式：.katex-block 里的内容
+  $$('.katex-block').forEach(el=>{
+    try{ katex.render(el.textContent, el, {displayMode:true, throwOnError:false}); }catch(e){}
+  });
+}
+// 公式内容预处理：把 < 后跟字母的位置转成 &lt;，避免被 HTML 解析器当标签吃掉
+// （这是 first-principles-derivation 踩过的坑：$m<n$ 会变成残留 $m）
+function sanitizeMathHTML(){
+  $$('.katex-inline, .katex-block').forEach(el=>{
+    el.innerHTML = el.innerHTML.replace(/<([a-zA-Z])/g, '&lt;$1');
+  });
+}
+
+/* ---------- 进度 ---------- */
+function updateProgress(){
+  const chs = (manifest.chapters||[]).length;
+  const done = (manifest.chapters||[]).filter(c=>state.visited.includes('chapter/'+c.id)).length;
+  const pct = chs? Math.round(done/chs*100) : 0;
+  $('#progress-fill').style.width = pct+'%';
+  $('#progress-label').textContent = `进度 ${pct}% · 已学 ${done}/${chs} 章`;
+}
+function updatePath(){
+  $$('.path-step').forEach(el=>{
+    const step = el.id.replace('path-','');
+    const s = (manifest.learningPath||[]).find(x=>x.step===step);
+    if(s && (s.chapterIds||[]).every(c=>state.visited.includes('chapter/'+c))){
+      el.classList.add('passed');
+      const lbl = el.querySelector('.checkpoint-ok'); if(!lbl){ const sp=document.createElement('span'); sp.className='done'; sp.textContent=' ✓ 已完成'; el.appendChild(sp); }
+    }
+  });
+}
+
+/* ---------- 概念/章节依赖查找（用于诊断倒推） ---------- */
+function findConcept(id){ return (manifest.concepts||[]).find(c=>c.id===id); }
+function findChapter(id){ return (manifest.chapters||[]).find(c=>c.id===id); }
+function getPrereqs(node){
+  if(!node) return [];
+  return node.prerequisites || node.prereqs || [];
+}
+/**
+ * 答错倒推：从错题关联的概念/章节出发，沿 prerequisites 回溯，
+ * 返回一串"你可能需要先补的"节点，带跳转链接。
+ */
+function traceBack(startConceptId, startChapterId){
+  const visited = new Set();
+  const chain = [];
+  const queue = [];
+  if(startConceptId){ const c = findConcept(startConceptId); if(c) queue.push({node:c, kind:'concept'}); }
+  if(startChapterId){ const c = findChapter(startChapterId); if(c) queue.push({node:c, kind:'chapter'}); }
+  while(queue.length && chain.length < 6){
+    const {node, kind} = queue.shift();
+    if(visited.has(node.id)) continue;
+    visited.add(node.id);
+    chain.push({node, kind});
+    (getPrereqs(node)||[]).forEach(pid=>{
+      const cn = findConcept(pid); if(cn){ queue.push({node:cn, kind:'concept'}); return; }
+      const ch = findChapter(pid); if(ch) queue.push({node:ch, kind:'chapter'});
+    });
+  }
+  return chain;
+}
+
+/* ---------- 测验（带倒推） ---------- */
+function initQuizzes(rid){
+  $$('.quiz-item').forEach(item=>{
+    const btn = item.querySelector('.quiz-check');
+    if(!btn || item.dataset.inited){ return }
+    item.dataset.inited='1';
+    btn.addEventListener('click', ()=>{
+      const qid = item.dataset.qid; const type = item.dataset.type;
+      const q = (manifest.quizzes||[]).find(x=>x.id===qid); if(!q) return;
+      let user, correct=false, fb;
+      if(type==='single'){
+        const sel = item.querySelector('input:checked');
+        user = sel? parseInt(sel.value) : null;
+        correct = user===q.answer;
+        fb = correct?'✓ 正确':'✗ 错误'+(user==null?'（未作答）':'');
+      } else if(type==='multi'){
+        user = Array.from(item.querySelectorAll('input:checked')).map(i=>parseInt(i.value)).sort();
+        const ans = Array.isArray(q.answer)? q.answer.slice().sort(): [q.answer];
+        correct = user.length>0 && JSON.stringify(user)===JSON.stringify(ans);
+        fb = correct?'✓ 正确':'✗ 错误';
+      } else if(type==='blank'){
+        const v = (item.querySelector('.quiz-blank').value||'').trim().toLowerCase();
+        const a = String(q.answer).trim().toLowerCase();
+        correct = v===a;
+        fb = correct?'✓ 正确':'✗ 错误'+(v?'':'（未作答）');
+      }
+      item.querySelectorAll('input:checked').forEach(i=>{
+        const val=parseInt(i.value);
+        i.parentElement.style.color = (Array.isArray(q.answer)? q.answer.includes(val) : val===q.answer) ? 'var(--ok)' : 'var(--bad)';
+      });
+      const feed = item.querySelector('.quiz-feedback');
+      feed.className = 'quiz-feedback '+(correct?'fb-ok':'fb-bad');
+      feed.textContent = fb;
+      let ex = item.querySelector('.quiz-explain');
+      if(!ex){ ex=document.createElement('div'); ex.className='quiz-explain'; item.appendChild(ex); }
+      ex.innerHTML = '解析：' + esc(q.explain||'');
+      // 答错时：倒推前置 + 误解卡片 + 掌握度更新
+      if(!correct){
+        let remedy = item.querySelector('.quiz-remedy');
+        if(!remedy){ remedy = document.createElement('div'); remedy.className='quiz-remedy'; item.appendChild(remedy); }
+        const chain = traceBack(item.dataset.concept, item.dataset.chapter);
+        if(chain.length > 1){
+          const links = chain.slice(1).map(({node,kind})=>{
+            const href = kind==='concept' ? `#/concept/${node.id}` : `#/chapter/${node.id}`;
+            return `<a href="${href}">${esc(node.title||node.id)}</a>`;
+          }).join(' → ');
+          remedy.innerHTML = '🔍 可能的根因（沿依赖链回溯）：' + links;
+        }
+        // 误解卡片：如果选错的选项标注了 misconceptionId
+        const checked = item.querySelector('input:checked');
+        const misId = checked ? checked.dataset.misconception : '';
+        if(misId){
+          const mis = (manifest.misconceptions||[]).find(m=>m.id===misId);
+          if(mis){
+            let misCard = item.querySelector('.misconception-card');
+            if(!misCard){ misCard = document.createElement('div'); misCard.className='misconception-card'; item.appendChild(misCard); }
+            misCard.innerHTML = `<b>⚠ 常见误解</b><br>你选了「${esc(mis.wrong)}」——${esc(mis.correction)}`;
+          }
+        }
+        // 掌握度下降
+        updateMastery(item.dataset.concept, -0.15);
+      } else {
+        updateMastery(item.dataset.concept, +0.15);
+      }
+      const ch = q.chapterId||'__all__';
+      if(!state.quiz[ch]) state.quiz[ch]={done:0,total:0};
+      state.quiz[ch].done = Math.min(state.quiz[ch].total+1, state.quiz[ch].done+1);
+      state.quiz[ch].total += 1;
+      store.set('quiz', state.quiz);
+    });
+  });
+}
+
+/* ---------- 知识图谱（vis-network） ---------- */
+let networkLoaded = false;
+function loadVisNetwork(cb){
+  if(networkLoaded){ cb(); return; }
+  const urls = [
+    'https://registry.npmmirror.com/vis-network/9.1.9/dist/dist/vis-network.min.js',
+    'https://cdn.jsdelivr.net/npm/vis-network@9.1.9/standalone/umd/vis-network.min.js',
+    'https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js'
+  ];
+  let i = 0;
+  const tryNext = () => {
+    if(i >= urls.length) return;
+    const s = document.createElement('script');
+    s.src = urls[i++];
+    s.onload = () => { networkLoaded = true; cb(); };
+    s.onerror = () => { s.remove(); tryNext(); };
+    document.head.appendChild(s);
+  };
+  tryNext();
+}
+function initGraph(){
+  const container = document.getElementById('graph-container');
+  if(!container) return;
+  loadVisNetwork(() => {
+    if(typeof vis === 'undefined'){ container.innerHTML = '<p class="empty">图谱库加载失败，请联网后刷新</p>'; return; }
+    const concepts = manifest.concepts || [];
+    const chapters = manifest.chapters || [];
+    const nodes = [];
+    const edges = [];
+    concepts.forEach(c => {
+      const mastery = Math.round(getMastery(c.id)*100);
+      nodes.push({
+        id: 'c_' + c.id,
+        label: c.title || c.id,
+        title: (c.title||c.id) + '（掌握度 ' + mastery + '%）',
+        color: mastery > 70 ? '#86efac' : mastery > 40 ? '#fde68a' : '#fca5a5',
+        shape: 'dot',
+        size: mastery > 70 ? 20 : 14,
+        font: { size: 13 }
+      });
+    });
+    chapters.forEach(ch => {
+      nodes.push({
+        id: 'ch_' + ch.id,
+        label: ch.title || ch.id,
+        shape: 'box',
+        color: '#93c5fd',
+        font: { size: 12 }
+      });
+    });
+    // 前置边
+    concepts.forEach(c => {
+      (c.prerequisites || []).forEach(p => {
+        const pid = typeof p === 'string' ? p : p.id;
+        const ptype = typeof p === 'string' ? 'hard' : (p.type || 'hard');
+        const from = (pid.startsWith('ch') ? 'ch_' : 'c_') + pid;
+        const to = 'c_' + c.id;
+        if(nodes.find(n => n.id === from)){
+          edges.push({
+            from: from, to: to,
+            color: { color: ptype === 'hard' ? '#dc2626' : ptype === 'soft' ? '#9ca3af' : '#3b82f6' },
+            arrows: 'to',
+            width: ptype === 'hard' ? 2 : 1,
+            dashes: ptype !== 'hard'
+          });
+        }
+      });
+    });
+    const data = { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) };
+    const options = {
+      physics: { stabilization: true, barnesHut: { gravitationalConstant: -3000 } },
+      interaction: { hover: true, tooltipDelay: 200 }
+    };
+    const net = new vis.Network(container, data, options);
+    net.on('click', params => {
+      if(params.nodes.length > 0){
+        const nid = params.nodes[0];
+        if(nid.startsWith('c_')) location.hash = '#/concept/' + nid.slice(2);
+        else if(nid.startsWith('ch_')) location.hash = '#/chapter/' + nid.slice(3);
+      }
+    });
+  });
+}
+
+/* ---------- 诊断模式 ---------- */
+let diagQueue = [], diagIdx = 0, diagWrong = [];
+function initDiagnosis(){
+  const startBtn = $('#diag-start');
+  if(!startBtn || startBtn.dataset.inited) return;
+  startBtn.dataset.inited='1';
+  startBtn.addEventListener('click', ()=>{
+    const all = (manifest.quizzes||[]).slice();
+    // 随机抽 5 题（不够就全抽）
+    for(let i = all.length-1; i>0; i--){ const j = Math.floor(Math.random()*(i+1)); [all[i],all[j]]=[all[j],all[i]]; }
+    diagQueue = all.slice(0, Math.min(5, all.length));
+    diagIdx = 0; diagWrong = [];
+    showDiagQuestion();
+  });
+}
+function showDiagQuestion(){
+  const stage = $('#diag-stage');
+  const result = $('#diag-result');
+  result.innerHTML = '';
+  if(diagIdx >= diagQueue.length){ finishDiagnosis(); return; }
+  const q = diagQueue[diagIdx];
+  $('#diag-progress').textContent = `第 ${diagIdx+1} / ${diagQueue.length} 题`;
+  const fakeItem = document.createElement('div');
+  fakeItem.innerHTML = _renderQuizHTML(q, diagIdx+1);
+  stage.innerHTML = fakeItem.innerHTML;
+  // 绑定检查按钮
+  const item = stage.querySelector('.quiz-item');
+  const btn = item.querySelector('.quiz-check');
+  btn.addEventListener('click', ()=>{
+    const type = item.dataset.type;
+    let user, correct=false;
+    if(type==='single'){
+      const sel = item.querySelector('input:checked');
+      user = sel? parseInt(sel.value) : null;
+      correct = user===q.answer;
+    } else if(type==='multi'){
+      user = Array.from(item.querySelectorAll('input:checked')).map(i=>parseInt(i.value)).sort();
+      const ans = Array.isArray(q.answer)? q.answer.slice().sort(): [q.answer];
+      correct = user.length>0 && JSON.stringify(user)===JSON.stringify(ans);
+    } else if(type==='blank'){
+      const v = (item.querySelector('.quiz-blank').value||'').trim().toLowerCase();
+      correct = v===String(q.answer).trim().toLowerCase();
+    }
+    if(!correct){
+      diagWrong.push(q);
+      const chain = traceBack(q.relatedConceptId, q.chapterId);
+      if(chain.length > 1){
+        const links = chain.slice(1).map(({node,kind})=>{
+          const href = kind==='concept' ? `#/concept/${node.id}` : `#/chapter/${node.id}`;
+          return `<div class="diag-remedy-item">建议先学：<a href="${href}">${esc(node.title||node.id)}</a></div>`;
+        }).join('');
+        $('#diag-result').innerHTML = '<h3>这道题答错了，可能的根因：</h3>' + links +
+          '<p><button id="diag-next" class="quiz-check">下一题 →</button></p>';
+      } else {
+        $('#diag-result').innerHTML = '<p><button id="diag-next" class="quiz-check">下一题 →</button></p>';
+      }
+    } else {
+      $('#diag-result').innerHTML = '<p>✓ 正确。<button id="diag-next" class="quiz-check">下一题 →</button></p>';
+    }
+    $('#diag-next').addEventListener('click', ()=>{ diagIdx++; showDiagQuestion(); });
+  });
+}
+function _renderQuizHTML(q, idx){
+  // 复用服务端渲染的 quiz HTML 结构
+  const qtype = q.type||'single';
+  const qid = q.id||('diag'+idx);
+  let html = `<div class='quiz-item' data-qid='${qid}' data-type='${qtype}' data-concept='${esc(q.relatedConceptId||"")}' data-chapter='${esc(q.chapterId||"")}'>`;
+  html += `<p class='quiz-q'><b>Q${idx}.</b> ${esc(q.question||"")}</p>`;
+  if(qtype==='single'||qtype==='multi'){
+    const it = qtype==='single'?'radio':'checkbox';
+    html += "<div class='quiz-opts'>";
+    (q.options||[]).forEach((o,i)=>{ html += `<label class='quiz-opt'><input type='${it}' name='${qid}' value='${i}'> ${esc(String(o))}</label>`; });
+    html += '</div>';
+  } else {
+    html += `<input class='quiz-blank' type='text' placeholder='填写答案'>`;
+  }
+  html += `<div class='quiz-actions'><button class='quiz-check'>检查答案</button><span class='quiz-feedback'></span></div></div>`;
+  return html;
+}
+function finishDiagnosis(){
+  const total = diagQueue.length;
+  const wrong = diagWrong.length;
+  const right = total - wrong;
+  let html = `<h2>诊断完成：${right}/${total} 正确</h2>`;
+  if(wrong === 0){
+    html += '<p>🎉 这组题全对，可以继续往下学。</p>';
+  } else {
+    html += `<p>有 ${wrong} 道题答错。下面是按依赖链回溯的补强建议：</p>`;
+    const seen = new Set();
+    diagWrong.forEach(q=>{
+      const chain = traceBack(q.relatedConceptId, q.chapterId);
+      chain.slice(1).forEach(({node,kind})=>{
+        if(seen.has(node.id)) return;
+        seen.add(node.id);
+        const href = kind==='concept' ? `#/concept/${node.id}` : `#/chapter/${node.id}`;
+        html += `<div class="diag-remedy-item">📚 <a href="${href}">${esc(node.title||node.id)}</a></div>`;
+      });
+    });
+  }
+  html += '<p><button id="diag-restart" class="quiz-check">重新诊断</button></p>';
+  $('#diag-stage').innerHTML = '';
+  $('#diag-progress').textContent = '';
+  $('#diag-result').innerHTML = html;
+  $('#diag-restart').addEventListener('click', ()=>{
+    $('#diag-start').click();
+  });
+}
+
+/* ---------- 掌握度（简化 BKT） ---------- */
+function getMastery(cid){
+  if(!cid) return 0.5;
+  const m = (state.mastery||{})[cid];
+  return m !== undefined ? m : 0.3;
+}
+function updateMastery(cid, delta){
+  if(!cid) return;
+  if(!state.mastery) state.mastery = {};
+  const cur = state.mastery[cid] !== undefined ? state.mastery[cid] : 0.3;
+  state.mastery[cid] = Math.max(0, Math.min(1, cur + delta));
+  store.set('mastery', state.mastery);
+}
+function masteryBar(cid){
+  const v = Math.round(getMastery(cid)*100);
+  return `<div class="mastery-bar"><div style="width:${v}%"></div></div><span class="mastery-label">掌握度 ${v}%</span>`;
+}
+
+/* ---------- 抽认卡 ---------- */
+let cardIdx = 0, cardList = [];
+function initCards(){
+  const cards = manifest.flashcards||[];
+  cardList = cards.slice();
+  cardIdx = 0;
+  const sel = $('#card-filter');
+  sel.innerHTML = '<option value="">全部</option>';
+  [...new Set(cards.map(c=>c.chapterId).filter(Boolean))].forEach(c=>{
+    const o=document.createElement('option'); o.value=c; o.textContent=manifestChTitle(c); sel.appendChild(o);
+  });
+  sel.onchange = ()=>{ const v=sel.value; cardList = v? cards.filter(c=>c.chapterId===v): cards.slice(); cardIdx=0; showCard(); };
+  $('#flashcard').onclick = ()=>$('#flashcard').classList.toggle('flip');
+  $('#card-known-btn').onclick = ()=>{ markCard(true); };
+  $('#card-again-btn').onclick = ()=>{ markCard(false); };
+  showCard();
+}
+function showCard(){
+  updateCardCounts();
+  if(cardIdx>=cardList.length){ $('#card-stage').innerHTML='<div class="empty">本组卡片已全部复习完 🎉</div>'; return; }
+  const c = cardList[cardIdx];
+  document.querySelector('.fc-front').textContent = c.front;
+  document.querySelector('.fc-back').textContent = c.back;
+  $('#flashcard').classList.remove('flip');
+}
+function markCard(known){
+  const c = cardList[cardIdx]; if(!c) return;
+  state.cards[c.id] = known?'known':'again';
+  store.set('cards', state.cards);
+  cardIdx++; showCard();
+}
+function updateCardCounts(){
+  const known = Object.values(state.cards).filter(v=>v==='known').length;
+  const again = Object.values(state.cards).filter(v=>v==='again').length;
+  $('#card-known').textContent = known;
+  $('#card-again').textContent = again;
+  $('#card-left').textContent = Math.max(0, cardList.length-cardIdx);
+}
+function manifestChTitle(id){
+  const c=(manifest.chapters||[]).find(x=>x.id===id); return c? c.title : id;
+}
+
+/* ---------- 术语表 ---------- */
+function initGlossary(){
+  const input = $('#glossary-filter');
+  if(!input || input.dataset.inited) return;
+  input.dataset.inited='1';
+  input.oninput = ()=>{
+    const v = input.value.trim().toLowerCase();
+    $$('#glossary-list li').forEach(li=>{
+      li.style.display = (!v || li.dataset.term.includes(v)) ? '' : 'none';
+    });
+  };
+}
+
+/* ---------- 搜索 ---------- */
+let searchIndex = null;
+function buildSearchIndex(){
+  if(searchIndex) return searchIndex;
+  searchIndex = [];
+  Object.entries(pages).forEach(([id, htmlText])=>{
+    if(id.startsWith('__')) return;
+    const text = htmlText.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ');
+    searchIndex.push({id, text});
+  });
+  return searchIndex;
+}
+$('#q').addEventListener('input', e=>{
+  const v = e.target.value.trim().toLowerCase();
+  if(!v){ showPage(routeIdFromHash()); return; }
+  buildSearchIndex();
+  const hits = searchIndex.filter(p=>p.text.toLowerCase().includes(v)).slice(0,20);
+  const label = id => id.startsWith('chapter/')? ('章节：'+manifestChTitle(id.split('/')[1])) : id.startsWith('concept/')? ('概念：'+id.split('/')[1]) : id;
+  $('#view').innerHTML = '<h1>搜索结果：'+esc(v)+'</h1>' +
+    (hits.length? hits.map(h=>`<div class="search-hit"><a href="#/${h.id}">${esc(label(h.id))}</a><br><span class="sub">${esc(h.text.slice(0,180))}</span></div>`).join('')
+                 : '<div class="empty">未找到相关页面，试试章节名/概念名/术语。</div>');
+});
+
+/* ---------- Mermaid 懒加载 ---------- */
+function renderMermaid(){
+  if(!document.querySelector('.mermaid')) return;
+  const boot=()=>{ try{
+    mermaid.initialize({startOnLoad:false, theme: matchMedia('(prefers-color-scheme: dark)').matches?'dark':'default'});
+    document.querySelectorAll('.mermaid').forEach(el=>{
+      const code=el.textContent;
+      mermaid.render('mm'+Math.random().toString(36).slice(2), code)
+        .then(({svg})=>{ el.innerHTML=svg; })
+        .catch(()=>{ el.textContent=code; });
+    });
+  }catch(e){} };
+  const urls=['https://registry.npmmirror.com/mermaid/10/files/dist/mermaid.min.js',
+              'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js',
+              'https://unpkg.com/mermaid@10/dist/mermaid.min.js'];
+  let ui=0;
+  const tryNext=()=>{
+    if(ui>=urls.length) return;
+    const s=document.createElement('script');
+    s.src=urls[ui++];
+    s.onload=boot;
+    s.onerror=()=>{ s.remove(); tryNext(); };
+    document.head.appendChild(s);
+  };
+  tryNext();
+}
+
+/* ---------- 深色模式 ---------- */
+const themeBtn=$('#theme-btn');
+themeBtn.onclick=()=>{
+  const d = document.body.dataset.theme==='dark';
+  document.body.dataset.theme = d? '' : 'dark';
+  themeBtn.textContent = d? '🌙 深色' : '☀️ 浅色';
+};
+
+/* ---------- 启动 ---------- */
+renderNav();
+window.addEventListener('hashchange', ()=>showPage(routeIdFromHash()));
+(function(){
+  const sb=document.querySelector('.sidebar'); if(!sb) return;
+  const btn=document.createElement('button'); btn.id='nav-toggle'; btn.textContent='目录（点开选择章节）';
+  btn.onclick=()=>sb.classList.toggle('open');
+  sb.insertBefore(btn, sb.querySelector('#nav'));
+  window.addEventListener('hashchange',()=>{ if(window.innerWidth<=760) sb.classList.remove('open'); });
+})();
+showPage(routeIdFromHash());
+</script>
+</body>
+</html>
