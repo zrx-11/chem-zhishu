@@ -1,5 +1,6 @@
 /* 知识图谱渲染：本地 vis-network，无 CDN 依赖。
-   桌面：关系图；窄屏（<620px）：按章节顺序的路线图，避免缩得太小。
+   桌面：固定分栏布局（章节在左、概念在右），不用力导向，避免节点挤成一团。
+   窄屏（<620px）：按章节顺序的路线图，避免缩得太小。
    KG.init(container, manifest, {hashPrefix}) */
 (function(){
   function esc(s){
@@ -14,10 +15,16 @@
   function shortTitle(ch){
     return String(ch.title || ch.id).replace(/^第\s*\d+\s*章[：:]\s*/, '').replace(/^第\s*\d+\s*章\s*/, '');
   }
+  function clip(s, n){
+    s = String(s || '');
+    return s.length > n ? s.slice(0, n) + '…' : s;
+  }
   function fitNet(net){
     try{
       net.fit({animation:false});
-      net.moveTo({position: net.getViewPosition(), scale: net.getScale() * 0.93, animation:false});
+      if(net.getScale() > 1.12){
+        net.moveTo({position: net.getViewPosition(), scale: 1.12, animation:false});
+      }
     }catch(e){}
   }
 
@@ -86,32 +93,43 @@
         if(status) status.textContent = '图谱组件未加载，请刷新页面。';
         return;
       }
+
+      var CH_X = 260, C_X = 720, TOP = 40, SPAN = 600;
+      var chY = function(i){
+        return chapters.length <= 1 ? 340 : TOP + i * SPAN / (chapters.length - 1);
+      };
+      var cY = function(j){
+        return concepts.length <= 1 ? 340 : TOP + j * SPAN / (concepts.length - 1);
+      };
+      if(!concepts.length){ CH_X = 470; }
+
       var nodes = [], edges = [], chapterIds = {};
       chapters.forEach(function(ch, i){
         chapterIds[ch.id] = true;
-        var short = shortTitle(ch);
         nodes.push({
           id: 'ch_' + ch.id,
-          label: '第' + chNum(ch, i) + '章',
+          label: '第' + chNum(ch, i) + '章 ' + clip(shortTitle(ch), 7),
           title: String(ch.title || ch.id),
+          x: CH_X, y: chY(i),
           shape: 'box',
           color: {background:'#dbeafe', border:'#3b82f6', highlight:{background:'#bfdbfe', border:'#2563eb'}},
-          font: {size: 11, color: '#1e3a8a', face: 'PingFang SC, Microsoft YaHei, sans-serif'},
-          margin: {top: 7, bottom: 7, left: 10, right: 10},
-          widthConstraint: {maximum: 86},
+          font: {size: 12, color: '#1e3a8a', face: 'PingFang SC, Microsoft YaHei, sans-serif'},
+          margin: {top: 8, bottom: 8, left: 10, right: 10},
+          widthConstraint: {maximum: 170},
           borderWidth: 1
         });
       });
-      concepts.forEach(function(c){
+      concepts.forEach(function(c, j){
         nodes.push({
           id: 'c_' + c.id,
-          label: String(c.title || c.id),
+          label: clip(c.title || c.id, 10),
           title: String(c.title || c.id) + '（点击查看概念页）',
+          x: C_X, y: cY(j),
           shape: 'box',
           color: {background:'#fef3c7', border:'#d97706', highlight:{background:'#fde68a', border:'#b45309'}},
-          font: {size: 11, color: '#78350f', face: 'PingFang SC, Microsoft YaHei, sans-serif'},
-          margin: {top: 6, bottom: 6, left: 9, right: 9},
-          widthConstraint: {maximum: 135},
+          font: {size: 12, color: '#78350f', face: 'PingFang SC, Microsoft YaHei, sans-serif'},
+          margin: {top: 7, bottom: 7, left: 10, right: 10},
+          widthConstraint: {maximum: 168},
           borderWidth: 1
         });
       });
@@ -121,17 +139,17 @@
         if(!ids[from] || !ids[to]) return;
         edges.push({
           from: from, to: to,
-          arrows: {to: {enabled: style.arrow !== false, scaleFactor: 0.65}},
+          arrows: {to: {enabled: style.arrow !== false, scaleFactor: 0.6}},
           color: {color: style.color, highlight: style.color},
           width: style.width || 1.3,
           dashes: style.dashes || false,
-          smooth: {enabled: true, type: 'continuous', roundness: 0.35}
+          smooth: {enabled: true, type: 'continuous', roundness: 0.2}
         });
       }
       chapters.forEach(function(ch){
         (ch.prerequisites || []).forEach(function(p){
           var pid = typeof p === 'string' ? p : (p && p.id);
-          if(chapterIds[pid]) addEdge('ch_' + pid, 'ch_' + ch.id, {color:'#94a3b8', width:1.4});
+          if(chapterIds[pid]) addEdge('ch_' + pid, 'ch_' + ch.id, {color:'#94a3b8', width:1.5});
         });
       });
       concepts.forEach(function(c){
@@ -142,7 +160,7 @@
           var from = (String(pid).indexOf('ch') === 0 && chapterIds[pid]) ? 'ch_' + pid : 'c_' + pid;
           if(!ids[from]) return;
           hasPrereq = true;
-          if(ptype === 'hard') addEdge(from, 'c_' + c.id, {color:'#dc2626', width:2});
+          if(ptype === 'hard') addEdge(from, 'c_' + c.id, {color:'#dc2626', width:1.8});
           else if(ptype === 'soft') addEdge(from, 'c_' + c.id, {color:'#9ca3af', width:1.2, dashes:[5,4]});
           else addEdge(from, 'c_' + c.id, {color:'#3b82f6', width:1.2, dashes:[5,4]});
         });
@@ -150,36 +168,33 @@
           addEdge('ch_' + c.chapterIds[0], 'c_' + c.id, {color:'#cbd5e1', width:1, dashes:[4,4], arrow:false});
         }
       });
+
       var options = {
         autoResize: true,
         height: '100%',
         width: '100%',
         nodes: {shape:'box', borderWidth:1, shadow:false},
-        edges: {smooth:{enabled:true, type:'continuous', roundness:0.35}},
-        layout: {improvedLayout: true, randomSeed: 42},
-        physics: {
-          enabled: true,
-          stabilization: {enabled: true, iterations: 300, updateInterval: 25, fit: true},
-          barnesHut: {gravitationalConstant:-7000, centralGravity:0.12, springLength:130, springConstant:0.05, damping:0.5, avoidOverlap:0.9},
-          minVelocity: 0.2,
-          maxVelocity: 3
-        },
-        interaction: {hover:true, tooltipDelay:120, zoomView:true, dragView:true, multiselect:false}
+        edges: {smooth:{enabled:true, type:'continuous', roundness:0.2}, selectionWidth:1.5},
+        layout: {improvedLayout: false},
+        physics: {enabled: false},
+        interaction: {hover:true, tooltipDelay:120, zoomView:true, dragView:true, dragNodes:true, multiselect:false}
       };
       var data = {nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges)};
       var net = new vis.Network(container, data, options);
       window.__kgNet = net;
       container.dataset.kgMode = 'graph';
       container.__kgArgs = {manifest: manifest, opts: opts};
-      if(status) status.textContent = '共 ' + nodes.length + ' 个节点、' + edges.length + ' 条关系。拖拽查看，点击节点跳转。';
+      if(status) status.textContent = concepts.length
+        ? '共 ' + nodes.length + ' 个节点、' + edges.length + ' 条关系。左侧章节按学习顺序自上而下，右侧是概念；滚轮缩放，点击跳转。'
+        : '共 ' + nodes.length + ' 个节点、' + edges.length + ' 条关系。章节按学习顺序自上而下；滚轮缩放，点击跳转。';
       net.on('click', function(params){
         if(!params.nodes || !params.nodes.length) return;
         var nid = params.nodes[0];
         var target = nid.indexOf('c_') === 0 ? ('concept/' + nid.slice(2)) : ('chapter/' + nid.slice(3));
         location.hash = (opts.hashPrefix || '#/') + target;
       });
-      net.once('stabilizationIterationsDone', function(){ fitNet(net); });
-      setTimeout(function(){ if(window.__kgNet === net) fitNet(net); }, 1200);
+      setTimeout(function(){ if(window.__kgNet === net) fitNet(net); }, 60);
+      setTimeout(function(){ if(window.__kgNet === net) fitNet(net); }, 360);
     }catch(err){
       if(status) status.textContent = '图谱渲染失败：' + (err && err.message ? err.message : err);
       if(window.console && console.error) console.error(err);

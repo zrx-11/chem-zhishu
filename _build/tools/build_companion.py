@@ -343,7 +343,7 @@ def build_html(data):
 
     # ---- 知识图谱页（本地 vis-network，无 CDN 依赖）----
     graph_html = ["<h1>🕸 知识图谱</h1>",
-                  "<p>桌面端显示关系图：蓝框是章节（只标编号，标题见左侧目录），黄框是概念。灰线是章节先修，红线是概念必学前置，虚线是建议阅读或归属关系。手机窄屏自动切成按章节排列的路线图。</p>",
+                  "<p>桌面端显示关系图：蓝框是章节，黄框是概念；左列章节按学习顺序自上而下。灰线是章节先修，红线是概念必学前置，虚线是建议阅读或归属关系。手机窄屏自动切成按章节排列的路线图，不会缩小到看不清。</p>",
                   '<div id="graph-status" class="kg-status">正在生成图谱…</div>',
                   '<div id="graph-container"></div>',
                   '<p class="sub">看图顺序：先沿蓝框走章节主线，再点黄框看概念。节点位置由先修关系决定，不是按章节顺序排的。</p>']
@@ -660,7 +660,7 @@ svg{max-width:100%;height:auto}
 #progress-bar>div{height:100%;width:0;background:var(--accent);transition:width .3s}
 .empty{color:var(--muted);padding:20px 0}
 .kg-status{font-size:13px;color:var(--muted);margin:8px 0 10px}
-#graph-container{height:clamp(440px,66vh,700px);border:1px solid var(--border);border-radius:10px;background:var(--panel);overflow:hidden}
+#graph-container{height:clamp(560px,72vh,760px);border:1px solid var(--border);border-radius:10px;background:var(--panel);overflow:hidden}
 #graph-container canvas{display:block}
 .vis-tooltip{position:absolute;padding:6px 9px;background:var(--panel);border:1px solid var(--border);border-radius:7px;font-size:12px;line-height:1.5;color:var(--text);box-shadow:0 3px 10px rgba(0,0,0,.14);z-index:30;max-width:260px;pointer-events:none}
 #graph-container.kg-list-mode{height:auto;border:0;background:transparent;overflow:visible}

@@ -585,7 +585,7 @@ svg{max-width:100%;height:auto}
 .book-card .enter{font-size:13px}
 .empty{color:var(--muted);padding:20px 0}
 .kg-status{font-size:13px;color:var(--muted);margin:8px 0 10px}
-#graph-container{height:clamp(440px,66vh,700px);border:1px solid var(--border);border-radius:10px;background:var(--panel);overflow:hidden}
+#graph-container{height:clamp(560px,72vh,760px);border:1px solid var(--border);border-radius:10px;background:var(--panel);overflow:hidden}
 #graph-container canvas{display:block}
 .vis-tooltip{position:absolute;padding:6px 9px;background:var(--panel);border:1px solid var(--border);border-radius:7px;font-size:12px;line-height:1.5;color:var(--text);box-shadow:0 3px 10px rgba(0,0,0,.14);z-index:30;max-width:260px;pointer-events:none}
 #graph-container.kg-list-mode{height:auto;border:0;background:transparent;overflow:visible}
@@ -717,6 +717,7 @@ function renderNav(){
   const S=getState(cur.book);
   const man=B.manifest;
   add('学习路径','#/book/'+cur.book+'/path', cur.page==='path'?'active':'');
+  add('🕸 知识图谱','#/book/'+cur.book+'/graph', cur.page==='graph'?'active':'');
   add('🩺 诊断测试','#/book/'+cur.book+'/diagnosis', cur.page==='diagnosis'?'active':'');
   sec('章节');
   (man.chapters||[]).forEach(c=>{
@@ -1063,6 +1064,7 @@ function pdfToPage(pid, B){
 }
 function pageTitle(pid,B){
   if(pid==='__path__') return '学习路径';
+  if(pid==='__graph__') return '知识图谱';
   if(pid==='__cards__') return '抽认卡';
   if(pid==='__glossary__') return '术语表';
   if(pid==='__patterns__') return '模式库';

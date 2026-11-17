@@ -8,5 +8,5 @@
 | 配位 | lgK'=lgKf−lgαY(H) |
 | 电极 | E=E°+0.0592/n lg(Ox/Red) |
 | 沉淀 | AB 型 s=√Ksp |
-| 分光 | A=εbc |
+| 分光 | A=εbc，T=10⁻ᴬ |
 | 萃取 | E=D/(D+V水/V有机) |

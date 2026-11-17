@@ -6,10 +6,10 @@
 
 | 书 | 章节 | 概念 | 测验 | 抽认卡 | 学习伴侣 |
 |---|---|---|---|---|---|
-| 无机及分析化学：考纲主线 | 13 | 6 | 65 | 52 | [inorganic-analytical-chem学习伴侣.html](03-无机及分析化学/inorganic-analytical-chem学习伴侣.html) |
+| 无机及分析化学：考纲主线 | 13 | 6 | 130 | 52 | [inorganic-analytical-chem学习伴侣.html](03-无机及分析化学/inorganic-analytical-chem学习伴侣.html) |
 | 零基础入门：化学的第一套语言 | 10 | 3 | 20 | 20 | [学习伴侣.html](01-零基础入门/学习伴侣.html) |
 | 普通化学原理：大学化学的主干 | 12 | 5 | 24 | 24 | [学习伴侣.html](02-普通化学原理/学习伴侣.html) |
-| 无机及分析化学题库：40 题通关 | 5 | 0 | 40 | 5 | [inorganic-analytical-chem-bank学习伴侣.html](04-无机及分析化学题库/inorganic-analytical-chem-bank学习伴侣.html) |
+| 无机及分析化学考点变式题库：78 题 | 13 | 0 | 78 | 13 | [inorganic-analytical-chem-bank学习伴侣.html](04-无机及分析化学题库/inorganic-analytical-chem-bank学习伴侣.html) |
 | 基础有机化学：从碳骨架到手性 | 4 | 1 | 8 | 8 | [学习伴侣.html](05-有机化学基础/学习伴侣.html) |
 | 陌生方程式：诊断与训练 | 1 | 1 | 21 | 2 | [学习伴侣.html](06-陌生方程式诊断/学习伴侣.html) |
 

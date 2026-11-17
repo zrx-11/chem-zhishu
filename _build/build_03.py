@@ -216,7 +216,7 @@ def parse_quizzes():
             block = block.strip()
             if not re.match(r"\d+\.\s", block):
                 continue
-            m = re.search(r"（答案：([^；。]+)[；。](?:解析：)?\s*(.*)）\s*$", block, re.S)
+            m = re.search(r"（答案：([^；。]+)[；。](?:解析：)?\s*(.*)）", block, re.S)
             if not m:
                 print("NO ANSWER", cid, block[:40]); continue
             ans_text, explain = m.group(1).strip(), m.group(2).strip().replace("\n", " ")
@@ -236,10 +236,14 @@ def parse_quizzes():
                 parts = [p.strip() for p in re.split(r"\s(?=[A-D]\.\s)", opt_line) if p.strip()]
                 opts = [re.sub(r"^[A-D]\.\s*", "", p).strip() for p in parts]
                 letter = ans_text.strip()[0].upper()
-                if letter not in "ABCD" or len(opts) < 4:
+                if len(opts) == 2 and opts[0] == "正确" and opts[1] == "错误":
+                    ans = 0 if ans_text.strip().startswith("正确") else 1
+                elif letter in "ABCD" and len(opts) == 4:
+                    ans = "ABCD".index(letter)
+                else:
                     print("BAD SINGLE", cid, q[:30], opts, ans_text); continue
                 quizzes.append(dict(id=f"q{idx:02d}", chapterId=cid, type="single",
-                                    question=q, options=opts, answer="ABCD".index(letter),
+                                    question=q, options=opts, answer=ans,
                                     explain=explain, relatedConceptId="", optionMisconceptions=[]))
             else:
                 # 判断题转成二选一，避免填空题判定过严

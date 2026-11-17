@@ -1,0 +1,831 @@
+{
+  "slug": "inorganic-analytical-chem-bank",
+  "title": "无机及分析化学题库：40 题通关",
+  "subtitle": "按五个单元排的单选题，覆盖计算、判断与实验条件",
+  "book": {
+    "title": "无机及分析化学题库",
+    "author": "自编（依据教材与学习指导）",
+    "source": [
+      "无机及分析化学 (韩忠霄, 孙乃有).pdf",
+      "无机及分析化学学习指导与习题解析 (马凤霞, 王秀彦).pdf"
+    ]
+  },
+  "audience": "已完成 03 书一轮学习、需要做题巩固的人",
+  "goal": "用 40 道单选检验基础计算、四大滴定、沉淀重量、仪器分析，错题可回到 03 书对应章节",
+  "learningPath": [
+    {
+      "step": "01",
+      "title": "第 1 单元：基础计算与物质结构",
+      "chapterIds": [
+        "ch01"
+      ],
+      "checkpoint": "8 题正确率 ≥ 75%"
+    },
+    {
+      "step": "02",
+      "title": "第 2 单元：反应原理与元素化学",
+      "chapterIds": [
+        "ch02"
+      ],
+      "checkpoint": "8 题正确率 ≥ 75%"
+    },
+    {
+      "step": "03",
+      "title": "第 3 单元：酸碱与配位滴定",
+      "chapterIds": [
+        "ch03"
+      ],
+      "checkpoint": "8 题正确率 ≥ 75%"
+    },
+    {
+      "step": "04",
+      "title": "第 4 单元：氧化还原与沉淀重量",
+      "chapterIds": [
+        "ch04"
+      ],
+      "checkpoint": "8 题正确率 ≥ 75%"
+    },
+    {
+      "step": "05",
+      "title": "第 5 单元：仪器分析与分离",
+      "chapterIds": [
+        "ch05"
+      ],
+      "checkpoint": "8 题正确率 ≥ 75%"
+    }
+  ],
+  "chapters": [
+    {
+      "id": "ch01",
+      "title": "第 1 单元：基础计算与物质结构",
+      "file": "chapters/u01.md",
+      "difficulty": 2,
+      "source": "依据《无机及分析化学》与《学习指导》考点自编",
+      "prerequisites": []
+    },
+    {
+      "id": "ch02",
+      "title": "第 2 单元：反应原理与元素化学",
+      "file": "chapters/u02.md",
+      "difficulty": 2,
+      "source": "依据《无机及分析化学》与《学习指导》考点自编",
+      "prerequisites": [
+        "ch01"
+      ]
+    },
+    {
+      "id": "ch03",
+      "title": "第 3 单元：酸碱与配位滴定",
+      "file": "chapters/u03.md",
+      "difficulty": 2,
+      "source": "依据《无机及分析化学》与《学习指导》考点自编",
+      "prerequisites": [
+        "ch02"
+      ]
+    },
+    {
+      "id": "ch04",
+      "title": "第 4 单元：氧化还原与沉淀重量",
+      "file": "chapters/u04.md",
+      "difficulty": 2,
+      "source": "依据《无机及分析化学》与《学习指导》考点自编",
+      "prerequisites": [
+        "ch03"
+      ]
+    },
+    {
+      "id": "ch05",
+      "title": "第 5 单元：仪器分析与分离",
+      "file": "chapters/u05.md",
+      "difficulty": 2,
+      "source": "依据《无机及分析化学》与《学习指导》考点自编",
+      "prerequisites": [
+        "ch04"
+      ]
+    }
+  ],
+  "concepts": [],
+  "glossary": [
+    {
+      "term": "滴定度",
+      "def": "每毫升滴定剂相当于待测物的质量",
+      "chapterId": "ch03"
+    },
+    {
+      "term": "条件稳定常数",
+      "def": "扣掉副反应后的有效稳定常数",
+      "chapterId": "ch03"
+    },
+    {
+      "term": "换算因数",
+      "def": "待测物与称量形式之间的摩尔质量比（含系数）",
+      "chapterId": "ch04"
+    },
+    {
+      "term": "摩尔吸光系数",
+      "def": "A=εbc 中的 ε，表示物质吸光能力",
+      "chapterId": "ch05"
+    },
+    {
+      "term": "萃取率",
+      "def": "被萃取到有机相的目标物占总量的百分比",
+      "chapterId": "ch05"
+    }
+  ],
+  "patterns": {
+    "file": "patterns.md"
+  },
+  "cheatsheet": {
+    "file": "cheatsheet.md"
+  },
+  "quizzes": [
+    {
+      "id": "q01",
+      "chapterId": "ch01",
+      "type": "single",
+      "question": "18 g H₂O 中含有的水分子数约为（ ）",
+      "options": [
+        "6.022×10²³",
+        "3.011×10²³",
+        "1.204×10²⁴",
+        "6.022×10²²"
+      ],
+      "answer": 0,
+      "explain": "n=18/18=1 mol，N=1×6.022×10²³。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q02",
+      "chapterId": "ch01",
+      "type": "single",
+      "question": "0.20 mol/L NaOH 溶液 500 mL 中 NaOH 的物质的量为（ ）",
+      "options": [
+        "0.05 mol",
+        "0.10 mol",
+        "0.20 mol",
+        "0.40 mol"
+      ],
+      "answer": 1,
+      "explain": "n=cV=0.20×0.500=0.10 mol。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q03",
+      "chapterId": "ch01",
+      "type": "single",
+      "question": "标准状况下 5.6 L O₂ 的物质的量为（ ）",
+      "options": [
+        "0.125 mol",
+        "0.50 mol",
+        "0.25 mol",
+        "2.5 mol"
+      ],
+      "answer": 2,
+      "explain": "n=5.6/22.4=0.25 mol。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q04",
+      "chapterId": "ch01",
+      "type": "single",
+      "question": "K₂Cr₂O₇ 中 Cr 的化合价为（ ）",
+      "options": [
+        "+3",
+        "+6",
+        "+7",
+        "+2"
+      ],
+      "answer": 1,
+      "explain": "2×(+1)+2x+7×(−2)=0，x=+6。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q05",
+      "chapterId": "ch01",
+      "type": "single",
+      "question": "Cr 原子的基态电子排布为（ ）",
+      "options": [
+        "[Ar]3d⁵4s¹",
+        "[Ar]3d⁴4s²",
+        "[Ar]3d⁶4s⁰",
+        "[Ar]3d³4s³"
+      ],
+      "answer": 0,
+      "explain": "Cr 为半充满稳定结构，3d⁵4s¹。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q06",
+      "chapterId": "ch01",
+      "type": "single",
+      "question": "NH₃ 分子的空间构型为（ ）",
+      "options": [
+        "直线形",
+        "平面三角形",
+        "三角锥形",
+        "四面体形"
+      ],
+      "answer": 2,
+      "explain": "N 有 3 个成键电子对和 1 对孤对电子，VSEPR 为三角锥。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q07",
+      "chapterId": "ch01",
+      "type": "single",
+      "question": "下列晶体中熔点最高的是（ ）",
+      "options": [
+        "NaCl",
+        "干冰",
+        "冰",
+        "SiO₂"
+      ],
+      "answer": 3,
+      "explain": "SiO₂ 是原子晶体，共价键网络，熔点最高。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q08",
+      "chapterId": "ch01",
+      "type": "single",
+      "question": "pH=2 的 HCl 溶液的物质的量浓度为（ ）",
+      "options": [
+        "0.20 mol/L",
+        "0.010 mol/L",
+        "0.10 mol/L",
+        "0.0010 mol/L"
+      ],
+      "answer": 1,
+      "explain": "pH=2，[H⁺]=10⁻²=0.010 mol/L，强酸完全电离。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q09",
+      "chapterId": "ch02",
+      "type": "single",
+      "question": "反应 A→产物，A 的浓度加倍时反应速率加倍，该反应对 A 的级数为（ ）",
+      "options": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ],
+      "answer": 1,
+      "explain": "v∝[A]^n，浓度加倍速率加倍，n=1。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q10",
+      "chapterId": "ch02",
+      "type": "single",
+      "question": "反应 N₂+3H₂⇌2NH₃ 的浓度平衡常数表达式为（ ）",
+      "options": [
+        "[NH₃]²/([N₂][H₂]³)",
+        "[NH₃]/([N₂][H₂])",
+        "[N₂][H₂]³/[NH₃]²",
+        "[NH₃]²/([N₂][H₂])"
+      ],
+      "answer": 0,
+      "explain": "生成物系数为指数，反应物在分母。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q11",
+      "chapterId": "ch02",
+      "type": "single",
+      "question": "某时刻 Q<K，反应将（ ）",
+      "options": [
+        "正向进行",
+        "逆向进行",
+        "已达平衡",
+        "无法判断"
+      ],
+      "answer": 0,
+      "explain": "Q<K 表示生成物不足，反应正向。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q12",
+      "chapterId": "ch02",
+      "type": "single",
+      "question": "合成氨 N₂+3H₂⇌2NH₃（ΔH<0），增大压强时平衡（ ）",
+      "options": [
+        "正向移动",
+        "逆向移动",
+        "不移动",
+        "先正后逆"
+      ],
+      "answer": 0,
+      "explain": "正向气体分子数减少，加压向正向。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q13",
+      "chapterId": "ch02",
+      "type": "single",
+      "question": "催化剂对化学平衡的影响是（ ）",
+      "options": [
+        "提高 K",
+        "降低 K",
+        "降低活化能，K 不变",
+        "改变平衡转化率"
+      ],
+      "answer": 2,
+      "explain": "催化剂同等加快正逆反应，不改变 K。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q14",
+      "chapterId": "ch02",
+      "type": "single",
+      "question": "卤素单质的氧化性顺序为（ ）",
+      "options": [
+        "F₂>Cl₂>Br₂>I₂",
+        "I₂>Br₂>Cl₂>F₂",
+        "Cl₂>F₂>Br₂>I₂",
+        "Br₂>Cl₂>I₂>F₂"
+      ],
+      "answer": 0,
+      "explain": "电负性、电极电势决定，F₂ 最强。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q15",
+      "chapterId": "ch02",
+      "type": "single",
+      "question": "Fe³⁺ 在水溶液中的常见颜色为（ ）",
+      "options": [
+        "浅绿色",
+        "黄色",
+        "蓝色",
+        "紫色"
+      ],
+      "answer": 1,
+      "explain": "Fe³⁺ 黄，Fe²⁺ 浅绿，Cu²⁺ 蓝。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q16",
+      "chapterId": "ch02",
+      "type": "single",
+      "question": "铜与稀硝酸反应的主要还原产物是（ ）",
+      "options": [
+        "NO₂",
+        "N₂O",
+        "NO",
+        "NH₃"
+      ],
+      "answer": 2,
+      "explain": "稀硝酸被还原为 NO，浓硝酸为 NO₂。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q17",
+      "chapterId": "ch03",
+      "type": "single",
+      "question": "0.10 mol/L HAc（Ka=1.8×10⁻⁵）的 pH 约为（ ）",
+      "options": [
+        "1.00",
+        "2.87",
+        "4.74",
+        "7.00"
+      ],
+      "answer": 1,
+      "explain": "[H⁺]=√(1.8×10⁻⁶)=1.34×10⁻³，pH=2.87。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q18",
+      "chapterId": "ch03",
+      "type": "single",
+      "question": "0.10 mol/L HAc 与 0.10 mol/L NaAc 等体积混合，pH 约为（pKa=4.74）（ ）",
+      "options": [
+        "2.87",
+        "4.44",
+        "4.74",
+        "8.72"
+      ],
+      "answer": 2,
+      "explain": "等浓度比 1:1，pH=pKa=4.74。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q19",
+      "chapterId": "ch03",
+      "type": "single",
+      "question": "强碱滴定弱酸，计量点附近应选（ ）",
+      "options": [
+        "甲基橙",
+        "甲基红",
+        "酚酞",
+        "石蕊"
+      ],
+      "answer": 2,
+      "explain": "计量点显碱性，突跃在碱性区，选酚酞。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q20",
+      "chapterId": "ch03",
+      "type": "single",
+      "question": "双指示剂法测混合碱，V₁=V₂，组成是（ ）",
+      "options": [
+        "Na₂CO₃",
+        "NaOH",
+        "NaHCO₃",
+        "NaOH+NaHCO₃"
+      ],
+      "answer": 0,
+      "explain": "只有 Na₂CO₃ 时两步消耗相同。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q21",
+      "chapterId": "ch03",
+      "type": "single",
+      "question": "用 0.1000 mol/L NaOH 滴定 25.00 mL HCl，消耗 20.00 mL，c(HCl) 为（ ）",
+      "options": [
+        "0.08000 mol/L",
+        "0.1000 mol/L",
+        "0.1250 mol/L",
+        "0.2000 mol/L"
+      ],
+      "answer": 0,
+      "explain": "c=0.1000×20.00/25.00=0.08000。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q22",
+      "chapterId": "ch03",
+      "type": "single",
+      "question": "Na₂CO₃ 与 HCl 的计量系数比 n(Na₂CO₃):n(HCl) 为（ ）",
+      "options": [
+        "1:1",
+        "1:2",
+        "2:1",
+        "1:3"
+      ],
+      "answer": 1,
+      "explain": "Na₂CO₃+2HCl=2NaCl+H₂O+CO₂。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q23",
+      "chapterId": "ch03",
+      "type": "single",
+      "question": "EDTA 与大多数金属离子形成的配合物配位比为（ ）",
+      "options": [
+        "1:1",
+        "1:2",
+        "2:1",
+        "1:4"
+      ],
+      "answer": 0,
+      "explain": "EDTA 六齿配体，一个分子配一个金属离子。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q24",
+      "chapterId": "ch03",
+      "type": "single",
+      "question": "lgK(ZnY)=16.5，pH=5 时 lgαY(H)=6.45，lgK' 为（ ）",
+      "options": [
+        "22.95",
+        "16.5",
+        "10.05",
+        "8.00"
+      ],
+      "answer": 2,
+      "explain": "lgK'=16.5−6.45=10.05。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q25",
+      "chapterId": "ch04",
+      "type": "single",
+      "question": "电池 (−)Zn|Zn²⁺||Cu²⁺|Cu(+) 的标准电动势为（ ）",
+      "options": [
+        "0.34 V",
+        "0.76 V",
+        "1.10 V",
+        "1.51 V"
+      ],
+      "answer": 2,
+      "explain": "E°=0.34−(−0.76)=1.10 V。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q26",
+      "chapterId": "ch04",
+      "type": "single",
+      "question": "n=2、E°=1.00 V 的电池反应，lgK 约为（ ）",
+      "options": [
+        "16.9",
+        "33.8",
+        "59.2",
+        "1.00"
+      ],
+      "answer": 1,
+      "explain": "lgK=nE°/0.0592=2/0.0592=33.8。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q27",
+      "chapterId": "ch04",
+      "type": "single",
+      "question": "用 Na₂C₂O₄ 标定 KMnO₄，n(MnO₄⁻):n(C₂O₄²⁻) 为（ ）",
+      "options": [
+        "1:1",
+        "2:5",
+        "5:2",
+        "1:2"
+      ],
+      "answer": 1,
+      "explain": "2MnO₄⁻+5C₂O₄²⁻+16H⁺=2Mn²⁺+10CO₂+8H₂O。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q28",
+      "chapterId": "ch04",
+      "type": "single",
+      "question": "间接碘量法测 Cu²⁺，n(Cu²⁺):n(S₂O₃²⁻) 为（ ）",
+      "options": [
+        "1:1",
+        "2:1",
+        "1:2",
+        "1:3"
+      ],
+      "answer": 0,
+      "explain": "2Cu²⁺生成 1I₂，1I₂消耗 2S₂O₃²⁻，折算 1:1。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q29",
+      "chapterId": "ch04",
+      "type": "single",
+      "question": "AgCl 在 0.10 mol/L NaCl 中的溶解度约为（Ksp=1.8×10⁻¹⁰）（ ）",
+      "options": [
+        "1.8×10⁻⁹ mol/L",
+        "1.3×10⁻⁵ mol/L",
+        "1.8×10⁻¹⁰ mol/L",
+        "1.3×10⁻⁴ mol/L"
+      ],
+      "answer": 0,
+      "explain": "同离子效应，s=Ksp/[Cl⁻]=1.8×10⁻⁹。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q30",
+      "chapterId": "ch04",
+      "type": "single",
+      "question": "Ag₂CrO₄ 的溶解度 s 与 Ksp 的关系为（ ）",
+      "options": [
+        "s=√Ksp",
+        "s=∛Ksp",
+        "s=∛(Ksp/2)",
+        "s=∛(Ksp/4)"
+      ],
+      "answer": 3,
+      "explain": "Ksp=(2s)²s=4s³，s=∛(Ksp/4)。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q31",
+      "chapterId": "ch04",
+      "type": "single",
+      "question": "莫尔法使用的指示剂是（ ）",
+      "options": [
+        "K₂CrO₄",
+        "铁铵矾",
+        "荧光黄",
+        "淀粉"
+      ],
+      "answer": 0,
+      "explain": "Ag⁺ 与 CrO₄²⁻ 生成砖红色 Ag₂CrO₄。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q32",
+      "chapterId": "ch04",
+      "type": "single",
+      "question": "由 Fe₂O₃ 称量形式求 Fe 的换算因数为（ ）",
+      "options": [
+        "M(Fe)/M(Fe₂O₃)",
+        "2M(Fe)/M(Fe₂O₃)",
+        "M(Fe₂O₃)/2M(Fe)",
+        "3M(Fe)/M(Fe₂O₃)"
+      ],
+      "answer": 1,
+      "explain": "1 mol Fe₂O₃ 含 2 mol Fe。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q33",
+      "chapterId": "ch05",
+      "type": "single",
+      "question": "某溶液吸光度 A=1.0，透光率 T 为（ ）",
+      "options": [
+        "10%",
+        "20%",
+        "50%",
+        "90%"
+      ],
+      "answer": 0,
+      "explain": "T=10^-A=10^-1=0.10。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q34",
+      "chapterId": "ch05",
+      "type": "single",
+      "question": "A=0.500，b=1.0 cm，ε=1.0×10⁴ L/(mol·cm)，浓度为（ ）",
+      "options": [
+        "5.0×10⁻⁴ mol/L",
+        "2.0×10⁻⁴ mol/L",
+        "5.0×10⁻⁵ mol/L",
+        "1.0×10⁻⁵ mol/L"
+      ],
+      "answer": 2,
+      "explain": "c=A/(εb)=0.500/(1.0×10⁴)=5.0×10⁻⁵。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q35",
+      "chapterId": "ch05",
+      "type": "single",
+      "question": "分光光度法选择最大吸收波长的主要原因是（ ）",
+      "options": [
+        "灵敏度最高",
+        "颜色最深",
+        "避免干扰",
+        "仪器默认"
+      ],
+      "answer": 0,
+      "explain": "λmax 处 ε 最大，灵敏度最高。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q36",
+      "chapterId": "ch05",
+      "type": "single",
+      "question": "25℃ 时玻璃电极的 pH 响应斜率约为（ ）",
+      "options": [
+        "0.59 mV/pH",
+        "59 mV/pH",
+        "5.9 mV/pH",
+        "590 mV/pH"
+      ],
+      "answer": 1,
+      "explain": "2.303RT/F=0.0592 V=59.2 mV。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q37",
+      "chapterId": "ch05",
+      "type": "single",
+      "question": "分配比 D=9，水相与有机相体积相等，一次萃取率为（ ）",
+      "options": [
+        "50%",
+        "75%",
+        "80%",
+        "90%"
+      ],
+      "answer": 3,
+      "explain": "E=D/(D+1)=9/10=90%。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q38",
+      "chapterId": "ch05",
+      "type": "single",
+      "question": "分离挥发性有机物最常用的方法是（ ）",
+      "options": [
+        "气相色谱",
+        "液相色谱",
+        "离子交换",
+        "沉淀"
+      ],
+      "answer": 0,
+      "explain": "气相色谱适合挥发性、热稳定物质。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q39",
+      "chapterId": "ch05",
+      "type": "single",
+      "question": "电位滴定判断终点的依据是（ ）",
+      "options": [
+        "颜色变化",
+        "沉淀生成",
+        "电势突跃",
+        "气体放出"
+      ],
+      "answer": 2,
+      "explain": "用电势突跃或导数极值确定终点。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    },
+    {
+      "id": "q40",
+      "chapterId": "ch05",
+      "type": "single",
+      "question": "下列不属于重量分析对称量形式要求的是（ ）",
+      "options": [
+        "组成固定",
+        "性质稳定",
+        "摩尔质量大",
+        "溶解度大"
+      ],
+      "answer": 3,
+      "explain": "称量形式应难溶、稳定、组成固定、摩尔质量大；溶解度大是反要求。",
+      "relatedConceptId": "",
+      "optionMisconceptions": []
+    }
+  ],
+  "flashcards": [
+    {
+      "id": "f00",
+      "chapterId": "ch01",
+      "front": "第 1 单元最重要的公式或判断是什么？",
+      "back": "见 03 书对应章节的速查表与复习锚点",
+      "tags": [
+        "ch01"
+      ]
+    },
+    {
+      "id": "f01",
+      "chapterId": "ch02",
+      "front": "第 2 单元最重要的公式或判断是什么？",
+      "back": "见 03 书对应章节的速查表与复习锚点",
+      "tags": [
+        "ch02"
+      ]
+    },
+    {
+      "id": "f02",
+      "chapterId": "ch03",
+      "front": "第 3 单元最重要的公式或判断是什么？",
+      "back": "见 03 书对应章节的速查表与复习锚点",
+      "tags": [
+        "ch03"
+      ]
+    },
+    {
+      "id": "f03",
+      "chapterId": "ch04",
+      "front": "第 4 单元最重要的公式或判断是什么？",
+      "back": "见 03 书对应章节的速查表与复习锚点",
+      "tags": [
+        "ch04"
+      ]
+    },
+    {
+      "id": "f04",
+      "chapterId": "ch05",
+      "front": "第 5 单元最重要的公式或判断是什么？",
+      "back": "见 03 书对应章节的速查表与复习锚点",
+      "tags": [
+        "ch05"
+      ]
+    }
+  ],
+  "companion": "inorganic-analytical-chem-bank学习伴侣.html"
+}
