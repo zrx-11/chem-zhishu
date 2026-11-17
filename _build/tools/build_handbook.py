@@ -323,6 +323,12 @@ def discover(root, order=None, label_map=None):
         def ok(name):
             return any(name == w or name.startswith(w + "-") or name.startswith(w) for w in wanted)
         dirs = [d for d in dirs if ok(d[0])]
+        def rank(name):
+            for i, w in enumerate(wanted):
+                if name == w or name.startswith(w + "-") or name.startswith(w):
+                    return i
+            return len(wanted)
+        dirs.sort(key=lambda d: rank(d[0]))
 
     books = []
     for idx, (name, path, htmls) in enumerate(dirs, 1):
@@ -336,7 +342,13 @@ def discover(root, order=None, label_map=None):
             comp_html = comp
         else:
             comp_html = max(htmls, key=lambda f: os.path.getsize(os.path.join(path, f)))
-        label = (label_map or {}).get(name) or (label_map or {}).get(key) or clean_title(man.get("title", name))
+        label = (label_map or {}).get(name) or (label_map or {}).get(key)
+        if not label:
+            for k, v in (label_map or {}).items():
+                if name.startswith(k):
+                    label = v
+                    break
+        label = label or clean_title(man.get("title", name))
         books.append({
             "key": key, "dir": name, "path": path, "manifest": man,
             "companion": os.path.join(name, comp_html).replace(os.sep, "/"),
@@ -1029,7 +1041,7 @@ function buildSearch(){
     Object.entries(B.rendered).forEach(([pid,html])=>{
       if(pid.startsWith('__')) return;
       const text=html.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ');
-      searchIdx.push({book:m.key, page:pdfToPage(pid, B), text, label:m.title});
+      searchIdx.push({book:m.key, page:pdfToPage(pid, B), text, label:m.title, title:pageTitle(pid,B)});
     });
   });
   Object.entries(CROSS).forEach(([k,html])=>{
@@ -1049,15 +1061,44 @@ function pdfToPage(pid, B){
   if(ch) return 'chapter/'+pid;
   return 'concept/'+pid;
 }
+function pageTitle(pid,B){
+  if(pid==='__path__') return '学习路径';
+  if(pid==='__cards__') return '抽认卡';
+  if(pid==='__glossary__') return '术语表';
+  if(pid==='__patterns__') return '模式库';
+  if(pid==='__cheatsheet__') return '速查表';
+  if(pid.startsWith('__quiz_')){
+    const cid=pid.replace('__quiz_','').replace('__','');
+    if(cid==='all') return '综合测验';
+    const ch=(B.manifest.chapters||[]).find(c=>c.id===cid);
+    return ch?('测验：'+ch.title):'测验';
+  }
+  const ch=(B.manifest.chapters||[]).find(c=>c.id===pid);
+  if(ch) return ch.title;
+  const c=(B.manifest.concepts||[]).find(x=>x.id===pid);
+  return c?c.title:pid;
+}
+function searchSnippet(text,v){
+  const i=text.toLowerCase().indexOf(v);
+  if(i<0) return esc(text.slice(0,200));
+  const s=Math.max(0,i-70), e=Math.min(text.length,i+v.length+130);
+  return esc(text.slice(s,i))+'<mark>'+esc(text.slice(i,i+v.length))+'</mark>'+esc(text.slice(i+v.length,e));
+}
 $('#q').addEventListener('input', e=>{
   const v=e.target.value.trim().toLowerCase();
   if(!v){ route(); return; }
   const hits=buildSearch().filter(p=>p.text.toLowerCase().includes(v)).slice(0,40);
-  $('#view').innerHTML='<h1>搜索结果：'+esc(v)+'</h1>'+
-    (hits.length? hits.map(h=>{
+  const groups={};
+  hits.forEach(h=>{ const k=h.label+'|'+h.book; (groups[k]=groups[k]||{label:h.label,book:h.book,items:[]}).items.push(h); });
+  const gs=Object.values(groups).map(g=>{
+    const hs=g.items.map(h=>{
       const href=h.book==='cross'?('#/cross/'+(h.page.split('/')[1]||FIRST_DOC)):('#/book/'+h.book+'/'+h.page);
-      return `<div class="search-hit"><a href="${href}">${esc(h.label)}</a><br><span style="color:var(--muted);font-size:13px">${esc(h.text.slice(0,200))}</span></div>`;
-    }).join('') : '<div class="empty">未找到相关内容，试试章节名 / 概念名 / 术语。</div>');
+      return `<div class="search-hit"><a href="${href}" data-q="${esc(v)}">${esc(h.title||h.label)}</a><br><span style="color:var(--muted);font-size:13px">${searchSnippet(h.text,v)}</span></div>`;
+    }).join('');
+    return `<div class="search-group"><div class="grp-head">${esc(g.label)}</div>${hs}</div>`;
+  }).join('');
+  $('#view').innerHTML='<h1>搜索结果：'+esc(v)+'</h1>'+
+    (hits.length? gs : '<div class="empty">未找到相关内容，试试章节名 / 概念名 / 术语。</div>');
 });
 
 /* ---------- Mermaid ---------- */
